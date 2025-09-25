@@ -197,13 +197,13 @@
           if(!bounds.isEmpty()) map.fitBounds(bounds);
         })
         .catch(err => {
-          console.error('Gagal memuat GeoJSON:', err);
-          // show message on map
-          const center = map.getCenter();
-          const marker = new google.maps.Marker({ position: center, map });
-          infoWindow.setContent('Gagal memuat data peta.');
-          infoWindow.open(map, marker);
-        });
+  console.error('Gagal memuat GeoJSON:', err);
+  // show message on map
+  const center = map.getCenter();
+  const marker = new google.maps.Marker({ position: center, map });
+  infoWindow.setContent('Gagal memuat data peta.');
+  infoWindow.open(map, marker);
+});
     }
   </script>
 
@@ -213,6 +213,6 @@
     // Replace REPLACE_WITH_YOUR_API_KEY below with your key.
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap&libraries=marker"></script>
-  
+
 </body>
 </html>
