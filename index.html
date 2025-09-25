@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MalukuInfraZone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-poppins: 'Poppins', sans-serif;
+      --font-montserrat: 'Montserrat', sans-serif;
+    }
+    body {
+      font-family: var(--font-poppins);
+      background: linear-gradient(135deg, #111111, #1f1f2e, #2b2b2b, #000000);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+    .font-poppins { font-family: var(--font-poppins); }
+    .font-montserrat { font-family: var(--font-montserrat); }
+    .bg-geometry {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      overflow: hidden; z-index: -1;
+    }
+    .triangle, .diamond, .hexagon, .line-shape {
+      position: absolute; border: 2px solid rgba(255,255,255,0.07);
+      animation: rotate 50s linear infinite; will-change: transform;
+    }
+    .triangle { width: 0; height: 0; border-left: 140px solid transparent; border-right: 140px solid transparent; border-bottom: 240px solid rgba(255,255,255,0.07); }
+    .diamond { width: 180px; height: 180px; border: 2px solid rgba(59,130,246,0.15); transform: rotate(45deg); }
+    .hexagon { width: 200px; height: 200px; clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); border-color: rgba(59,130,246,0.15); }
+    .line-shape { width: 400px; height: 2px; background: rgba(59,130,246,0.05); border: none; animation: slide 30s linear infinite; }
+    .triangle:nth-child(1) { top: 10%; left: -100px; }
+    .diamond:nth-child(2) { top: 40%; right: -120px; animation-duration: 70s; }
+    .hexagon:nth-child(3) { bottom: -100px; left: 25%; animation-duration: 90s; }
+    .line-shape:nth-child(4) { top: 70%; left: -200px; animation-duration: 40s; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes slide { from { transform: translateX(0); } to { transform: translateX(100vw); } }
+    .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 1s ease forwards; }
+    .fade-in.delay-1 { animation-delay: 0.3s; }
+    .fade-in.delay-2 { animation-delay: 0.6s; }
+    .fade-in.delay-3 { animation-delay: 0.9s; }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    .highlight-bpbpk { font-family: var(--font-montserrat); font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #60a5fa; transition: all 0.3s ease; }
+    .highlight-bpbpk:hover { color: #3b82f6; text-shadow: 0 0 10px rgba(59,130,246,0.6); }
+    /* ukuran peta */
+    #map { width: 100%; height: 600px; }
+  </style>
+</head>
+<body class="text-white relative min-h-screen font-poppins">
+  <!-- Background Geometry with Parallax -->
+  <div class="bg-geometry">
+    <div class="triangle" data-speed="2"></div>
+    <div class="diamond" data-speed="4"></div>
+    <div class="hexagon" data-speed="3"></div>
+    <div class="line-shape" data-speed="1"></div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="flex justify-between items-center px-8 py-4 relative z-10 fade-in font-poppins">
+    <div class="flex items-center space-x-3">
+      <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="Map Icon" class="w-8 h-8">
+      <h1 class="text-2xl font-extrabold">Maluku<span class="text-yellow-500">InfraZone</span></h1>
+    </div>
+    <div class="highlight-bpbpk">BPBPK Maluku</div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center text-center mt-20 px-6 relative z-10 font-poppins">
+    <h2 class="text-5xl font-extrabold leading-tight fade-in delay-1">
+      Layanan Balai <span class="text-yellow-500">Terpadu</span>
+    </h2>
+    <p class="text-gray-300 max-w-2xl mt-4 fade-in delay-2 font-light">
+      Platform digital untuk mempermudah akses informasi dan layanan infrastruktur.
+    </p>
+    <!-- CTA Button -->
+    <div class="mt-8 fade-in delay-3">
+      <a href="#peta" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition transform hover:scale-105">
+        Peta Infrastruktur
+      </a>
+    </div>
+  </section>
+
+  <!-- Section Peta -->
+  <section id="peta" class="mt-20 px-6 relative z-10">
+    <h3 class="text-3xl font-bold mb-4">Peta Infrastruktur</h3>
+    <div id="map"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="absolute bottom-4 right-4 z-10 fade-in delay-3 font-poppins">
+    <img src="https://cdn-icons-png.flaticon.com/512/921/921490.png" alt="Engineer Icon" class="w-16 h-16">
+  </footer>
+
+  <!-- Parallax Script -->
+  <script>
+    document.addEventListener("mousemove", function(e) {
+      document.querySelectorAll(".bg-geometry > div").forEach(el => {
+        const speed = el.getAttribute("data-speed");
+        const x = (window.innerWidth - e.pageX * speed) / 100;
+        const y = (window.innerHeight - e.pageY * speed) / 100;
+        el.style.transform = `translateX(${x}px) translateY(${y}px)`;
+      });
+    });
+  </script>
+
+  <!-- Google Maps Script -->
+  <script>
+    let map, infoWindow;
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -3.7, lng: 128.2 },
+        zoom: 7
+      });
+      infoWindow = new google.maps.InfoWindow();
+
+      fetch("DATA_SPASIAL.geojson")
+        .then(r => r.json())
+        .then(geo => {
+          geo.features.forEach(f => {
+            if (!f.geometry) return;
+            const [lng, lat] = f.geometry.coordinates;
+            const props = f.properties || {};
+            const marker = new google.maps.Marker({
+              position: { lat, lng },
+              map: map,
+              title: props.Nama_Infrastruktur || ""
+            });
+            marker.addListener("click", () => {
+              infoWindow.setContent("<b>" + (props.Nama_Infrastruktur || "") + "</b>");
+              infoWindow.open(map, marker);
+            });
+          });
+        })
+        .catch(err => console.error("Gagal load GeoJSON:", err));
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap"></script>
+</body>
+</html>
