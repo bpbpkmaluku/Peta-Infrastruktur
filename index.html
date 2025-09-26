@@ -5,82 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MalukuInfraZone</title>
 
-  <!-- Tailwind untuk styling (cukup untuk demo, produksi sebaiknya build PostCSS) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Favicon kosong agar tidak error 404 -->
+  <!-- compiled Tailwind (hasil build) -->
+  <link rel="stylesheet" href="dist/styles.css">
+
+  <!-- Prevent favicon 404 -->
   <link rel="icon" href="data:," />
 
   <style>
-    :root {
+    :root{
       --font-poppins: 'Poppins', sans-serif;
       --font-montserrat: 'Montserrat', sans-serif;
     }
-    body {
-      font-family: var(--font-poppins);
-      background: linear-gradient(135deg,#111,#1f1f2e,#2b2b2b,#000);
+    body{
+      font-family:var(--font-poppins);
+      background: linear-gradient(135deg,#111111,#1f1f2e,#2b2b2b,#000000);
       background-attachment: fixed;
-      overflow-x: hidden;
+      overflow-x:hidden;
       color: #fff;
     }
-    .bg-geometry {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%;
-      overflow: hidden; z-index: -1;
-    }
-    .triangle, .diamond, .hexagon, .line-shape {
-      position: absolute;
-      border: 2px solid rgba(255,255,255,0.07);
-      animation: rotate 50s linear infinite;
-    }
-    .triangle {
-      width: 0; height: 0;
-      border-left: 140px solid transparent;
-      border-right: 140px solid transparent;
-      border-bottom: 240px solid rgba(255,255,255,0.07);
-    }
-    .diamond {
-      width: 180px; height: 180px;
-      border: 2px solid rgba(59,130,246,0.15);
-      transform: rotate(45deg);
-    }
-    .hexagon {
-      width: 200px; height: 200px;
-      clip-path: polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
-      border-color: rgba(59,130,246,0.15);
-    }
-    .line-shape {
-      width: 400px; height: 2px;
-      background: rgba(59,130,246,0.05);
-      animation: slide 30s linear infinite;
-    }
+    .bg-geometry { position:absolute; top:0; left:0; width:100%; height:100%; overflow:hidden; z-index:-1; }
+    .triangle,.diamond,.hexagon,.line-shape{ position:absolute; border:2px solid rgba(255,255,255,0.07); animation:rotate 50s linear infinite; }
+    .triangle{ width:0;height:0;border-left:140px solid transparent;border-right:140px solid transparent;border-bottom:240px solid rgba(255,255,255,0.07); }
+    .diamond{ width:180px;height:180px;border:2px solid rgba(59,130,246,0.15); transform:rotate(45deg); }
+    .hexagon{ width:200px;height:200px; clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%); border-color:rgba(59,130,246,0.15); }
+    .line-shape{ width:400px;height:2px;background:rgba(59,130,246,0.05); animation: slide 30s linear infinite; }
     .triangle:nth-child(1){ top:10%; left:-100px; }
     .diamond:nth-child(2){ top:40%; right:-120px; animation-duration:70s; }
     .hexagon:nth-child(3){ bottom:-100px; left:25%; animation-duration:90s; }
     .line-shape:nth-child(4){ top:70%; left:-200px; animation-duration:40s; }
-
-    @keyframes rotate { from{transform:rotate(0);} to{transform:rotate(360deg);} }
+    @keyframes rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
     @keyframes slide { from{transform:translateX(0);} to{transform:translateX(100vw);} }
 
-    .highlight-bpbpk {
-      font-family: var(--font-montserrat);
-      font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.2em; color: #60a5fa;
-      transition: all .3s ease;
-    }
-    .highlight-bpbpk:hover {
-      color: #3b82f6; text-shadow: 0 0 10px rgba(59,130,246,0.6);
-    }
-
-    #map { width: 100%; height: 600px; border-radius: 8px; }
+    #map { width:100%; height:600px; border-radius:8px; }
+    .my-adv-marker { width:18px; height:18px; border-radius:50%; background:#e11d48; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.4); cursor:pointer; }
   </style>
 </head>
 <body class="text-white relative min-h-screen font-poppins">
 
-  <!-- Background animasi -->
   <div class="bg-geometry">
     <div class="triangle" data-speed="2"></div>
     <div class="diamond" data-speed="4"></div>
@@ -88,39 +52,33 @@
     <div class="line-shape" data-speed="1"></div>
   </div>
 
-  <!-- Navbar -->
   <header class="flex justify-between items-center px-8 py-4 relative z-10">
     <div class="flex items-center space-x-3">
       <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="Map Icon" class="w-8 h-8">
       <h1 class="text-2xl font-extrabold">Maluku<span class="text-yellow-500">InfraZone</span></h1>
     </div>
-    <div class="highlight-bpbpk">BPBPK Maluku</div>
+    <div class="highlight-bpbpk" style="font-family:var(--font-montserrat);font-weight:700;text-transform:uppercase;letter-spacing:.2em;color:#60a5fa">BPBPK Maluku</div>
   </header>
 
-  <!-- Hero -->
   <section class="flex flex-col items-center text-center mt-20 px-6 relative z-10">
     <h2 class="text-5xl font-extrabold leading-tight">Layanan Balai <span class="text-yellow-500">Terpadu</span></h2>
     <p class="text-gray-300 max-w-2xl mt-4 font-light">Platform digital untuk mempermudah akses informasi dan layanan infrastruktur.</p>
     <div class="mt-8">
-      <a href="#peta" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition transform hover:scale-105">
-        Peta Infrastruktur
-      </a>
+      <a href="#peta" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition transform hover:scale-105">Peta Infrastruktur</a>
     </div>
   </section>
 
-  <!-- Peta -->
   <section id="peta" class="mt-20 px-6 relative z-10">
     <h3 class="text-3xl font-bold mb-4">Peta Infrastruktur</h3>
     <div id="map"></div>
   </section>
 
-  <!-- Footer -->
   <footer class="absolute bottom-4 right-4 z-10">
     <img src="https://cdn-icons-png.flaticon.com/512/921/921490.png" alt="Engineer Icon" class="w-16 h-16">
   </footer>
 
-  <!-- Script background animasi -->
   <script>
+    // parallax background
     document.addEventListener("mousemove", function(e){
       document.querySelectorAll(".bg-geometry > div").forEach(el => {
         const speed = Number(el.getAttribute("data-speed")) || 1;
@@ -129,18 +87,68 @@
         el.style.transform = `translateX(${x}px) translateY(${y}px)`;
       });
     });
-  </script>
 
-  <!-- Script Google Maps -->
-  <script>
+    // utils
     function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+    // robust coordinate extractor
+    function getLatLngFromGeometry(geometry){
+      if(!geometry) return null;
+      const t = geometry.type;
+      const c = geometry.coordinates;
+      if(!c) return null;
+
+      // Point: [lng, lat]
+      if(t === 'Point'){
+        const lng = Number(c[0]); const lat = Number(c[1]);
+        return (isFinite(lat) && isFinite(lng)) ? {lat, lng} : null;
+      }
+
+      // MultiPoint or LineString: take first coordinate
+      if(t === 'MultiPoint' || t === 'LineString'){
+        const pt = c[0];
+        const lng = Number(pt[0]); const lat = Number(pt[1]);
+        return (isFinite(lat) && isFinite(lng)) ? {lat, lng} : null;
+      }
+
+      // Polygon: use centroid of first linear ring
+      if(t === 'Polygon'){
+        const ring = c[0];
+        if(!Array.isArray(ring) || ring.length === 0) return null;
+        let sumX = 0, sumY = 0, cnt = 0;
+        ring.forEach(coord => {
+          const lng = Number(coord[0]); const lat = Number(coord[1]);
+          if(isFinite(lat) && isFinite(lng)){ sumX += lng; sumY += lat; cnt++; }
+        });
+        if(cnt === 0) return null;
+        return { lat: sumY/cnt, lng: sumX/cnt };
+      }
+
+      // MultiPolygon or other: try to find a numeric pair nested somewhere
+      function findPair(arr){
+        for(const item of arr){
+          if(Array.isArray(item)){
+            if(typeof item[0] === 'number' && typeof item[1] === 'number') return item;
+            const found = findPair(item);
+            if(found) return found;
+          }
+        }
+        return null;
+      }
+      const pair = findPair(c);
+      if(pair){ const lng = Number(pair[0]), lat = Number(pair[1]); return {lat, lng}; }
+      return null;
+    }
+  </script>
+
+  <script>
     let map, infoWindow;
 
     function buildInfoHtml(props){
       if(!props || Object.keys(props).length === 0) return '(tidak ada atribut)';
+      // try common title keys first
       const title = props.Nama_Infrastruktur || props.nama || props.Name || props.name || props['Nama Infrastruktur'];
-      if(title){
+      if(title && String(title).trim() !== ''){
         const lines = [`<b>${escapeHtml(title)}</b>`];
         if(props.Sektor) lines.push('Sektor: ' + escapeHtml(props.Sektor));
         if(props.Tahun_Pembangunan) lines.push('Tahun: ' + escapeHtml(props.Tahun_Pembangunan));
@@ -148,9 +156,11 @@
         if(props.Keterangan) lines.push('<div style="margin-top:6px">' + escapeHtml(props.Keterangan) + '</div>');
         return lines.join('<br>');
       }
-      let html = '<div style="max-width:300px;font-size:13px">';
+      // fallback: list all properties
+      let html = '<div style="max-width:320px;font-size:13px">';
       Object.keys(props).forEach(k => {
-        html += '<div><strong>' + escapeHtml(k) + ':</strong> ' + escapeHtml(props[k]) + '</div>';
+        const v = props[k] === null || props[k] === undefined ? '' : String(props[k]);
+        html += '<div><strong>' + escapeHtml(k) + ':</strong> ' + escapeHtml(v) + '</div>';
       });
       html += '</div>';
       return html;
@@ -160,40 +170,78 @@
       map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: -3.7, lng: 128.2 },
         zoom: 7,
-        streetViewControl: false,
+        streetViewControl: false
       });
       infoWindow = new google.maps.InfoWindow();
-      loadGeoJSON('DATA_SPASIAL.geojson');
+      loadLocalGeoJSON('DATA_SPASIAL.geojson');
     }
 
-    function loadGeoJSON(url){
+    function loadLocalGeoJSON(url){
       fetch(url)
-        .then(r => r.json())
+        .then(r => { if(!r.ok) throw new Error('Fetch error ' + r.status); return r.json(); })
         .then(geo => {
+          if(!geo || !Array.isArray(geo.features) || geo.features.length === 0){
+            console.warn('GeoJSON kosong atau tidak valid.');
+            return;
+          }
+
+          console.log('GeoJSON sample properties:', geo.features[0].properties || {});
           const bounds = new google.maps.LatLngBounds();
+
           geo.features.forEach(f => {
-            if(!f.geometry) return;
-            const [lng, lat] = f.geometry.coordinates;
-            if(!isFinite(lat) || !isFinite(lng)) return;
+            if(!f || !f.geometry) return;
+            const latlng = getLatLngFromGeometry(f.geometry);
+            if(!latlng) return;
+
             const props = f.properties || {};
-            const marker = new google.maps.Marker({
-              position: { lat, lng },
-              map: map,
-              title: props.Nama_Infrastruktur || props.nama || props.Name || ''
-            });
-            marker.addListener('click', () => {
-              infoWindow.setContent(buildInfoHtml(props));
-              infoWindow.open(map, marker);
-            });
-            bounds.extend({ lat, lng });
+
+            // choose marker implementation
+            const hasAdvanced = !!(google.maps.marker && google.maps.marker.AdvancedMarkerElement);
+
+            if(hasAdvanced){
+              const el = document.createElement('div');
+              el.className = 'my-adv-marker';
+              el.title = props.Nama_Infrastruktur || props.nama || props.Name || '';
+              // anchor advanced marker
+              const adv = new google.maps.marker.AdvancedMarkerElement({
+                position: { lat: latlng.lat, lng: latlng.lng },
+                map,
+                content: el
+              });
+              el.addEventListener('click', () => {
+                infoWindow.setContent(buildInfoHtml(props));
+                infoWindow.open({ anchor: adv, map });
+              });
+            } else {
+              // fallback to classic marker
+              const marker = new google.maps.Marker({
+                position: { lat: latlng.lat, lng: latlng.lng },
+                map,
+                title: props.Nama_Infrastruktur || props.nama || props.Name || ''
+              });
+              marker.addListener('click', () => {
+                infoWindow.setContent(buildInfoHtml(props));
+                infoWindow.open(map, marker);
+              });
+            }
+
+            bounds.extend({ lat: latlng.lat, lng: latlng.lng });
           });
+
           if(!bounds.isEmpty()) map.fitBounds(bounds);
         })
-        .catch(err => console.error('Gagal memuat GeoJSON:', err));
+        .catch(err => {
+          console.error('Gagal memuat GeoJSON:', err);
+          // show simple message on map
+          if(infoWindow){
+            infoWindow.setContent('Gagal memuat data peta.');
+            infoWindow.open(map);
+          }
+        });
     }
   </script>
 
-  <!-- Load Google Maps API -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap"></script>
+  <!-- Load Maps JS with marker library. Replace API key. -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=REPLACE_WITH_YOUR_API_KEY&callback=initMap&libraries=marker"></script>
 </body>
 </html>
