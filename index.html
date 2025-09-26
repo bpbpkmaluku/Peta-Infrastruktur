@@ -1,284 +1,305 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MalukuInfraZone - Final</title>
-
-  <!-- lokal CSS Anda -->
-  <link rel="stylesheet" href="styles.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MalukuInfraZone - Complete</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="data:," />
   <style>
-    /* fallback styling minimal */
-    :root{ --bg:#0b1220; --panel:#0f1724; --muted:#9ca3af; --accent:#2563eb; --card-bg:rgba(255,255,255,0.98); --card-text:#111; }
-    body{ margin:0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: linear-gradient(135deg,#0b1220,#0f1724); color:#fff; }
-    header{ padding:12px 18px; display:flex; justify-content:space-between; align-items:center; }
-    #map{ width:100%; height:72vh; min-height:480px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
-    .panel{ position:fixed; right:18px; bottom:18px; width:300px; background: rgba(15,23,42,0.92); padding:12px; border-radius:10px; z-index:1200; box-shadow:0 8px 30px rgba(0,0,0,0.45); }
-    .panel label{ display:block; color:var(--muted); font-size:13px; margin-top:6px; }
-    .panel select, .panel button{ width:100%; margin-top:8px; padding:8px; border-radius:8px; background: rgba(255,255,255,0.04); color:#e5e7eb; border:1px solid rgba(255,255,255,0.06); }
-    .panel option{ background:#0b1220; color:#e5e7eb; }
-    #filterInfo{ color:var(--muted); font-size:13px; margin-top:8px; }
-    #errorMessage{ position:fixed; left:50%; top:12px; transform:translateX(-50%); background:rgba(185,28,28,0.12); color:#fecaca; padding:8px 12px; border-radius:8px; display:none; z-index:1300; }
-    #loading{ position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.6); color:#fff; padding:10px 14px; border-radius:8px; display:none; z-index:1300; }
+    :root{ --font-poppins: 'Poppins', sans-serif; --font-montserrat: 'Montserrat', sans-serif; }
+    body{ font-family:var(--font-poppins); background: linear-gradient(135deg,#111111,#1f1f2e,#2b2b2b,#000000); background-attachment: fixed; overflow-x:hidden; color: #fff; }
+    .font-poppins{ font-family:var(--font-poppins); }
+    .font-montserrat{ font-family:var(--font-montserrat); }
+    #map { width:100%; height:70vh; min-height:500px; border-radius:12px; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .filter-section { position: fixed; bottom: 120px; right: 20px; background: rgba(31, 41, 55, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 16px; max-width: 280px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 1000; }
 
-    /* InfoWindow content: white background, dark text */
-    .gm-style .gm-style-iw { background: var(--card-bg) !important; color: var(--card-text) !important; }
-    .gm-style .gm-style-iw * { color: var(--card-text) !important; }
+    /* Ensure filter controls are legible on dark background */
+    .filter-section label { color: #cbd5e1; }
+    .filter-section select, .filter-section input, .filter-section button {
+      background: rgba(255,255,255,0.04);
+      color: #e5e7eb; /* light text */
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .filter-section option { background: #0b1220; color: #e5e7eb; }
+    .filter-section select { -webkit-appearance: none; appearance: none; }
+
+    .error-message { background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3); border-radius: 8px; padding: 12px; margin: 10px 0; color: #fca5a5; font-size: 14px; text-align: center; }
+    .loading { position: absolute; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(0,0,0,0.6); padding:10px 16px; border-radius:8px; display:none; z-index:1200; }
+
+    /* Force InfoWindow content dark text on light background so content is readable */
+    .gm-style .gm-style-iw { background: #ffffff !important; color: #111 !important; }
+    .gm-style .gm-style-iw * { color: #111 !important; }
+
   </style>
 </head>
-<body>
-  <div id="errorMessage"></div>
-  <div id="loading">Memuat peta dan data...</div>
-
-  <header>
-    <div style="display:flex;align-items:center;gap:10px">
-      <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="logo" style="width:36px;height:36px">
-      <div>
-        <div style="font-weight:600">Maluku InfraZone</div>
-        <div style="font-size:12px;color:var(--muted)">BPBPK Maluku</div>
-      </div>
+<body class="text-white relative min-h-screen font-poppins">
+  <header class="flex justify-between items-center px-6 py-4 relative z-10 bg-black bg-opacity-20 backdrop-blur-sm">
+    <div class="flex items-center space-x-3">
+      <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="Map Icon" class="w-8 h-8">
+      <h1 class="text-2xl font-extrabold">Maluku<span class="text-yellow-500">InfraZone</span></h1>
     </div>
-    <div style="font-size:13px;color:var(--muted)">Peta Infrastruktur</div>
+    <div class="font-montserrat font-bold text-blue-300 uppercase tracking-wider">BPBPK Maluku</div>
   </header>
 
-  <main style="padding:18px">
-    <section style="max-width:1200px;margin:0 auto">
-      <div id="map"></div>
-    </section>
-  </main>
+  <section class="hero-section flex flex-col items-center text-center px-6 relative z-10">
+    <h2 class="text-4xl md:text-5xl font-extrabold leading-tight">Layanan Balai <span class="text-yellow-500">Terpadu</span></h2>
+    <p class="text-gray-300 max-w-2xl mt-4 font-light">Platform digital untuk mempermudah akses informasi dan layanan infrastruktur.</p>
+    <div class="mt-8"><a href="#peta" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg">Peta Infrastruktur</a></div>
+  </section>
 
-  <aside class="panel" id="panel">
-    <label for="sectorFilter">Sektor</label>
-    <select id="sectorFilter"><option value="">Semua Sektor</option></select>
+  <section id="peta" class="mt-12 px-6 relative z-10 pb-20">
+    <h3 class="text-2xl md:text-3xl font-bold mb-6 text-center">Peta Infrastruktur</h3>
+    <div id="map"></div>
+    <div id="errorMessage" class="error-message" style="display:none"></div>
+    <div id="loading" class="loading">Memuat data...</div>
+  </section>
 
-    <label for="yearFilter">Tahun</label>
-    <select id="yearFilter"><option value="">Semua Tahun</option></select>
+  <div class="filter-section" id="filterSection">
+    <h4 class="text-center text-blue-300 font-semibold mb-3">Filter Data</h4>
+    <div class="filter-group mb-2">
+      <label for="sectorFilter" class="text-sm text-gray-300 mb-1">Sektor:</label>
+      <select id="sectorFilter" class="w-full p-2 bg-transparent border rounded text-white"></select>
+    </div>
+    <div class="filter-group mb-2">
+      <label for="yearFilter" class="text-sm text-gray-300 mb-1">Tahun:</label>
+      <select id="yearFilter" class="w-full p-2 bg-transparent border rounded text-white"></select>
+    </div>
+    <div class="flex gap-2">
+      <button class="px-3 py-2 bg-blue-600 rounded font-semibold" id="applyBtn">Terapkan</button>
+      <button class="px-3 py-2 bg-gray-600 rounded font-semibold" id="resetBtn">Reset</button>
+    </div>
+    <div id="filterInfo" class="text-xs text-gray-400 mt-2"></div>
+  </div>
 
-    <button id="applyBtn" style="background:var(--accent);border:none;color:#fff">Terapkan</button>
-    <button id="resetBtn" style="background:#374151;border:none;color:#fff">Reset</button>
+  <footer class="fixed bottom-4 right-4 z-10"><img src="https://cdn-icons-png.flaticon.com/512/921/921490.png" alt="Engineer Icon" class="w-12 h-12 opacity-80"></footer>
 
-    <div id="filterInfo">Menampilkan 0 titik</div>
-  </aside>
+  <!-- MarkerClusterer script from Google Maps utilities -->
+  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
-  <!-- Load Google Maps API first (replace YOUR_API_KEY) -->
+  <!-- Google Maps API. Replace YOUR_API_KEY with a restricted key. Keep async and defer. -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap" async defer></script>
 
-  <!-- Official MarkerClusterer UMD (load after Maps) -->
-  <script src="https://unpkg.com/@googlemaps/markerclusterer@2.0.10/dist/index.min.js"></script>
-
   <script>
-  // CONFIG: ubah bila perlu
-  const PATH_GEOJSON_CANDIDATES = ['DATA_SPASIAL.geojson', './DATA_SPASIAL.geojson', 'DATA_SPASIAL.geojson'];
+    // Minimal escape
+    function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-  // UI helpers
-  const elError = document.getElementById('errorMessage');
-  const elLoading = document.getElementById('loading');
-  function showError(msg){ elError.textContent = msg; elError.style.display = 'block'; console.error(msg); }
-  function hideError(){ elError.style.display = 'none'; }
-  function showLoading(){ elLoading.style.display = 'block'; }
-  function hideLoading(){ elLoading.style.display = 'none'; }
+    let map;
+    let infoWindow;
+    let allMarkers = []; // { marker, props }
+    let markerCluster = null;
+    let geoData = null;
+    const uniqueSectors = new Set();
+    const uniqueYears = new Set();
+    const currentFilter = { sector: '', year: '' };
 
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function showError(msg){
+      const d = document.getElementById('errorMessage');
+      d.textContent = msg; d.style.display = 'block';
+      console.error(msg);
+    }
+    function hideError(){ document.getElementById('errorMessage').style.display = 'none'; }
+    function showLoading(){ document.getElementById('loading').style.display = 'block'; }
+    function hideLoading(){ document.getElementById('loading').style.display = 'none'; }
 
-  // state
-  let map, infoWindow;
-  let allItems = []; // { marker, props }
-  let clusterRef = null;
-
-  // normalize property names
-  function normalizeProperties(props){
-    const out = {};
-    Object.keys(props||{}).forEach(k=>{
-      const lower = k.trim().toLowerCase().replace(/\s+/g,'_');
-      out[k] = props[k];
-      if(['sektor','sector'].includes(lower)) out.Sektor = props[k];
-      if(['tahun_pembangunan','tahun','year'].includes(lower)) out.Tahun_Pembangunan = props[k];
-      if(['nama_infrastruktur','nama','name'].includes(lower)) out.Nama_Infrastruktur = props[k];
-      if(['status_keberfungsian','status'].includes(lower)) out.Status_Keberfungsian = props[k];
-    });
-    return out;
-  }
-
-  function buildInfoHtml(p){
-    if(!p || Object.keys(p).length === 0) return '(tidak ada atribut)';
-    const title = p.Nama_Infrastruktur || p.nama || p.Name || p['Nama Infrastruktur'] || '';
-    const lines = [];
-    if(title) lines.push('<b>' + escapeHtml(title) + '</b>');
-    if(p.Sektor) lines.push('Sektor: ' + escapeHtml(p.Sektor));
-    if(p.Tahun_Pembangunan) lines.push('Tahun: ' + escapeHtml(p.Tahun_Pembangunan));
-    if(p.Status_Keberfungsian) lines.push('Status: ' + escapeHtml(p.Status_Keberfungsian));
-    if(p.Keterangan) lines.push('<div style="margin-top:6px">' + escapeHtml(p.Keterangan) + '</div>');
-    return '<div style="max-width:320px;font-size:13px;color:var(--card-text)">' + lines.join('<br>') + '</div>';
-  }
-
-  function updateFilterInfo(n){
-    document.getElementById('filterInfo').textContent = 'Menampilkan ' + n + ' titik';
-  }
-
-  function clearAll(){
-    if(clusterRef && typeof clusterRef.clearMarkers === 'function') clusterRef.clearMarkers();
-    allItems.forEach(i => i.marker.setMap(null));
-    allItems = [];
-  }
-
-  function createMarkersFromGeo(geo){
-    clearAll();
-    const markers = [];
-    const bounds = new google.maps.LatLngBounds();
-
-    geo.features.forEach(f=>{
-      if(!f.geometry) return;
-      if(f.geometry.type !== 'Point') return;
-      const coords = f.geometry.coordinates;
-      if(!Array.isArray(coords) || coords.length < 2) return;
-      const lng = Number(coords[0]), lat = Number(coords[1]);
-      if(!isFinite(lat) || !isFinite(lng)) return;
-      const props = normalizeProperties(f.properties || {});
-
-      const marker = new google.maps.Marker({
-        position: { lat, lng },
-        title: props.Nama_Infrastruktur || '',
-        optimized: true
-      });
-
-      marker.addListener('click', ()=> {
-        const content = '<div style="background:var(--card-bg);color:var(--card-text);padding:10px;border-radius:6px;max-width:320px;">' + buildInfoHtml(props) + '</div>';
-        infoWindow.setContent(content);
-        infoWindow.open(map, marker);
-      });
-
-      markers.push({ marker, props });
-      bounds.extend(marker.getPosition());
-    });
-
-    allItems = markers;
-
-    const simpleMarkers = allItems.map(i => i.marker);
-
-    // official UMD exposes markerClusterer on window (window.markerClusterer.MarkerClusterer)
-    if(window.markerClusterer && typeof window.markerClusterer.MarkerClusterer === 'function'){
-      if(clusterRef && typeof clusterRef.clearMarkers === 'function') clusterRef.clearMarkers();
-      clusterRef = new window.markerClusterer.MarkerClusterer({ map, markers: simpleMarkers });
-    } else if(window.MarkerClusterer && typeof window.MarkerClusterer === 'function'){
-      if(clusterRef && typeof clusterRef.clearMarkers === 'function') clusterRef.clearMarkers();
-      clusterRef = new MarkerClusterer(map, simpleMarkers, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
-    } else {
-      simpleMarkers.forEach(m => m.setMap(map));
-      console.warn('MarkerClusterer library not found. Showing markers without clustering.');
+    // Build info HTML
+    function buildInfoHtml(props){
+      if(!props || Object.keys(props).length === 0) return '(tidak ada atribut)';
+      const title = props.Nama_Infrastruktur || props.nama || props.Name || props.name || props['Nama Infrastruktur'] || '';
+      const lines = ['<div style="max-width:300px;font-size:13px">'];
+      if(title) lines.push('<b>' + escapeHtml(title) + '</b>');
+      if(props.Sektor) lines.push('Sektor: ' + escapeHtml(props.Sektor));
+      if(props.Tahun_Pembangunan) lines.push('Tahun: ' + escapeHtml(props.Tahun_Pembangunan));
+      if(props.Status_Keberfungsian) lines.push('Status: ' + escapeHtml(props.Status_Keberfungsian));
+      if(props.Keterangan) lines.push('<div style="margin-top:6px">' + escapeHtml(props.Keterangan) + '</div>');
+      // fallback list minimal
+      if(!title){
+        Object.keys(props).slice(0,8).forEach(k => lines.push('<div><strong>' + escapeHtml(k) + ':</strong> ' + escapeHtml(props[k]) + '</div>'));
+      }
+      lines.push('</div>');
+      return lines.join('<br>');
     }
 
-    if(!bounds.isEmpty()) map.fitBounds(bounds);
-    updateFilterInfo(simpleMarkers.length);
-    return simpleMarkers.length;
-  }
+    // Normalize property keys to predictable names
+    function normalizeProperties(props){
+      const out = {};
+      Object.keys(props||{}).forEach(k => {
+        const key = k.trim();
+        const lower = key.toLowerCase().replace(/\s+/g,'_');
+        out[key] = props[k];
+        // map common fields to consistent names
+        if(['sektor','sector'].includes(lower)) out.Sektor = props[k];
+        if(['tahun_pembangunan','tahun','year'].includes(lower)) out.Tahun_Pembangunan = props[k];
+        if(['nama_infrastruktur','name','nama'].includes(lower)) out.Nama_Infrastruktur = props[k];
+        if(['status_keberfungsian','status'].includes(lower)) out.Status_Keberfungsian = props[k];
+      });
+      return out;
+    }
 
-  async function tryFetch(paths){
-    for(const p of paths){
-      try{
-        const r = await fetch(p);
-        if(!r.ok){ console.warn('fetch', p, 'status', r.status); continue; }
-        return await r.json();
-      }catch(e){
-        console.warn('fetch error', p, e);
+    // Populate filters from geoData
+    function populateFilters(geo){
+      uniqueSectors.clear(); uniqueYears.clear();
+      geo.features.forEach(f => {
+        const p = normalizeProperties(f.properties || {});
+        if(p.Sektor && String(p.Sektor).trim()) uniqueSectors.add(String(p.Sektor).trim());
+        if(p.Tahun_Pembangunan && String(p.Tahun_Pembangunan).trim() && !isNaN(String(p.Tahun_Pembangunan).trim())) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
+      });
+      const sectorSelect = document.getElementById('sectorFilter');
+      sectorSelect.innerHTML = '<option value="">Semua Sektor</option>' + Array.from(uniqueSectors).sort().map(s => '<option value="'+escapeHtml(s)+'">'+escapeHtml(s)+'</option>').join('');
+      const yearSelect = document.getElementById('yearFilter');
+      yearSelect.innerHTML = '<option value="">Semua Tahun</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y => '<option value="'+escapeHtml(y)+'">'+escapeHtml(y)+'</option>').join('');
+      updateFilterInfo(allMarkers.length);
+    }
+
+    function updateFilterInfo(count){
+      const el = document.getElementById('filterInfo');
+      el.textContent = 'Menampilkan ' + count + ' titik.';
+    }
+
+    // Create markers for point features only. Use clustering for performance.
+    function createMarkersFromGeo(geo){
+      clearAllMarkers();
+      const markers = [];
+      const bounds = new google.maps.LatLngBounds();
+
+      geo.features.forEach(f => {
+        if(!f.geometry) return;
+        const geomType = f.geometry.type;
+        if(geomType !== 'Point') return; // skip non-point for marker creation
+        const coords = f.geometry.coordinates;
+        if(!Array.isArray(coords) || coords.length < 2) return;
+        const lng = Number(coords[0]);
+        const lat = Number(coords[1]);
+        if(!isFinite(lat) || !isFinite(lng)) return;
+
+        const props = normalizeProperties(f.properties || {});
+
+        const marker = new google.maps.Marker({
+          position: { lat, lng },
+          title: props.Nama_Infrastruktur || '',
+          optimized: true,
+        });
+
+        marker.addListener('click', () => {
+          const content = '<div style="color:#111;background:#fff;padding:10px;border-radius:6px;max-width:320px;">' + buildInfoHtml(props) + '</div>';
+          infoWindow.setContent(content);
+          infoWindow.open(map, marker);
+        });
+
+        markers.push({ marker, props });
+        bounds.extend(marker.getPosition());
+      });
+
+      allMarkers = markers;
+
+      // Use MarkerClusterer for many markers
+      if(markerCluster) markerCluster.clearMarkers();
+      const simpleMarkers = allMarkers.map(m => m.marker);
+      markerCluster = new MarkerClusterer(map, simpleMarkers, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+      // Fit bounds if markers present
+      if(!bounds.isEmpty()) map.fitBounds(bounds);
+
+      return simpleMarkers.length;
+    }
+
+    function clearAllMarkers(){
+      if(markerCluster) markerCluster.clearMarkers();
+      allMarkers.forEach(m => { m.marker.setMap(null); });
+      allMarkers = [];
+    }
+
+    // Apply filter with moderate throttling
+    let filterTimeout = null;
+    function applyFilter(){
+      hideError();
+      const sector = document.getElementById('sectorFilter').value;
+      const year = document.getElementById('yearFilter').value;
+      currentFilter.sector = sector; currentFilter.year = year;
+
+      if(allMarkers.length === 0){ updateFilterInfo(0); return; }
+
+      // Update visibility
+      let visibleCount = 0;
+      allMarkers.forEach(({ marker, props }) => {
+        const matchesSector = !sector || (props.Sektor && String(props.Sektor).trim() === sector);
+        const matchesYear = !year || (props.Tahun_Pembangunan && String(props.Tahun_Pembangunan).trim() === year);
+        if(matchesSector && matchesYear){ marker.setMap(map); visibleCount++; } else { marker.setMap(null); }
+      });
+
+      // Update cluster with currently visible markers
+      const visibleMarkers = allMarkers.filter(m => m.marker.getMap()).map(m => m.marker);
+      if(markerCluster) markerCluster.clearMarkers();
+      markerCluster = new MarkerClusterer(map, visibleMarkers, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+      updateFilterInfo(visibleCount);
+      if(visibleCount > 0){
+        const b = new google.maps.LatLngBounds();
+        visibleMarkers.forEach(m => b.extend(m.getPosition()));
+        if(!b.isEmpty()) map.fitBounds(b);
       }
     }
-    throw new Error('GeoJSON tidak ditemukan. Periksa nama dan lokasi file.');
-  }
 
-  async function loadGeoJSON(){
-    showLoading(); hideError();
-    try{
-      const geo = await tryFetch(PATH_GEOJSON_CANDIDATES);
-      // populate filters first
-      populateFilters(geo);
-      createMarkersFromGeo(geo);
-    }catch(err){
-      showError(err.message);
-      console.error(err);
-    }finally{
-      hideLoading();
-    }
-  }
-
-  function populateFilters(geo){
-    const sectors = new Set();
-    const years = new Set();
-    geo.features.forEach(f=>{
-      const p = normalizeProperties(f.properties || {});
-      if(p.Sektor && String(p.Sektor).trim()) sectors.add(String(p.Sektor).trim());
-      if(p.Tahun_Pembangunan && String(p.Tahun_Pembangunan).trim() && !isNaN(String(p.Tahun_Pembangunan).trim())) years.add(String(p.Tahun_Pembangunan).trim());
-    });
-
-    const sEl = document.getElementById('sectorFilter');
-    sEl.innerHTML = '<option value="">Semua Sektor</option>' + Array.from(sectors).sort().map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-    const yEl = document.getElementById('yearFilter');
-    yEl.innerHTML = '<option value="">Semua Tahun</option>' + Array.from(years).sort((a,b)=>Number(a)-Number(b)).map(y=>`<option value="${escapeHtml(y)}">${escapeHtml(y)}</option>`).join('');
-  }
-
-  function applyFilter(){
-    hideError();
-    const sector = document.getElementById('sectorFilter').value;
-    const year = document.getElementById('yearFilter').value;
-    if(allItems.length === 0){ updateFilterInfo(0); return; }
-
-    const visibleMarkers = [];
-    allItems.forEach(({marker, props})=>{
-      const matchesSector = !sector || (props.Sektor && String(props.Sektor).trim() === sector);
-      const matchesYear = !year || (props.Tahun_Pembangunan && String(props.Tahun_Pembangunan).trim() === year);
-      if(matchesSector && matchesYear){ marker.setMap(map); visibleMarkers.push(marker); } else { marker.setMap(null); }
-    });
-
-    if(clusterRef && typeof clusterRef.clearMarkers === 'function') clusterRef.clearMarkers();
-
-    if(window.markerClusterer && typeof window.markerClusterer.MarkerClusterer === 'function'){
-      clusterRef = new window.markerClusterer.MarkerClusterer({ map, markers: visibleMarkers });
-    } else if(window.MarkerClusterer && typeof window.MarkerClusterer === 'function'){
-      clusterRef = new MarkerClusterer(map, visibleMarkers, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
-    }
-
-    updateFilterInfo(visibleMarkers.length);
-    if(visibleMarkers.length > 0){
+    function resetFilter(){
+      document.getElementById('sectorFilter').value = '';
+      document.getElementById('yearFilter').value = '';
+      currentFilter.sector = ''; currentFilter.year = '';
+      // restore all markers
+      allMarkers.forEach(m => m.marker.setMap(map));
+      if(markerCluster) markerCluster.clearMarkers();
+      markerCluster = new MarkerClusterer(map, allMarkers.map(m => m.marker), { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+      updateFilterInfo(allMarkers.length);
+      // fit bounds
       const b = new google.maps.LatLngBounds();
-      visibleMarkers.forEach(m => b.extend(m.getPosition()));
+      allMarkers.forEach(m => b.extend(m.marker.getPosition()));
       if(!b.isEmpty()) map.fitBounds(b);
     }
-  }
 
-  function resetFilter(){
-    document.getElementById('sectorFilter').value = '';
-    document.getElementById('yearFilter').value = '';
-    allItems.forEach(i => i.marker.setMap(map));
-    if(clusterRef && typeof clusterRef.clearMarkers === 'function') clusterRef.clearMarkers();
-    clusterRef = new window.markerClusterer && window.markerClusterer.MarkerClusterer
-      ? new window.markerClusterer.MarkerClusterer({ map, markers: allItems.map(i=>i.marker) })
-      : (typeof MarkerClusterer === 'function' ? new MarkerClusterer(map, allItems.map(i=>i.marker), { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' }) : null);
+    // Load GeoJSON via fetch. Expect path relative to repo or absolute URL with CORS allowed
+    async function loadGeoJSON(url){
+      showLoading(); hideError();
+      try{
+        const res = await fetch(url);
+        if(!res.ok) throw new Error('Gagal memuat GeoJSON: ' + res.status);
+        const geo = await res.json();
+        geoData = geo;
 
-    updateFilterInfo(allItems.length);
-    const b = new google.maps.LatLngBounds();
-    allItems.forEach(i => b.extend(i.marker.getPosition()));
-    if(!b.isEmpty()) map.fitBounds(b);
-  }
+        // create markers and populate filters
+        const count = createMarkersFromGeo(geo);
+        populateFilters(geo);
+        updateFilterInfo(count);
+      }catch(err){
+        showError(err.message);
+      }finally{
+        hideLoading();
+      }
+    }
 
-  // called by Google Maps callback
-  function initMap(){
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: { lat:-3.3, lng:129.1 },
-      zoom: 7,
-      mapTypeControl: false,
-      streetViewControl: false,
-    });
-    infoWindow = new google.maps.InfoWindow({ maxWidth: 360 });
+    // initMap called by Google Maps API after load
+    function initMap(){
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: -3.3, lng: 129.1 },
+        zoom: 7,
+        mapTypeControl: false,
+        streetViewControl: false,
+      });
+      infoWindow = new google.maps.InfoWindow({ maxWidth: 320 });
 
-    document.getElementById('applyBtn').addEventListener('click', applyFilter);
-    document.getElementById('resetBtn').addEventListener('click', resetFilter);
+      // Wire UI
+      document.getElementById('applyBtn').addEventListener('click', () => applyFilter());
+      document.getElementById('resetBtn').addEventListener('click', () => resetFilter());
 
-    // load data
-    loadGeoJSON();
-  }
+      // Load GeoJSON. Replace path with your file in repo.
+      loadGeoJSON('DATA_SPASIAL.geojson');
 
-  // expose for debug
-  window.initMap = initMap;
+      // Improve map performance for large datasets
+      map.addListener('idle', () => { /* placeholder for future progressive rendering */ });
+    }
+
+    // Expose for debugging
+    window.initMap = initMap;
+    window.loadGeoJSON = loadGeoJSON;
   </script>
 </body>
 </html>
