@@ -3,144 +3,197 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MalukuInfraZone - Patched</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <title>MalukuInfraZone</title>
+
+  <!-- Tailwind untuk styling (cukup untuk demo, produksi sebaiknya build PostCSS) -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon kosong agar tidak error 404 -->
   <link rel="icon" href="data:," />
+
   <style>
-    :root{ --font-poppins: 'Poppins', sans-serif; --font-montserrat: 'Montserrat', sans-serif; }
-    body{ font-family:var(--font-poppins); background: linear-gradient(135deg,#111,#1f1f2e,#2b2b2b,#000); background-attachment: fixed; overflow-x:hidden; color:#fff; }
-    #map{ width:100%; height:70vh; min-height:500px; border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3);}    
-    .filter-section{ position:fixed; bottom:120px; right:20px; background:rgba(31,41,55,0.95); backdrop-filter:blur(20px); border-radius:12px; padding:16px; max-width:280px; z-index:1000; opacity:1; }
-    .filter-toggle{ position:fixed; bottom:36px; right:36px; width:48px; height:48px; border-radius:50%; background:#2563eb; display:flex; align-items:center; justify-content:center; z-index:1100; }
-    .error-message{ background:rgba(220,38,38,0.1); border-radius:8px; padding:12px; margin:10px 0; color:#fca5a5; }
-    .loading{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.6); padding:10px 16px; border-radius:8px; display:none; z-index:1200; }
-    @media (max-width:768px){ .filter-section{ right:12px; left:12px; bottom:100px; } .filter-toggle{ right:22px; bottom:28px; } }
+    :root {
+      --font-poppins: 'Poppins', sans-serif;
+      --font-montserrat: 'Montserrat', sans-serif;
+    }
+    body {
+      font-family: var(--font-poppins);
+      background: linear-gradient(135deg,#111,#1f1f2e,#2b2b2b,#000);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      color: #fff;
+    }
+    .bg-geometry {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden; z-index: -1;
+    }
+    .triangle, .diamond, .hexagon, .line-shape {
+      position: absolute;
+      border: 2px solid rgba(255,255,255,0.07);
+      animation: rotate 50s linear infinite;
+    }
+    .triangle {
+      width: 0; height: 0;
+      border-left: 140px solid transparent;
+      border-right: 140px solid transparent;
+      border-bottom: 240px solid rgba(255,255,255,0.07);
+    }
+    .diamond {
+      width: 180px; height: 180px;
+      border: 2px solid rgba(59,130,246,0.15);
+      transform: rotate(45deg);
+    }
+    .hexagon {
+      width: 200px; height: 200px;
+      clip-path: polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+      border-color: rgba(59,130,246,0.15);
+    }
+    .line-shape {
+      width: 400px; height: 2px;
+      background: rgba(59,130,246,0.05);
+      animation: slide 30s linear infinite;
+    }
+    .triangle:nth-child(1){ top:10%; left:-100px; }
+    .diamond:nth-child(2){ top:40%; right:-120px; animation-duration:70s; }
+    .hexagon:nth-child(3){ bottom:-100px; left:25%; animation-duration:90s; }
+    .line-shape:nth-child(4){ top:70%; left:-200px; animation-duration:40s; }
+
+    @keyframes rotate { from{transform:rotate(0);} to{transform:rotate(360deg);} }
+    @keyframes slide { from{transform:translateX(0);} to{transform:translateX(100vw);} }
+
+    .highlight-bpbpk {
+      font-family: var(--font-montserrat);
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.2em; color: #60a5fa;
+      transition: all .3s ease;
+    }
+    .highlight-bpbpk:hover {
+      color: #3b82f6; text-shadow: 0 0 10px rgba(59,130,246,0.6);
+    }
+
+    #map { width: 100%; height: 600px; border-radius: 8px; }
   </style>
 </head>
 <body class="text-white relative min-h-screen font-poppins">
-  <header class="flex justify-between items-center px-6 py-4 relative z-10 bg-black bg-opacity-20 backdrop-blur-sm">
-    <div class="flex items-center space-x-3"><img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="Map Icon" class="w-8 h-8"><h1 class="text-2xl font-extrabold">Maluku<span class="text-yellow-500">InfraZone</span></h1></div>
-    <div class="font-montserrat font-bold text-blue-300 uppercase tracking-wider">BPBPK Maluku</div>
-  </header>
 
-  <section id="peta" class="mt-12 px-6 relative z-10 pb-20">
-    <h3 class="text-2xl md:text-3xl font-bold mb-6 text-center">Peta Infrastruktur</h3>
-    <div id="map"></div>
-    <div id="errorMessage" class="error-message" style="display:none"></div>
-    <div id="loading" class="loading">Memuat data...</div>
-  </section>
-
-  <div class="filter-section" id="filterSection">
-    <h4 class="text-center text-blue-300 font-semibold mb-3">Filter Data</h4>
-    <div class="filter-group mb-2"><label for="sectorFilter" class="text-sm text-gray-300 mb-1">Sektor:</label><select id="sectorFilter" class="w-full p-2 bg-transparent border rounded text-white"></select></div>
-    <div class="filter-group mb-2"><label for="yearFilter" class="text-sm text-gray-300 mb-1">Tahun:</label><select id="yearFilter" class="w-full p-2 bg-transparent border rounded text-white"></select></div>
-    <div class="flex gap-2"><button class="px-3 py-2 bg-blue-600 rounded font-semibold" id="applyBtn">Terapkan</button><button class="px-3 py-2 bg-gray-600 rounded font-semibold" id="resetBtn">Reset</button></div>
-    <div id="filterInfo" class="text-xs text-gray-400 mt-2"></div>
+  <!-- Background animasi -->
+  <div class="bg-geometry">
+    <div class="triangle" data-speed="2"></div>
+    <div class="diamond" data-speed="4"></div>
+    <div class="hexagon" data-speed="3"></div>
+    <div class="line-shape" data-speed="1"></div>
   </div>
 
-  <button id="filterToggle" class="filter-toggle" aria-label="Buka filter" title="Filter"><img src="https://cdn-icons-png.flaticon.com/512/709/709722.png" alt="Filter" style="width:20px;height:20px"></button>
+  <!-- Navbar -->
+  <header class="flex justify-between items-center px-8 py-4 relative z-10">
+    <div class="flex items-center space-x-3">
+      <img src="https://cdn-icons-png.flaticon.com/512/854/854878.png" alt="Map Icon" class="w-8 h-8">
+      <h1 class="text-2xl font-extrabold">Maluku<span class="text-yellow-500">InfraZone</span></h1>
+    </div>
+    <div class="highlight-bpbpk">BPBPK Maluku</div>
+  </header>
 
-  <footer class="fixed bottom-4 right-4 z-10"><img src="https://cdn-icons-png.flaticon.com/512/921/921490.png" alt="Engineer Icon" class="w-12 h-12 opacity-80"></footer>
+  <!-- Hero -->
+  <section class="flex flex-col items-center text-center mt-20 px-6 relative z-10">
+    <h2 class="text-5xl font-extrabold leading-tight">Layanan Balai <span class="text-yellow-500">Terpadu</span></h2>
+    <p class="text-gray-300 max-w-2xl mt-4 font-light">Platform digital untuk mempermudah akses informasi dan layanan infrastruktur.</p>
+    <div class="mt-8">
+      <a href="#peta" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition transform hover:scale-105">
+        Peta Infrastruktur
+      </a>
+    </div>
+  </section>
 
-  <!-- Modern marker clusterer (UMD). Loaded before app code. -->
-  <script src="https://unpkg.com/@googlemaps/markerclusterer@2.0.9/dist/index.min.js"></script>
+  <!-- Peta -->
+  <section id="peta" class="mt-20 px-6 relative z-10">
+    <h3 class="text-3xl font-bold mb-4">Peta Infrastruktur</h3>
+    <div id="map"></div>
+  </section>
 
-  <!-- App script uses js-api-loader via ESM. Replace YOUR_API_KEY below. -->
-  <script type="module">
-    import { Loader } from 'https://cdn.jsdelivr.net/npm/@googlemaps/js-api-loader@1.15.0/dist/index.esm.min.js';
+  <!-- Footer -->
+  <footer class="absolute bottom-4 right-4 z-10">
+    <img src="https://cdn-icons-png.flaticon.com/512/921/921490.png" alt="Engineer Icon" class="w-16 h-16">
+  </footer>
 
-    // Minimal escape
+  <!-- Script background animasi -->
+  <script>
+    document.addEventListener("mousemove", function(e){
+      document.querySelectorAll(".bg-geometry > div").forEach(el => {
+        const speed = Number(el.getAttribute("data-speed")) || 1;
+        const x = (window.innerWidth - e.pageX * speed) / 100;
+        const y = (window.innerHeight - e.pageY * speed) / 100;
+        el.style.transform = `translateX(${x}px) translateY(${y}px)`;
+      });
+    });
+  </script>
+
+  <!-- Script Google Maps -->
+  <script>
     function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-    let map; let infoWindow; let allMarkers = []; let markerCluster = null; let geoData = null; const uniqueSectors = new Set(); const uniqueYears = new Set(); const currentFilter = { sector:'', year:'' };
+    let map, infoWindow;
 
-    function showError(msg){ const d = document.getElementById('errorMessage'); d.textContent = msg; d.style.display = 'block'; console.error(msg); }
-    function hideError(){ document.getElementById('errorMessage').style.display = 'none'; }
-    function showLoading(){ document.getElementById('loading').style.display = 'block'; }
-    function hideLoading(){ document.getElementById('loading').style.display = 'none'; }
-
-    function buildInfoHtml(props){ if(!props || Object.keys(props).length===0) return '(tidak ada atribut)'; const title = props.Nama_Infrastruktur||props.nama||props.Name||props.name||props['Nama Infrastruktur']||''; const lines=['<div style="max-width:300px;font-size:13px">']; if(title) lines.push('<b>'+escapeHtml(title)+'</b>'); if(props.Sektor) lines.push('Sektor: '+escapeHtml(props.Sektor)); if(props.Tahun_Pembangunan) lines.push('Tahun: '+escapeHtml(props.Tahun_Pembangunan)); if(props.Status_Keberfungsian) lines.push('Status: '+escapeHtml(props.Status_Keberfungsian)); if(props.Keterangan) lines.push('<div style="margin-top:6px">'+escapeHtml(props.Keterangan)+'</div>'); if(!title){ Object.keys(props).slice(0,8).forEach(k=>lines.push('<div><strong>'+escapeHtml(k)+':</strong> '+escapeHtml(props[k])+'</div>')); } lines.push('</div>'); return lines.join('<br>'); }
-
-    function normalizeProperties(props){ const out={}; Object.keys(props||{}).forEach(k=>{ const key=k.trim(); const lower=key.toLowerCase().replace(/\s+/g,'_'); out[key]=props[k]; if(['sektor','sector'].includes(lower)) out.Sektor=props[k]; if(['tahun_pembangunan','tahun','year'].includes(lower)) out.Tahun_Pembangunan=props[k]; if(['nama_infrastruktur','name','nama'].includes(lower)) out.Nama_Infrastruktur=props[k]; if(['status_keberfungsian','status'].includes(lower)) out.Status_Keberfungsian=props[k]; }); return out; }
-
-    function updateFilterInfo(count){ const el=document.getElementById('filterInfo'); el.textContent = 'Menampilkan '+count+' titik.'; }
-
-    function clearAllMarkers(){ if(markerCluster){ try{ markerCluster.clearMarkers(); }catch(e){ console.warn('cluster clear failed', e); } } allMarkers.forEach(m=>m.marker.setMap(null)); allMarkers=[]; }
-
-    // Create cluster using whichever clusterer is available
-    function createCluster(markers){
-      if(markerCluster){ try{ markerCluster.clearMarkers(); }catch(e){ console.warn('clearMarkers error', e); } }
-
-      // @googlemaps/markerclusterer UMD exposed as markerClusterer
-      if(window.markerClusterer && typeof window.markerClusterer.MarkerClusterer === 'function'){
-        markerCluster = new window.markerClusterer.MarkerClusterer({ map, markers });
-        return;
+    function buildInfoHtml(props){
+      if(!props || Object.keys(props).length === 0) return '(tidak ada atribut)';
+      const title = props.Nama_Infrastruktur || props.nama || props.Name || props.name || props['Nama Infrastruktur'];
+      if(title){
+        const lines = [`<b>${escapeHtml(title)}</b>`];
+        if(props.Sektor) lines.push('Sektor: ' + escapeHtml(props.Sektor));
+        if(props.Tahun_Pembangunan) lines.push('Tahun: ' + escapeHtml(props.Tahun_Pembangunan));
+        if(props.Status_Keberfungsian) lines.push('Status: ' + escapeHtml(props.Status_Keberfungsian));
+        if(props.Keterangan) lines.push('<div style="margin-top:6px">' + escapeHtml(props.Keterangan) + '</div>');
+        return lines.join('<br>');
       }
-
-      // older MarkerClusterer global (markerclustererplus or example lib)
-      if(window.MarkerClusterer && typeof window.MarkerClusterer === 'function'){
-        markerCluster = new window.MarkerClusterer(map, markers, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
-        return;
-      }
-
-      console.warn('No marker clusterer library found. Markers will render without clustering.');
-      // fallback: set map for markers
-      markers.forEach(m=>m.setMap(map));
+      let html = '<div style="max-width:300px;font-size:13px">';
+      Object.keys(props).forEach(k => {
+        html += '<div><strong>' + escapeHtml(k) + ':</strong> ' + escapeHtml(props[k]) + '</div>';
+      });
+      html += '</div>';
+      return html;
     }
 
-    function createMarkersFromGeo(geo){ clearAllMarkers(); const markers=[]; const bounds=new google.maps.LatLngBounds(); geo.features.forEach(f=>{ if(!f.geometry) return; if(f.geometry.type!=='Point') return; const coords=f.geometry.coordinates; if(!Array.isArray(coords)||coords.length<2) return; const lng=Number(coords[0]); const lat=Number(coords[1]); if(!isFinite(lat)||!isFinite(lng)) return; const props=normalizeProperties(f.properties||{}); const marker=new google.maps.Marker({ position:{lat,lng}, title: props.Nama_Infrastruktur||'', optimized:true }); marker.addListener('click', ()=>{ infoWindow.setContent(buildInfoHtml(props)); infoWindow.open(map, marker); }); markers.push({ marker, props }); bounds.extend(marker.getPosition()); }); allMarkers = markers; const simpleMarkers = allMarkers.map(m=>m.marker); createCluster(simpleMarkers); if(!bounds.isEmpty()) map.fitBounds(bounds); return simpleMarkers.length; }
-
-    function applyFilter(){ hideError(); const sector=document.getElementById('sectorFilter').value; const year=document.getElementById('yearFilter').value; currentFilter.sector=sector; currentFilter.year=year; if(allMarkers.length===0){ updateFilterInfo(0); return; } let visibleCount=0; allMarkers.forEach(({marker, props})=>{ const matchesSector = !sector || (props.Sektor && String(props.Sektor).trim()===sector); const matchesYear = !year || (props.Tahun_Pembangunan && String(props.Tahun_Pembangunan).trim()===year); if(matchesSector && matchesYear){ marker.setMap(map); visibleCount++; } else { marker.setMap(null); } }); const visibleMarkers = allMarkers.filter(m=>m.marker.getMap()).map(m=>m.marker); createCluster(visibleMarkers); updateFilterInfo(visibleCount); if(visibleCount>0){ const b=new google.maps.LatLngBounds(); visibleMarkers.forEach(m=>b.extend(m.getPosition())); if(!b.isEmpty()) map.fitBounds(b); } }
-
-    function resetFilter(){ document.getElementById('sectorFilter').value=''; document.getElementById('yearFilter').value=''; currentFilter.sector=''; currentFilter.year=''; allMarkers.forEach(m=>m.marker.setMap(map)); createCluster(allMarkers.map(m=>m.marker)); updateFilterInfo(allMarkers.length); const b=new google.maps.LatLngBounds(); allMarkers.forEach(m=>b.extend(m.marker.getPosition())); if(!b.isEmpty()) map.fitBounds(b); }
-
-    // Populate filters from geoData
-    function populateFilters(geo){ uniqueSectors.clear(); uniqueYears.clear(); geo.features.forEach(f=>{ const p=normalizeProperties(f.properties||{}); if(p.Sektor && String(p.Sektor).trim()) uniqueSectors.add(String(p.Sektor).trim()); if(p.Tahun_Pembangunan && String(p.Tahun_Pembangunan).trim() && !isNaN(String(p.Tahun_Pembangunan).trim())) uniqueYears.add(String(p.Tahun_Pembangunan).trim()); }); const sectorSelect=document.getElementById('sectorFilter'); sectorSelect.innerHTML='<option value="">Semua Sektor</option>'+Array.from(uniqueSectors).sort().map(s=>'<option value="'+escapeHtml(s)+'">'+escapeHtml(s)+'</option>').join(''); const yearSelect=document.getElementById('yearFilter'); yearSelect.innerHTML='<option value="">Semua Tahun</option>'+Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option value="'+escapeHtml(y)+'">'+escapeHtml(y)+'</option>').join(''); updateFilterInfo(allMarkers.length); }
-
-    // Try multiple paths for GeoJSON. Useful for GitHub Pages path differences.
-    async function tryFetchPaths(paths){
-      for(const p of paths){
-        try{
-          const r = await fetch(p);
-          if(r.ok){ return await r.json(); }
-          console.warn('fetch',p,'status',r.status);
-        }catch(e){ console.warn('fetch error',p,e); }
-      }
-      throw new Error('Gagal memuat GeoJSON dari semua path yang dicoba. Periksa lokasi file.');
-    }
-
-    async function loadGeoJSON(url){ showLoading(); hideError(); try{
-      const candidatePaths = [url, './'+url, window.location.origin + '/' + url];
-      const geo = await tryFetchPaths(candidatePaths);
-      geoData = geo; const count = createMarkersFromGeo(geo); populateFilters(geo); updateFilterInfo(count);
-    }catch(err){ showError(err.message); console.error(err); }finally{ hideLoading(); } }
-
-    // Initialize maps via Loader
-    async function initApp(){
-      const loader = new Loader({ apiKey: 'AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0', version: 'weekly' });
-      try{
-        await loader.load();
-      }catch(err){ showError('Gagal memuat Google Maps API. Periksa API key.'); console.error(err); return; }
-
-      // Now Google Maps loaded
-      map = new google.maps.Map(document.getElementById('map'), { center:{lat:-3.3,lng:129.1}, zoom:7, mapTypeControl:false, streetViewControl:false });
+    function initMap(){
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -3.7, lng: 128.2 },
+        zoom: 7,
+        streetViewControl: false,
+      });
       infoWindow = new google.maps.InfoWindow();
-
-      // Wire UI
-      document.getElementById('applyBtn').addEventListener('click', ()=>applyFilter());
-      document.getElementById('resetBtn').addEventListener('click', ()=>resetFilter());
-      document.getElementById('filterToggle').addEventListener('click', ()=>{ document.getElementById('filterSection').classList.toggle('open'); });
-
-      // Load GeoJSON
       loadGeoJSON('DATA_SPASIAL.geojson');
     }
 
-    // Start app
-    initApp();
-
-    // Expose for debug
-    window.loadGeoJSON = loadGeoJSON; window.createCluster = createCluster;
+    function loadGeoJSON(url){
+      fetch(url)
+        .then(r => r.json())
+        .then(geo => {
+          const bounds = new google.maps.LatLngBounds();
+          geo.features.forEach(f => {
+            if(!f.geometry) return;
+            const [lng, lat] = f.geometry.coordinates;
+            if(!isFinite(lat) || !isFinite(lng)) return;
+            const props = f.properties || {};
+            const marker = new google.maps.Marker({
+              position: { lat, lng },
+              map: map,
+              title: props.Nama_Infrastruktur || props.nama || props.Name || ''
+            });
+            marker.addListener('click', () => {
+              infoWindow.setContent(buildInfoHtml(props));
+              infoWindow.open(map, marker);
+            });
+            bounds.extend({ lat, lng });
+          });
+          if(!bounds.isEmpty()) map.fitBounds(bounds);
+        })
+        .catch(err => console.error('Gagal memuat GeoJSON:', err));
+    }
   </script>
+
+  <!-- Load Google Maps API -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap"></script>
 </body>
 </html>
