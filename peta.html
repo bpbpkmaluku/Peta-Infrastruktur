@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Peta Infrastruktur - MalukuInfraZone</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#071024;--muted:#a7b6c8;--accent:#3b82f6}
+    html,body{height:100%;margin:0;font-family:Poppins,system-ui,Segoe UI,Roboto,Arial;
+      background:linear-gradient(180deg,var(--bg),#05060a);color:#fff}
+    .wrap{max-width:1100px;margin:20px auto;padding:20px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .title{font-weight:700}
+    .btn{display:inline-block;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700;cursor:pointer}
+    .btn-back{background:rgba(255,255,255,0.04);color:#e6eef7;border:1px solid rgba(255,255,255,0.08)}
+    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .select-wrap{position:relative;display:inline-block}
+    .select{
+      background:#ffffff;       /* putih solid */
+      color:#021129;            /* teks gelap */
+      padding:8px 12px;
+      border-radius:8px;
+      border:1px solid #3b82f6; /* border biru */
+      min-width:160px;
+      font-weight:600;
+      appearance:none;
+    }
+    .select-wrap::after{
+      content:"";position:absolute;right:10px;top:50%;transform:translateY(-50%);
+      width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;
+      border-top:8px solid #021129;pointer-events:none
+    }
+    select::-ms-expand{display:none}
+    #map{width:100%;height:72vh;border-radius:12px;background:#0b1220;
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);margin-top:14px}
+    .status{margin-top:8px;color:var(--muted);font-size:13px}
+    .legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px;
+      padding:10px 12px;background:rgba(0,0,0,0.45);border-radius:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.45)}
+    .legend-item{display:flex;align-items:center;gap:8px;padding:6px 8px;
+      background:rgba(255,255,255,0.02);border-radius:8px;font-size:14px;color:#e6eef7}
+    .legend-item img{width:28px;height:28px;object-fit:contain;
+      filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4))}
+    @media (max-width:720px){#map{height:60vh}.controls{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="title">Peta Infrastruktur — MalukuInfraZone</div>
+        <div style="font-size:13px;color:var(--muted)">BPBPK Maluku</div>
+      </div>
+      <div class="controls">
+        <a href="homepage.html" class="btn btn-back">Kembali</a>
+      </div>
+    </header>
+
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <label style="font-size:13px;color:var(--muted)">Sektor</label>
+      <div class="select-wrap"><select id="sectorFilter" class="select"></select></div>
+
+      <label style="font-size:13px;color:var(--muted)">Wilayah</label>
+      <div class="select-wrap"><select id="regionFilter" class="select"></select></div>
+
+      <label style="font-size:13px;color:var(--muted)">Tahun</label>
+      <div class="select-wrap"><select id="yearFilter" class="select"></select></div>
+
+      <button id="applyBtn" class="btn" style="background:var(--accent);color:#021129">Terapkan</button>
+      <button id="resetBtn" class="btn btn-back">Reset</button>
+    </div>
+
+    <div id="map" role="application" aria-label="Peta Infrastruktur"></div>
+    <div id="status" class="status">Menunggu pemuatan peta...</div>
+
+    <div class="legend" role="region" aria-label="Legend Sektor">
+      <div class="legend-item"><img src="images/icon-air.png" alt=""><span>Air Minum</span></div>
+      <div class="legend-item"><img src="images/icon-sanitasi.png" alt=""><span>Sanitasi</span></div>
+      <div class="legend-item"><img src="images/icon-bina.png" alt=""><span>Bina Penataan Bangunan</span></div>
+      <div class="legend-item"><img src="images/icon-kawasan.png" alt=""><span>Pengembangan Kawasan Strategis</span></div>
+    </div>
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap" async defer></script>
+
+  <script>
+    const RAW_GEOJSON = "https://raw.githubusercontent.com/devamarkina/peta/main/DATA_SPASIAL.geojson";
+    const ADMIN_PROV_URL = "data/maluku_prov.geojson";
+    const ADMIN_KAB_URL  = "data/maluku_kabkota.geojson";
+
+    const iconMap = {
+      "Air Minum":"images/icon-air.png",
+      "Sanitasi":"images/icon-sanitasi.png",
+      "Bina Penataan Bangunan":"images/icon-bina.png",
+      "Pengembangan Kawasan Strategis":"images/icon-kawasan.png",
+      "default":"images/icon-default.png"
+    };
+
+    let map, infoWindow, allMarkers=[], geoData=null;
+    const uniqueSectors=new Set(), uniqueYears=new Set(), uniqueRegions=new Set();
+
+    function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+    function setStatus(t){document.getElementById("status").textContent=t||"";}
+
+    function normalizeRegion(s){
+      if(!s) return "";
+      s=String(s).normalize("NFKC").replace(/\u00A0/g," ").trim().replace(/\s+/g," ");
+      s=s.replace(/^kab(?:\.|upaten)?\s*/i,"Kab. ");
+      s=s.replace(/^kota\s*/i,"Kota ");
+      s=s.replace(/^prov(?:\.|insi)?\s*/i,"Prov. ");
+      s=s.replace(/^maluku\s*tengah$/i,"Kab. Maluku Tengah");
+      s=s.replace(/^kota\s+ambon$/i,"Kota Ambon");
+      s=s.replace(/^kota\s+tual$/i,"Kota Tual");
+      return s.split(" ").map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(" ");
+    }
+
+    function normalizeProperties(props){
+      const out={};
+      Object.keys(props||{}).forEach(k=>{
+        const v=props[k], lower=String(k).toLowerCase().replace(/\s+/g,"_");
+        out[k]=v;
+        if(["sektor","sector"].includes(lower)) out.Sektor=v;
+        if(["tahun","tahun_pembangunan","year"].includes(lower)) out.Tahun_Pembangunan=v;
+        if(["nama","nama_infrastruktur","name"].includes(lower)) out.Nama_Infrastruktur=v;
+        if(["status","status_keberfungsian","kondisi"].includes(lower)) out.Status_Keberfungsian=v;
+        if(["lokasi","location"].includes(lower)) out.Lokasi=v;
+        if(["wilayah","wadmkk","namobj","kabupaten","kota"].includes(lower)) out.Wilayah=v;
+      });
+      out.Wilayah=normalizeRegion(out.Wilayah||"");
+      return out;
+    }
+
+    function buildInfoHtml(p){
+      let html='<div style="max-width:320px;font-size:13px;color:#021129;background:#fff;padding:8px;border-radius:6px">';
+      if(p.Nama_Infrastruktur) html+='<strong>'+escapeHtml(p.Nama_Infrastruktur)+'</strong><br>';
+      if(p.Sektor) html+='Sektor: '+escapeHtml(p.Sektor)+'<br>';
+      if(p.Lokasi) html+='Lokasi: '+escapeHtml(p.Lokasi)+'<br>';
+      if(p.Wilayah) html+='Wilayah: '+escapeHtml(p.Wilayah)+'<br>';
+      if(p.Tahun_Pembangunan) html+='Tahun Bangun: '+escapeHtml(p.Tahun_Pembangunan)+'<br>';
+      if(p.Status_Keberfungsian) html+='Status: '+escapeHtml(p.Status_Keberfungsian)+'<br>';
+      html+='</div>';return html;
+    }
+
+    function clearMarkers(){allMarkers.forEach(x=>x.marker.setMap(null));allMarkers=[];}
+
+    function createMarkersFromGeo(geo){
+      clearMarkers(); if(!geo||!Array.isArray(geo.features)) return 0;
+      const bounds=new google.maps.LatLngBounds();
+      geo.features.forEach(f=>{
+        if(!f.geometry||f.geometry.type!=="Point") return;
+        const c=f.geometry.coordinates; if(!Array.isArray(c)||c.length<2) return;
+        const lng=Number(c[0]), lat=Number(c[1]); if(!isFinite(lat)||!isFinite(lng)) return;
+        const props=normalizeProperties(f.properties||{});
+        const sectorName=props.Sektor?String(props.Sektor).trim():"default";
+        const iconUrl=iconMap[sectorName]||iconMap["default"];
+        const marker=new google.maps.Marker({
+          position:{lat,lng},map,
+          title:props.Nama_Infrastruktur||props.Nama||"",
+          icon:{url:iconUrl,scaledSize:new google.maps.Size(36,36)}
+        });
+        marker.addListener("click",()=>{
+          const targetZoom=14;
+          map.panTo(marker.getPosition());
+          const currentZoom=map.getZoom();
+          if(currentZoom<targetZoom){
+            setTimeout(()=>map.setZoom(targetZoom),250);
+            setTimeout(()=>{infoWindow.setContent(buildInfoHtml(props));infoWindow.open(map,marker);},500);
+          }else{
+            infoWindow.setContent(buildInfoHtml(props));infoWindow.open(map,marker);
+          }
+        });
+        allMarkers.push({marker,props}); bounds.extend(marker.getPosition());
+      });
+      if(!bounds.isEmpty()) map.fitBounds(bounds);
+      return allMarkers.length;
+    }
+
+    function populateFilters(geo){
+      uniqueSectors.clear();uniqueYears.clear();uniqueRegions.clear();
+      if(!geo||!Array.isArray(geo.features)) return;
+      geo.features.forEach(f=>{
+        const p=normalizeProperties(f.properties||{});
+        if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
+        if(p.Tahun_Pembangunan&&!isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
+        if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
+      });
+      document.getElementById("sectorFilter").innerHTML='<option value="">Semua</option>'+Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join("");
+      document.getElementById("yearFilter").innerHTML='<option value="">Semua</option>'+Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join("");
+      document.getElementById("regionFilter").innerHTML='<option value="">Semua</option>'+Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join("");
+    }
+
+    function applyFilter(){
+      const sector=document.getElementById("sectorFilter").value.trim();
+      const year=document.getElementById("yearFilter").value.trim();
+      const region=document.getElementById("regionFilter").value.trim();
+      let visible=0;
+      allMarkers.forEach(({marker,props})=>{
+        const mSector=props.Sektor?String(props.Sektor).trim():"";
+        const mYear=props.Tahun_Pembangunan?String(props.Tahun_Pembangunan).trim():"";
+        const mRegion=props.Wilayah?String(props.Wilayah).trim():"";
+        const match=!sector||mSector===sector; const matchY=!year||mYear===year; const matchR=!region||mRegion===region;
+        if(match&&matchY&&matchR){marker.setMap(map);visible++;} else marker.setMap(null);
+      });
+      setStatus("Menampilkan "+visible+" titik.");
+      if(visible>0){const b=new google.maps.LatLngBounds();allMarkers.filter(m=>m.marker.getMap()).forEach(m=>b.extend(m.marker.getPosition()));if(!b.isEmpty()) map.fitBounds(b);}
+    }
+
+    function resetFilter(){
+      document.getElementById("sectorFilter").value="";
+      document.getElementById("yearFilter").value="";
+      document.getElementById("regionFilter").value="";
+      allMarkers.forEach(x=>x.marker.setMap(map));
+      setStatus("Menampilkan "+allMarkers.length+" titik.");
+      const b=new google.maps.LatLngBounds();allMarkers.forEach(x=>b.extend(x.marker.getPosition()));if(!b.isEmpty()) map.fitBounds(b);
+    }
+
+    async function loadGeoJSON(url){setStatus("Memuat: "+url);const r=await fetch(url);if(!r.ok) throw new Error("HTTP "+r.status);return await r.json();}
+
+    function refreshAdminStyle(){
+      map.data.setStyle(f=>{
+        const maybe=(f.getProperty? (String(f.getProperty("provinsi")||"")+String(f.getProperty("LEVEL")||"")+String(f.getProperty("NAME")||"")+String(f.getProperty("NAMOBJ")||"")):"").toLowerCase();
+        if(maybe.includes("prov")||maybe.includes("maluku")) return {strokeWeight:2.8,strokeColor:"#FFD166",strokeOpacity:.95,fillColor:"#FFD166",fillOpacity:.02};
+        return {strokeWeight:1.4,strokeColor:"#2EC4B6",strokeOpacity:.9,fillColor:"#2EC4B6",fillOpacity:.01};
+      });
+    }
+
+    function attachAdminInteractions(){
+      map.data.addListener("mouseover",e=>{map.data.revertStyle();map.data.overrideStyle(e.feature,{strokeWeight:3.6,strokeOpacity:1,fillOpacity:.04});});
+      map.data.addListener("mouseout",()=>map.data.revertStyle());
+      map.data.addListener("click",e=>{
+        const props=e.feature.getProperties();const name=props.NAMOBJ||props.WADMKK||props.NAME||props.NAMA||"Wilayah";
+        const content='<div style="padding:8px;background:#fff;color:#021129;border-radius:6px"><strong>'+escapeHtml(name)+'</strong></div>';
+        infoWindow.setContent(content);infoWindow.setPosition(e.latLng);infoWindow.open(map);
+      });
+    }
+
+    async function initMap(){
+      map=new google.maps.Map(document.getElementById("map"),{center:{lat:-3.3,lng:129.1},zoom:7,mapTypeControl:false,streetViewControl:false});
+      infoWindow=new google.maps.InfoWindow({maxWidth:320});
+      document.getElementById("applyBtn").addEventListener("click",applyFilter);
+      document.getElementById("resetBtn").addEventListener("click",resetFilter);
+
+      try{const geoMarkers=await loadGeoJSON(RAW_GEOJSON);geoData=geoMarkers;createMarkersFromGeo(geoMarkers);populateFilters(geoMarkers);resetFilter();}catch(e){setStatus("Gagal muat DATA_SPASIAL.geojson");}
+      try{map.data.addGeoJson(await loadGeoJSON(ADMIN_KAB_URL));}catch(e){}
+      try{map.data.addGeoJson(await loadGeoJSON(ADMIN_PROV_URL));}catch(e){}
+      refreshAdminStyle();attachAdminInteractions();
+    }
+    window.initMap=initMap;
+  </script>
+</body>
+</html>
