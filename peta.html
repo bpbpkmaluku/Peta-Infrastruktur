@@ -10,7 +10,7 @@
     :root{--bg:#071024;--muted:#a7b6c8;--accent:#3b82f6}
     html,body{height:100%;margin:0;font-family:Poppins,system-ui,Segoe UI,Roboto,Arial;
       background:linear-gradient(180deg,var(--bg),#05060a);color:#fff}
-    .wrap{max-width:1100px;margin:20px auto;padding:20px}
+    .wrap{max-width:1400px;margin:20px auto;padding:20px}
     header{display:flex;justify-content:space-between;align-items:center;gap:12px}
     .title{font-weight:700}
     .btn{display:inline-block;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700;cursor:pointer}
@@ -18,11 +18,11 @@
     .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     .select-wrap{position:relative;display:inline-block}
     .select{
-      background:#ffffff;       /* putih solid */
-      color:#021129;            /* teks gelap */
+      background:#ffffff;
+      color:#021129;
       padding:8px 12px;
       border-radius:8px;
-      border:1px solid #3b82f6; /* border biru */
+      border:1px solid #3b82f6;
       min-width:160px;
       font-weight:600;
       appearance:none;
@@ -33,17 +33,62 @@
       border-top:8px solid #021129;pointer-events:none
     }
     select::-ms-expand{display:none}
-    #map{width:100%;height:72vh;border-radius:12px;background:#0b1220;
+    #map{width:100%;height:78vh;border-radius:12px;background:#0b1220;
       box-shadow:0 10px 30px rgba(0,0,0,0.6);margin-top:14px}
     .status{margin-top:8px;color:var(--muted);font-size:13px}
     .legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:12px;
       padding:10px 12px;background:rgba(0,0,0,0.45);border-radius:10px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.45)}
+      box-shadow:0 6px 18px rgba(0,0,0,0.45);z-index:9999;position:relative}
     .legend-item{display:flex;align-items:center;gap:8px;padding:6px 8px;
       background:rgba(255,255,255,0.02);border-radius:8px;font-size:14px;color:#e6eef7}
     .legend-item img{width:28px;height:28px;object-fit:contain;
       filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4))}
-    @media (max-width:720px){#map{height:60vh}.controls{flex-direction:column;align-items:flex-start}}
+
+    /* Reset InfoWindow */
+    .gm-style .gm-style-iw { padding: 0 !important; max-width: 320px !important; }
+    .gm-style .gm-style-iw > div { padding: 0 !important; }
+    .gm-style .gm-style-iw-d { padding: 0 !important; }
+    .gm-style .gm-style-iw + div { display: none !important; }
+
+    .custom-iw {
+      font-size:13px;
+      color:#021129;
+      background:#fff;
+      padding:8px;
+      border-radius:6px;
+      margin:0;
+      line-height:1.3;
+      max-width:320px;
+    }
+    .custom-iw > div { margin:0; padding:0; }
+
+    /* HERO */
+    .site-hero{background:#f3f4f6;color:#021129;padding:48px 20px;border-radius:12px;margin-top:18px;box-shadow:0 8px 20px rgba(0,0,0,0.25)}
+    .hero-inner{max-width:980px;margin:0 auto;text-align:center;padding:8px 16px}
+    .hero-logo{font-weight:800;font-size:28px;margin-bottom:6px;color:#021129}
+    .hero-title{font-weight:600;font-size:28px;line-height:1.3;margin:6px 0;color:#021129;font-family:Poppins,system-ui}
+    .hero-sub{color:#475569;font-size:15px;margin:10px 0 0}
+
+    /* FOOTER */
+    .site-footer{background:#050505;color:#d1d5db;padding:44px 20px;margin-top:20px;border-radius:8px}
+    .footer-inner{max-width:1400px;margin:0 auto;display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+    .footer-brand{flex:1;min-width:220px}
+    .footer-brand .logo{font-weight:800;font-size:22px;color:#fff}
+    .footer-col{flex:1;min-width:200px;color:#9ca3af;font-size:14px}
+    .footer-col h4{color:#fff;font-weight:600;margin-bottom:10px}
+    .footer-links{display:flex;flex-direction:column;gap:8px}
+    .footer-note{margin-top:18px;color:#9ca3af;font-size:13px}
+
+    /* Tombol kembali ke atas */
+    .goto-top{position:fixed;right:18px;bottom:48px;width:44px;height:44px;border-radius:22px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
+    .goto-top small{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:#e5e7eb}
+
+    @media (max-width:900px){
+      .hero-title{font-size:22px}
+      .footer-inner{flex-direction:column;gap:16px}
+      #map{height:60vh}
+      .controls{flex-direction:column;align-items:flex-start}
+    }
   </style>
 </head>
 <body>
@@ -58,6 +103,16 @@
       </div>
     </header>
 
+    <!-- HERO -->
+    <section id="site-hero" class="site-hero">
+      <div class="hero-inner">
+        <div class="hero-logo">BalaiConnect.</div>
+        <h1 class="hero-title">Menjadi wujud nyata komitmen Balai Penataan Bangunan, Prasarana, dan Kawasan Jawa Timur</h1>
+        <p class="hero-sub">Memberikan pelayanan prima, cepat, profesional kepada masyarakat dan mitra kerja.</p>
+      </div>
+    </section>
+
+    <!-- Filter -->
     <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <label style="font-size:13px;color:var(--muted)">Sektor</label>
       <div class="select-wrap"><select id="sectorFilter" class="select"></select></div>
@@ -83,9 +138,51 @@
     </div>
   </div>
 
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo">BalaiConnect.</div>
+        <div style="font-family: 'Poppins', cursive;color:#9ca3af;margin-top:8px">bpbpkjatim</div>
+        <div class="footer-note">© 2025 Balai Penataan Bangunan, Prasarana dan Kawasan Jawa Timur. All Rights Reserved.</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Indonesia</h4>
+        <div>Jl. Raya Menganti Wiyung, Wiyung, Kec. Wiyung, Surabaya, Jawa Timur 60228</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Follow us on</h4>
+        <div class="footer-links">
+          <a href="#" aria-label="Instagram">Instagram</a>
+          <a href="#" aria-label="Youtube">Youtube</a>
+          <a href="#" aria-label="Website">Website</a>
+          <a href="#" aria-label="Tiktok">Tiktok</a>
+          <a href="#" aria-label="Thread">Thread</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="goto-top" id="gotoTop" title="Kembali ke atas">
+    <span style="font-size:18px">↑</span>
+  </div>
+
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap" async defer></script>
 
   <script>
+    // Tombol kembali ke atas
+    const goto = document.getElementById('gotoTop');
+    goto.addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+    window.addEventListener('scroll', ()=> {
+      if(window.scrollY > 200) goto.style.display = 'flex'; else goto.style.display = 'none';
+    });
+    goto.style.display = 'none';
+  </script>
+
+  <script>
+    // Data sources
     const RAW_GEOJSON = "https://raw.githubusercontent.com/bpbpkmaluku/Peta-Infrastruktur/main/data/DATA_SPASIAL.geojson";
     const ADMIN_PROV_URL = "data/maluku_prov.geojson";
     const ADMIN_KAB_URL  = "data/maluku_kabkota.geojson";
@@ -98,156 +195,199 @@
       "default":"images/icon-default.png"
     };
 
-    let map, infoWindow, allMarkers=[], geoData=null;
-    const uniqueSectors=new Set(), uniqueYears=new Set(), uniqueRegions=new Set();
+    let map, infoWindow, allMarkers = [], geoData = null;
+    const uniqueSectors = new Set(), uniqueYears = new Set(), uniqueRegions = new Set();
 
-    function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
-    function setStatus(t){document.getElementById("status").textContent=t||"";}
+    function escapeHtml(s){
+      return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+    }
+
+    function setStatus(t){ document.getElementById('status').textContent = t || ''; }
 
     function normalizeRegion(s){
-      if(!s) return "";
-      s=String(s).normalize("NFKC").replace(/\u00A0/g," ").trim().replace(/\s+/g," ");
-      s=s.replace(/^kab(?:\.|upaten)?\s*/i,"Kab. ");
-      s=s.replace(/^kota\s*/i,"Kota ");
-      s=s.replace(/^prov(?:\.|insi)?\s*/i,"Prov. ");
-      s=s.replace(/^maluku\s*tengah$/i,"Kab. Maluku Tengah");
-      s=s.replace(/^kota\s+ambon$/i,"Kota Ambon");
-      s=s.replace(/^kota\s+tual$/i,"Kota Tual");
-      return s.split(" ").map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(" ");
+      if(!s) return '';
+      s = String(s).normalize('NFKC').replace(/\u00A0/g,' ').trim().replace(/\s+/g,' ');
+      s = s.replace(/^kab(?:\.|upaten)?\s*/i,'Kab. ');
+      s = s.replace(/^kota\s*/i,'Kota ');
+      s = s.replace(/^prov(?:\.|insi)?\s*/i,'Prov. ');
+      s = s.replace(/^maluku\s*tengah$/i,'Kab. Maluku Tengah');
+      s = s.replace(/^kota\s+ambon$/i,'Kota Ambon');
+      s = s.replace(/^kota\s+tual$/i,'Kota Tual');
+      return s.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
     }
 
     function normalizeProperties(props){
-      const out={};
+      const out = {};
       Object.keys(props||{}).forEach(k=>{
-        const v=props[k], lower=String(k).toLowerCase().replace(/\s+/g,"_");
-        out[k]=v;
-        if(["sektor","sector"].includes(lower)) out.Sektor=v;
-        if(["tahun","tahun_pembangunan","year"].includes(lower)) out.Tahun_Pembangunan=v;
-        if(["nama","nama_infrastruktur","name"].includes(lower)) out.Nama_Infrastruktur=v;
-        if(["status","status_keberfungsian","kondisi"].includes(lower)) out.Status_Keberfungsian=v;
-        if(["lokasi","location"].includes(lower)) out.Lokasi=v;
-        if(["wilayah","wadmkk","namobj","kabupaten","kota"].includes(lower)) out.Wilayah=v;
+        const v = props[k];
+        const lower = String(k).toLowerCase().replace(/\s+/g,'_');
+        out[k] = v;
+        if(['sektor','sector'].includes(lower)) out.Sektor = v;
+        if(['tahun','tahun_pembangunan','year'].includes(lower)) out.Tahun_Pembangunan = v;
+        if(['nama','nama_infrastruktur','name'].includes(lower)) out.Nama_Infrastruktur = v;
+        if(['status','status_keberfungsian','kondisi'].includes(lower)) out.Status_Keberfungsian = v;
+        if(['lokasi','location'].includes(lower)) out.Lokasi = v;
+        if(['wilayah','wadmkk','namobj','kabupaten','kota'].includes(lower)) out.Wilayah = v;
       });
-      out.Wilayah=normalizeRegion(out.Wilayah||"");
+      out.Wilayah = normalizeRegion(out.Wilayah || '');
       return out;
     }
 
     function buildInfoHtml(p){
-      let html='<div style="max-width:320px;font-size:13px;color:#021129;background:#fff;padding:8px;border-radius:6px">';
-      if(p.Nama_Infrastruktur) html+='<strong>'+escapeHtml(p.Nama_Infrastruktur)+'</strong><br>';
-      if(p.Sektor) html+='Sektor: '+escapeHtml(p.Sektor)+'<br>';
-      if(p.Lokasi) html+='Lokasi: '+escapeHtml(p.Lokasi)+'<br>';
-      if(p.Wilayah) html+='Wilayah: '+escapeHtml(p.Wilayah)+'<br>';
-      if(p.Tahun_Pembangunan) html+='Tahun Bangun: '+escapeHtml(p.Tahun_Pembangunan)+'<br>';
-      if(p.Status_Keberfungsian) html+='Status: '+escapeHtml(p.Status_Keberfungsian)+'<br>';
-      html+='</div>';return html;
+      let html = '<div class="custom-iw">';
+      if(p.Nama_Infrastruktur) html += '<div><strong>'+escapeHtml(p.Nama_Infrastruktur)+'</strong></div>';
+      if(p.Sektor) html += '<div>Sektor: '+escapeHtml(p.Sektor)+'</div>';
+      if(p.Lokasi) html += '<div>Lokasi: '+escapeHtml(p.Lokasi)+'</div>';
+      if(p.Wilayah) html += '<div>Wilayah: '+escapeHtml(p.Wilayah)+'</div>';
+      if(p.Tahun_Pembangunan) html += '<div>Tahun Bangun: '+escapeHtml(p.Tahun_Pembangunan)+'</div>';
+      if(p.Status_Keberfungsian) html += '<div>Status: '+escapeHtml(p.Status_Keberfungsian)+'</div>';
+      html += '</div>';
+      return html;
     }
 
-    function clearMarkers(){allMarkers.forEach(x=>x.marker.setMap(null));allMarkers=[];}
+    function clearMarkers(){
+      allMarkers.forEach(x=>x.marker.setMap(null));
+      allMarkers = [];
+    }
 
     function createMarkersFromGeo(geo){
-      clearMarkers(); if(!geo||!Array.isArray(geo.features)) return 0;
-      const bounds=new google.maps.LatLngBounds();
+      clearMarkers();
+      if(!geo || !Array.isArray(geo.features)) return 0;
+      const bounds = new google.maps.LatLngBounds();
       geo.features.forEach(f=>{
-        if(!f.geometry||f.geometry.type!=="Point") return;
-        const c=f.geometry.coordinates; if(!Array.isArray(c)||c.length<2) return;
-        const lng=Number(c[0]), lat=Number(c[1]); if(!isFinite(lat)||!isFinite(lng)) return;
-        const props=normalizeProperties(f.properties||{});
-        const sectorName=props.Sektor?String(props.Sektor).trim():"default";
-        const iconUrl=iconMap[sectorName]||iconMap["default"];
-        const marker=new google.maps.Marker({
-          position:{lat,lng},map,
-          title:props.Nama_Infrastruktur||props.Nama||"",
-          icon:{url:iconUrl,scaledSize:new google.maps.Size(36,36)}
+        if(!f.geometry || f.geometry.type !== 'Point') return;
+        const c = f.geometry.coordinates;
+        if(!Array.isArray(c) || c.length < 2) return;
+        const lng = Number(c[0]), lat = Number(c[1]);
+        if(!isFinite(lat) || !isFinite(lng)) return;
+        const props = normalizeProperties(f.properties || {});
+        const sectorName = props.Sektor ? String(props.Sektor).trim() : 'default';
+        const iconUrl = iconMap[sectorName] || iconMap['default'];
+        const marker = new google.maps.Marker({
+          position: {lat, lng},
+          map,
+          title: props.Nama_Infrastruktur || props.Nama || '',
+          icon: { url: iconUrl, scaledSize: new google.maps.Size(36,36) }
         });
-        marker.addListener("click",()=>{
-          const targetZoom=14;
+        marker.addListener('click', ()=>{
+          const targetZoom = 14;
           map.panTo(marker.getPosition());
-          const currentZoom=map.getZoom();
-          if(currentZoom<targetZoom){
-            setTimeout(()=>map.setZoom(targetZoom),250);
-            setTimeout(()=>{infoWindow.setContent(buildInfoHtml(props));infoWindow.open(map,marker);},500);
-          }else{
-            infoWindow.setContent(buildInfoHtml(props));infoWindow.open(map,marker);
+          const currentZoom = map.getZoom();
+          if(currentZoom < targetZoom){
+            setTimeout(()=> map.setZoom(targetZoom), 250);
+            setTimeout(()=> { infoWindow.setContent(buildInfoHtml(props)); infoWindow.open(map, marker); }, 500);
+          } else {
+            infoWindow.setContent(buildInfoHtml(props)); infoWindow.open(map, marker);
           }
         });
-        allMarkers.push({marker,props}); bounds.extend(marker.getPosition());
+        allMarkers.push({marker, props});
+        bounds.extend(marker.getPosition());
       });
       if(!bounds.isEmpty()) map.fitBounds(bounds);
       return allMarkers.length;
     }
 
     function populateFilters(geo){
-      uniqueSectors.clear();uniqueYears.clear();uniqueRegions.clear();
-      if(!geo||!Array.isArray(geo.features)) return;
+      uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
+      if(!geo || !Array.isArray(geo.features)) return;
       geo.features.forEach(f=>{
-        const p=normalizeProperties(f.properties||{});
+        const p = normalizeProperties(f.properties || {});
         if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
-        if(p.Tahun_Pembangunan&&!isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
+        if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangungan || p.Tahun_Pembangunan).trim());
         if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
       });
-      document.getElementById("sectorFilter").innerHTML='<option value="">Semua</option>'+Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join("");
-      document.getElementById("yearFilter").innerHTML='<option value="">Semua</option>'+Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join("");
-      document.getElementById("regionFilter").innerHTML='<option value="">Semua</option>'+Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join("");
+      document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+      document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
+      document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
     }
 
     function applyFilter(){
-      const sector=document.getElementById("sectorFilter").value.trim();
-      const year=document.getElementById("yearFilter").value.trim();
-      const region=document.getElementById("regionFilter").value.trim();
-      let visible=0;
-      allMarkers.forEach(({marker,props})=>{
-        const mSector=props.Sektor?String(props.Sektor).trim():"";
-        const mYear=props.Tahun_Pembangunan?String(props.Tahun_Pembangunan).trim():"";
-        const mRegion=props.Wilayah?String(props.Wilayah).trim():"";
-        const match=!sector||mSector===sector; const matchY=!year||mYear===year; const matchR=!region||mRegion===region;
-        if(match&&matchY&&matchR){marker.setMap(map);visible++;} else marker.setMap(null);
+      const sector = document.getElementById('sectorFilter').value.trim();
+      const year = document.getElementById('yearFilter').value.trim();
+      const region = document.getElementById('regionFilter').value.trim();
+      let visible = 0;
+      allMarkers.forEach(({marker, props})=>{
+        const mSector = props.Sektor ? String(props.Sektor).trim() : '';
+        const mYear = props.Tahun_Pembangunan ? String(props.Tahun_Pembangunan).trim() : '';
+        const mRegion = props.Wilayah ? String(props.Wilayah).trim() : '';
+        const match = !sector || mSector === sector;
+        const matchY = !year || mYear === year;
+        const matchR = !region || mRegion === region;
+        if(match && matchY && matchR){ marker.setMap(map); visible++; } else { marker.setMap(null); }
       });
-      setStatus("Menampilkan "+visible+" titik.");
-      if(visible>0){const b=new google.maps.LatLngBounds();allMarkers.filter(m=>m.marker.getMap()).forEach(m=>b.extend(m.marker.getPosition()));if(!b.isEmpty()) map.fitBounds(b);}
+      setStatus('Menampilkan ' + visible + ' titik.');
+      if(visible > 0){
+        const b = new google.maps.LatLngBounds();
+        allMarkers.filter(m=>m.marker.getMap()).forEach(m=>b.extend(m.marker.getPosition()));
+        if(!b.isEmpty()) map.fitBounds(b);
+      }
     }
 
     function resetFilter(){
-      document.getElementById("sectorFilter").value="";
-      document.getElementById("yearFilter").value="";
-      document.getElementById("regionFilter").value="";
+      document.getElementById('sectorFilter').value = '';
+      document.getElementById('yearFilter').value = '';
+      document.getElementById('regionFilter').value = '';
       allMarkers.forEach(x=>x.marker.setMap(map));
-      setStatus("Menampilkan "+allMarkers.length+" titik.");
-      const b=new google.maps.LatLngBounds();allMarkers.forEach(x=>b.extend(x.marker.getPosition()));if(!b.isEmpty()) map.fitBounds(b);
+      setStatus('Menampilkan ' + allMarkers.length + ' titik.');
+      const b = new google.maps.LatLngBounds();
+      allMarkers.forEach(x=>b.extend(x.marker.getPosition()));
+      if(!b.isEmpty()) map.fitBounds(b);
     }
 
-    async function loadGeoJSON(url){setStatus("Memuat: "+url);const r=await fetch(url);if(!r.ok) throw new Error("HTTP "+r.status);return await r.json();}
+    async function loadGeoJSON(url){
+      setStatus('Memuat: ' + url);
+      const r = await fetch(url);
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return await r.json();
+    }
 
     function refreshAdminStyle(){
       map.data.setStyle(f=>{
-        const maybe=(f.getProperty? (String(f.getProperty("provinsi")||"")+String(f.getProperty("LEVEL")||"")+String(f.getProperty("NAME")||"")+String(f.getProperty("NAMOBJ")||"")):"").toLowerCase();
-        if(maybe.includes("prov")||maybe.includes("maluku")) return {strokeWeight:2.8,strokeColor:"#FFD166",strokeOpacity:.95,fillColor:"#FFD166",fillOpacity:.02};
-        return {strokeWeight:1.4,strokeColor:"#2EC4B6",strokeOpacity:.9,fillColor:"#2EC4B6",fillOpacity:.01};
+        const maybe = (f.getProperty ? (String(f.getProperty('provinsi')||'') + String(f.getProperty('LEVEL')||'') + String(f.getProperty('NAME')||'') + String(f.getProperty('NAMOBJ')||'')) : '').toLowerCase();
+        if(maybe.includes('prov') || maybe.includes('maluku')) return {strokeWeight:2.8, strokeColor:'#FFD166', strokeOpacity:.95, fillColor:'#FFD166', fillOpacity:.02};
+        return {strokeWeight:1.4, strokeColor:'#2EC4B6', strokeOpacity:.9, fillColor:'#2EC4B6', fillOpacity:.01};
       });
     }
 
     function attachAdminInteractions(){
-      map.data.addListener("mouseover",e=>{map.data.revertStyle();map.data.overrideStyle(e.feature,{strokeWeight:3.6,strokeOpacity:1,fillOpacity:.04});});
-      map.data.addListener("mouseout",()=>map.data.revertStyle());
-      map.data.addListener("click",e=>{
-        const props=e.feature.getProperties();const name=props.NAMOBJ||props.WADMKK||props.NAME||props.NAMA||"Wilayah";
-        const content='<div style="padding:8px;background:#fff;color:#021129;border-radius:6px"><strong>'+escapeHtml(name)+'</strong></div>';
-        infoWindow.setContent(content);infoWindow.setPosition(e.latLng);infoWindow.open(map);
+      map.data.addListener('mouseover', e => { map.data.revertStyle(); map.data.overrideStyle(e.feature, { strokeWeight:3.6, strokeOpacity:1, fillOpacity:.04 }); });
+      map.data.addListener('mouseout', ()=> map.data.revertStyle());
+      map.data.addListener('click', e => {
+        const props = e.feature.getProperties();
+        const name = props.NAMOBJ || props.WADMKK || props.NAME || props.NAMA || 'Wilayah';
+        const content = '<div class="custom-iw"><div><strong>' + escapeHtml(name) + '</strong></div></div>';
+        infoWindow.setContent(content);
+        infoWindow.setPosition(e.latLng);
+        infoWindow.open(map);
       });
     }
 
     async function initMap(){
-      map=new google.maps.Map(document.getElementById("map"),{center:{lat:-3.3,lng:129.1},zoom:7,mapTypeControl:false,streetViewControl:false});
-      infoWindow=new google.maps.InfoWindow({maxWidth:320});
-      document.getElementById("applyBtn").addEventListener("click",applyFilter);
-      document.getElementById("resetBtn").addEventListener("click",resetFilter);
+      map = new google.maps.Map(document.getElementById('map'), { center:{lat:-3.3,lng:129.1}, zoom:7, mapTypeControl:false, streetViewControl:false });
+      infoWindow = new google.maps.InfoWindow({ maxWidth:320, pixelOffset: new google.maps.Size(0, -25) });
 
-      try{const geoMarkers=await loadGeoJSON(RAW_GEOJSON);geoData=geoMarkers;createMarkersFromGeo(geoMarkers);populateFilters(geoMarkers);resetFilter();}catch(e){setStatus("Gagal muat DATA_SPASIAL.geojson");}
-      try{map.data.addGeoJson(await loadGeoJSON(ADMIN_KAB_URL));}catch(e){}
-      try{map.data.addGeoJson(await loadGeoJSON(ADMIN_PROV_URL));}catch(e){}
-      refreshAdminStyle();attachAdminInteractions();
+      document.getElementById('applyBtn').addEventListener('click', applyFilter);
+      document.getElementById('resetBtn').addEventListener('click', resetFilter);
+
+      try {
+        const geoMarkers = await loadGeoJSON(RAW_GEOJSON);
+        geoData = geoMarkers;
+        createMarkersFromGeo(geoMarkers);
+        populateFilters(geoMarkers);
+        resetFilter();
+      } catch(e){
+        console.error(e);
+        setStatus('Gagal muat DATA_SPASIAL.geojson');
+      }
+
+      try{ map.data.addGeoJson(await loadGeoJSON(ADMIN_KAB_URL)); } catch(e){ /* ignore */ }
+      try{ map.data.addGeoJson(await loadGeoJSON(ADMIN_PROV_URL)); } catch(e){ /* ignore */ }
+
+      refreshAdminStyle();
+      attachAdminInteractions();
     }
-    window.initMap=initMap;
+
+    window.initMap = initMap;
   </script>
 </body>
 </html>
