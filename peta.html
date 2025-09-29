@@ -4,22 +4,46 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Peta Infrastruktur - MalukuInfraZone</title>
-  <link rel="icon" type="image/png" href="images/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/logo-pu.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800&family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
   <style>
-    :root{--bg:#071024;--muted:#a7b6c8;--accent:#3b82f6}
-    html,body{height:100%;margin:0;font-family:Poppins,system-ui,Segoe UI,Roboto,Arial;
-      background:linear-gradient(180deg,var(--bg),#05060a);color:#fff}
+    :root {
+      --bg:#071024;
+      --muted:#a7b6c8;
+      --accent:#3b82f6;
+      --font-poppins:'Poppins',sans-serif;
+      --font-montserrat:'Montserrat',sans-serif;
+      --font-raleway:'Raleway',sans-serif;
+    }
+
+    html,body{
+      height:100%;margin:0;
+      font-family:var(--font-poppins);
+      background:linear-gradient(180deg,var(--bg),#05060a);
+      color:#fff;
+    }
+
     .wrap{max-width:1400px;margin:20px auto;padding:20px;text-align:center}
     header{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left}
-    .title{font-weight:700}
+    .title{
+      font-weight:800;
+      font-family:var(--font-raleway); /* pakai Raleway untuk judul */
+      font-size:20px;
+    }
+
     .btn{display:inline-block;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700;cursor:pointer}
     .btn-back{background:rgba(255,255,255,0.04);color:#e6eef7;border:1px solid rgba(255,255,255,0.08)}
+
     .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     .select-wrap{position:relative;display:inline-block}
     .select{
-      background:#ffffff;color:#021129;padding:8px 12px;border-radius:8px;
-      border:1px solid #3b82f6;min-width:160px;font-weight:600;appearance:none;
+      background:#fff;color:#021129;padding:8px 12px;border-radius:8px;
+      border:1px solid var(--accent);min-width:160px;font-weight:600;appearance:none;
     }
     .select-wrap::after{
       content:"";position:absolute;right:10px;top:50%;transform:translateY(-50%);
@@ -28,126 +52,62 @@
     }
     select::-ms-expand{display:none}
 
-    /* MAP */
     #map{width:100%;height:85vh;border-radius:12px;background:#0b1220;
       box-shadow:0 10px 30px rgba(0,0,0,0.6);margin-top:14px;display:block}
     .status{margin-top:8px;color:var(--muted);font-size:13px}
 
-    /* LEGEND */
     .legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:12px;
       padding:10px 12px;background:rgba(0,0,0,0.45);border-radius:10px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.45);z-index:9999;position:relative}
+      box-shadow:0 6px 18px rgba(0,0,0,0.45)}
     .legend-item{display:flex;align-items:center;gap:8px;padding:6px 8px;
       background:rgba(255,255,255,0.02);border-radius:8px;font-size:14px;color:#e6eef7}
     .legend-item img{width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4))}
 
-    /* InfoWindow overrides - remove extra top space and ensure left align */
-    /* InfoWindow: jangan sembunyikan wrapper. Atur ulang styling close button. */
-.gm-style .gm-style-iw {
-  padding: 0 !important;
-  margin: 0 !important;
-  max-width: 320px !important;
-  box-shadow: none !important;
-}
-.gm-style .gm-style-iw > div,
-.gm-style .gm-style-iw-d,
-.gm-style .gm-style-iw-c {
-  padding: 0 !important;
-  margin: 0 !important;
-}
+    /* InfoWindow */
+    .gm-style .gm-style-iw,
+    .gm-style .gm-style-iw-d,
+    .gm-style .gm-style-iw-c {
+      padding:0!important;margin:0!important;max-width:320px!important;
+    }
+    .gm-ui-hover-effect{
+      width:22px!important;height:22px!important;top:6px!important;right:6px!important;
+      border-radius:6px!important;background:rgba(0,0,0,0.06)!important;
+      display:flex!important;align-items:center!important;justify-content:center!important;
+    }
+    .gm-ui-hover-effect > span,
+    .gm-ui-hover-effect img,
+    .gm-ui-hover-effect svg {
+      width:12px!important;height:12px!important;transform:none!important;
+    }
+    .custom-iw{
+      font-size:13px;color:#021129;background:#fff;padding:8px;border-radius:6px;
+      max-width:320px;text-align:left;line-height:1.4;
+    }
 
-/* Stilize close button: ukuran kecil, posisi rapat ke pojok, tanpa distortion */
-.gm-ui-hover-effect {
-  width: 22px !important;
-  height: 22px !important;
-  top: 6px !important;
-  right: 6px !important;
-  border-radius: 6px !important;
-  background: rgba(0,0,0,0.06) !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
-  overflow: hidden !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* Jika icon berada dalam span/svg, reset transform/scale */
-.gm-ui-hover-effect > span,
-.gm-ui-hover-effect svg,
-.gm-ui-hover-effect img {
-  width: 12px !important;
-  height: 12px !important;
-  transform: none !important;
-  display: block !important;
-  margin: 0 !important;
-  line-height: 1 !important;
-}
-
-/* Konten info tetap rapat dan rata kiri */
-.custom-iw {
-  font-size:13px;
-  color:#021129;
-  background:#fff;
-  padding:8px;
-  border-radius:6px;
-  max-width:320px;
-  text-align:left;
-  line-height:1.4;
-}
-.custom-iw > div { margin:0; padding:0; }
-
-    /* Hero bawah (tanpa background) */
+    /* Hero bawah */
     .site-hero{margin-top:28px;text-align:center}
-    .hero-logo{font-weight:800;font-size:28px;color:#fff}
-    .hero-title{font-weight:600;font-size:24px;line-height:1.3;margin:8px 0;color:#fff}
-    .hero-sub{color:#a7b6c8;font-size:15px;margin-top:6px}
+    .hero-logo{font-weight:800;font-size:28px;color:#fff;font-family:var(--font-raleway);}
+    .hero-title{font-weight:600;font-size:24px;line-height:1.3;margin:8px 0;color:#fff;font-family:var(--font-montserrat);}
+    .hero-sub{color:var(--muted);font-size:15px;margin-top:6px}
 
-/* Footer: center everything */
-.site-footer{
-  background:#050505;
-  color:#d1d5db;
-  padding:36px 20px;
-  margin-top:20px;
-  border-radius:8px;
-  text-align:center;
-}
-.footer-inner{
-  max-width:1200px;
-  margin:0 auto;
-  display:flex;
-  gap:40px;
-  justify-content:center;    /* center columns horizontally */
-  align-items:flex-start;
-  flex-wrap:wrap;
-  text-align:center;         /* center text inside each column */
-}
+    /* Footer */
+    .site-footer{background:#050505;color:#d1d5db;padding:36px 20px;margin-top:20px;border-radius:8px;text-align:center}
+    .footer-inner{max-width:1100px;margin:0 auto;display:flex;gap:40px;justify-content:center;align-items:flex-start;flex-wrap:wrap;text-align:center}
+    .footer-brand,.footer-col{flex:1 1 280px;min-width:220px}
+    .footer-brand .logo{font-weight:800;font-size:28px;color:#fff;margin-bottom:6px;font-family:var(--font-raleway);}
+    .footer-note{color:#9ca3af;font-size:14px;line-height:1.6}
+    .footer-col h4{color:#fff;font-weight:700;margin-bottom:12px;font-size:16px}
+    .footer-links{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none;align-items:center}
+    .footer-links a{color:#9ca3af;text-decoration:none;font-size:15px;line-height:1.6}
+    .footer-links a:hover{color:#fff}
 
-/* Make columns responsive and balanced */
-.footer-brand,
-.footer-col{
-  flex:1 1 300px;
-  min-width:220px;
-}
-
-/* Brand tweaks */
-.footer-brand .logo{ font-weight:800; font-size:28px; color:#fff; margin-bottom:6px; }
-.footer-brand .tag{ color:#9ca3af; margin:6px 0 12px; }
-.footer-note{ color:#9ca3af; font-size:14px; line-height:1.6; }
-
-/* Column titles and links */
-.footer-col h4{ color:#fff; font-weight:700; margin-bottom:12px; font-size:16px; }
-.footer-links{ display:flex; flex-direction:column; gap:8px; margin:0; padding:0; list-style:none; align-items:center; }
-.footer-links a{ color:#9ca3af; text-decoration:none; font-size:15px; line-height:1.6; transition:color .12s; }
-.footer-links a:hover{ color:#fff; }
-
-/* Mobile: keep columns stacked and centered */
-@media (max-width:900px){
-  .footer-inner{ gap:20px; justify-content:center; text-align:center; }
-  .footer-brand,.footer-col{ flex:1 1 100%; min-width:auto; }
-  .footer-brand .logo{ font-size:24px; }
-}
-
+    @media(max-width:900px){
+      #map{height:65vh}
+      .controls{flex-direction:column;align-items:flex-start}
+      .footer-inner{gap:20px;justify-content:center}
+      .footer-brand,.footer-col{flex:1 1 100%}
+      .hero-title{font-size:20px}
+    }
   </style>
 </head>
 <body>
@@ -157,12 +117,12 @@
         <div class="title">Peta Infrastruktur — MalukuInfraZone</div>
         <div style="font-size:13px;color:var(--muted)">BPBPK Maluku</div>
       </div>
-      <div class="controls" aria-hidden="false">
+      <div class="controls">
         <a href="index.html" class="btn btn-back">Kembali</a>
       </div>
     </header>
 
-    <!-- Filters (centered) -->
+    <!-- Filter -->
     <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
       <label style="font-size:13px;color:var(--muted)">Sektor</label>
       <div class="select-wrap"><select id="sectorFilter" class="select"></select></div>
@@ -178,7 +138,7 @@
     <div id="map" role="application" aria-label="Peta Infrastruktur"></div>
     <div id="status" class="status">Menunggu pemuatan peta...</div>
 
-    <!-- Legend centered -->
+    <!-- Legend -->
     <div class="legend" role="region" aria-label="Legend Sektor">
       <div class="legend-item"><img src="images/icon-air.png" alt=""><span>Air Minum</span></div>
       <div class="legend-item"><img src="images/icon-sanitasi.png" alt=""><span>Sanitasi</span></div>
@@ -186,54 +146,38 @@
       <div class="legend-item"><img src="images/icon-kawasan.png" alt=""><span>Pengembangan Kawasan Strategis</span></div>
     </div>
 
-    <!-- Hero bawah (tanpa background) -->
-    <section id="site-hero" class="site-hero" aria-label="Tentang MalukuInfraZone">
-      <div class="hero-logo">MalukuInfraZone</div>
-      <h1 class="hero-title">Balai Penataan Bangunan, Prasarana, dan Kawasan Maluku</h1>
+    <!-- Hero bawah -->
+    <section id="site-hero" class="site-hero">
+      <div class="hero-logo">BalaiConnect.</div>
+      <h1 class="hero-title">Menjadi wujud nyata komitmen Balai Penataan Bangunan, Prasarana, dan Kawasan Jawa Timur</h1>
+      <p class="hero-sub">Memberikan pelayanan prima, cepat, profesional kepada masyarakat dan mitra kerja.</p>
     </section>
   </div>
 
   <!-- Footer -->
-  <footer class="site-footer" role="contentinfo">
+  <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <div class="logo">MalukuInfraZone</div>
-        <div class="tag">BPBPK Maluku</div>
-        <div class="footer-note">
-          © 2025 Balai Penataan Bangunan, Prasarana dan Kawasan Maluku.
-          Semua hak dilindungi.
-        </div>
+        <div class="logo">BalaiConnect.</div>
+        <div class="footer-note">© 2025 Balai Penataan Bangunan, Prasarana dan Kawasan Jawa Timur. Semua hak dilindungi.</div>
       </div>
-
       <div class="footer-col">
         <h4>Indonesia</h4>
-        <div>Jl. D. I. Panjaitan, Uritetu, Kec. Sirimau</div>
-        <div>Kota Ambon, Maluku</div>
+        <div>Jl. Raya Menganti Wiyung, Wiyung, Kec. Wiyung</div>
+        <div>Surabaya, Jawa Timur 60228</div>
       </div>
-
       <div class="footer-col">
         <h4>Follow us</h4>
-        <nav aria-label="Sosial media">
-          <ul class="footer-links">
-           <li>
-  <a href="https://www.instagram.com/pu_ciptakarya_maluku"
-     target="_blank"
-     rel="noopener noreferrer"
-     aria-label="Instagram BPBPK Maluku"
-     style="display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none">
-    <img src="images/instagram.png"
-         alt=""
-         style="width:18px;height:18px;display:block;flex-shrink:0" />
-    <span>Instagram</span>
-  </a>
-</li>
-          </ul>
-        </nav>
+        <ul class="footer-links">
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Youtube</a></li>
+          <li><a href="#">Website</a></li>
+          <li><a href="#">Tiktok</a></li>
+          <li><a href="#">Thread</a></li>
+        </ul>
       </div>
     </div>
   </footer>
-
-  <div class="goto-top" id="gotoTop" title="Kembali ke atas"><span>↑</span></div>
 
   <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap" async defer></script>
