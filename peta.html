@@ -117,6 +117,8 @@
       <div class="select-wrap"><select id="regionFilter" class="select"></select></div>
       <label style="font-size:13px;color:var(--muted)">Tahun</label>
       <div class="select-wrap"><select id="yearFilter" class="select"></select></div>
+      <label style="font-size:13px;color:var(--muted)">Jenis Kegiatan</label>
+      <div class="select-wrap"><select id="jenisFilter" class="select"></select></div>
       <button id="applyBtn" class="btn" style="background:var(--accent);color:#021129">Terapkan</button>
       <button id="resetBtn" class="btn btn-back">Reset</button>
     </div>
@@ -126,9 +128,11 @@
     <div id="status" class="status">Menunggu pemuatan peta...</div>
 
     <!-- Legend -->
-    <div class="legend" role="region" aria-label="Legend Sektor">
-      <div class="legend-item"><img src="images/icon-air.png" alt=""><span>Air Minum</span></div>
-      <div class="legend-item"><img src="images/icon-sanitasi.png" alt=""><span>Sanitasi</span></div>
+    <div class="legend" role="region" aria-label="Legend Sektor" id="legendContainer">
+      <div class="legend-item"><img src="images/icon-air-reguler.png" alt=""><span>Air Minum - Reguler</span></div>
+      <div class="legend-item"><img src="images/icon-air-masyarakat.png" alt=""><span>Air Minum - Berbasis Masyarakat</span></div>
+      <div class="legend-item"><img src="images/icon-sanitasi-reguler.png" alt=""><span>Sanitasi - Reguler</span></div>
+      <div class="legend-item"><img src="images/icon-sanitasi-masyarakat.png" alt=""><span>Sanitasi - Berbasis Masyarakat</span></div>
       <div class="legend-item"><img src="images/icon-bina.png" alt=""><span>Bina Penataan Bangunan</span></div>
       <div class="legend-item"><img src="images/icon-kawasan.png" alt=""><span>Pengembangan Kawasan Strategis</span></div>
     </div>
@@ -180,17 +184,19 @@
   </script>
 
   <script>
-    /* Clean, corrected full map script */
+    /* Clean, corrected full map script with Jenis Kegiatan for Air Minum and Sanitasi */
     const RAW_GEOJSON = "https://raw.githubusercontent.com/bpbpkmaluku/Peta-Infrastruktur/main/data/DATA_SPASIAL.geojson";
     const ADMIN_PROV_URL = "data/maluku_prov.geojson";
     const ADMIN_KAB_URL  = "data/maluku_kabkota.geojson";
 
     const iconMap = {
-      "Air Minum":"images/icon-air.png",
-      "Sanitasi":"images/icon-sanitasi.png",
-      "Bina Penataan Bangunan":"images/icon-bina.png",
-      "Pengembangan Kawasan Strategis":"images/icon-kawasan.png",
-      "default":"images/icon-default.png"
+      "Air Minum|Reguler": "images/icon-air-reguler.png",
+      "Air Minum|Berbasis Masyarakat": "images/icon-air-masyarakat.png",
+      "Sanitasi|Reguler": "images/icon-sanitasi-reguler.png",
+      "Sanitasi|Berbasis Masyarakat": "images/icon-sanitasi-masyarakat.png",
+      "Bina Penataan Bangunan": "images/icon-bina.png",
+      "Pengembangan Kawasan Strategis": "images/icon-kawasan.png",
+      "default": "images/icon-default.png"
     };
 
     let map, infoWindow, allMarkers = [], geoData = null;
@@ -226,6 +232,7 @@
         if(['status','status_keberfungsian','kondisi'].includes(lower)) out.Status_Keberfungsian = v;
         if(['lokasi','location'].includes(lower)) out.Lokasi = v;
         if(['wilayah','wadmkk','namobj','kabupaten','kota'].includes(lower)) out.Wilayah = v;
+        if(['jenis_kegiatan','jenis','subkelas','sub_kelas'].includes(lower)) out.Jenis_Kegiatan = v;
       });
       out.Wilayah = normalizeRegion(out.Wilayah || '');
       return out;
@@ -235,6 +242,7 @@
       let html = '<div class="custom-iw">';
       if(p.Nama_Infrastruktur) html += '<div><strong>'+escapeHtml(p.Nama_Infrastruktur)+'</strong></div>';
       if(p.Sektor) html += '<div>Sektor: '+escapeHtml(p.Sektor)+'</div>';
+      if(p.Jenis_Kegiatan) html += '<div>Jenis Kegiatan: '+escapeHtml(p.Jenis_Kegiatan)+'</div>';
       if(p.Lokasi) html += '<div>Lokasi: '+escapeHtml(p.Lokasi)+'</div>';
       if(p.Wilayah) html += '<div>Wilayah: '+escapeHtml(p.Wilayah)+'</div>';
       if(p.Tahun_Pembangunan) html += '<div>Tahun Bangun: '+escapeHtml(p.Tahun_Pembangunan)+'</div>';
@@ -259,8 +267,16 @@
         const lng = Number(c[0]), lat = Number(c[1]);
         if(!isFinite(lat) || !isFinite(lng)) return;
         const props = normalizeProperties(f.properties || {});
-        const sectorName = props.Sektor ? String(props.Sektor).trim() : 'default';
-        const iconUrl = iconMap[sectorName] || iconMap['default'];
+        const sectorName = props.Sektor ? String(props.Sektor).trim() : '';
+        const jenis = props.Jenis_Kegiatan ? String(props.Jenis_Kegiatan).trim() : '';
+        // tentukan key ikon: hanya gunakan kombinasi untuk Air Minum dan Sanitasi
+        let iconUrl = iconMap['default'];
+        if(sectorName === 'Air Minum' || sectorName === 'Sanitasi'){
+          const key = sectorName + '|' + (jenis || 'Reguler');
+          iconUrl = iconMap[key] || iconMap[sectorName + '|Reguler'] || iconMap['default'];
+        } else {
+          iconUrl = iconMap[sectorName] || iconMap['default'];
+        }
         const marker = new google.maps.Marker({
           position: {lat, lng},
           map,
@@ -287,31 +303,38 @@
 
     function populateFilters(geo){
       uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
+      const uniqueJenis = new Set();
       if(!geo || !Array.isArray(geo.features)) return;
       geo.features.forEach(f=>{
         const p = normalizeProperties(f.properties || {});
         if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
         if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
         if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
+        // tambahkan jenis hanya untuk Air Minum dan Sanitasi
+        if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
       });
       document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
       document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
       document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
+      document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
     }
 
     function applyFilter(){
       const sector = document.getElementById('sectorFilter').value.trim();
       const year = document.getElementById('yearFilter').value.trim();
       const region = document.getElementById('regionFilter').value.trim();
+      const jenis = document.getElementById('jenisFilter').value.trim();
       let visible = 0;
       allMarkers.forEach(({marker, props})=>{
         const mSector = props.Sektor ? String(props.Sektor).trim() : '';
         const mYear = props.Tahun_Pembangunan ? String(props.Tahun_Pembangunan).trim() : '';
         const mRegion = props.Wilayah ? String(props.Wilayah).trim() : '';
+        const mJenis = props.Jenis_Kegiatan ? String(props.Jenis_Kegiatan).trim() : '';
         const match = !sector || mSector === sector;
         const matchY = !year || mYear === year;
         const matchR = !region || mRegion === region;
-        if(match && matchY && matchR){ marker.setMap(map); visible++; } else { marker.setMap(null); }
+        const matchJ = !jenis || mJenis === jenis;
+        if(match && matchY && matchR && matchJ){ marker.setMap(map); visible++; } else { marker.setMap(null); }
       });
       setStatus('Menampilkan ' + visible + ' titik.');
       if(visible > 0){
@@ -325,6 +348,7 @@
       document.getElementById('sectorFilter').value = '';
       document.getElementById('yearFilter').value = '';
       document.getElementById('regionFilter').value = '';
+      document.getElementById('jenisFilter').value = '';
       allMarkers.forEach(x=>x.marker.setMap(map));
       setStatus('Menampilkan ' + allMarkers.length + ' titik.');
       const b = new google.maps.LatLngBounds();
