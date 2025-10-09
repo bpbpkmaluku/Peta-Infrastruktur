@@ -297,18 +297,39 @@ function populateFilters(geo){
   console.log('STATUS_OPTIONS:', statusOptions.map(s=>'['+s+']'));
 }
 
-    function buildInfoHtml(p){
-      let html = '<div class="custom-iw">';
-      if(p.Nama_Infrastruktur) html += '<div><strong>'+escapeHtml(p.Nama_Infrastruktur)+'</strong></div>';
-      if(p.Sektor) html += '<div>Sektor: '+escapeHtml(p.Sektor)+'</div>';
-      if(p.Jenis_Kegiatan) html += '<div>Jenis Kegiatan: '+escapeHtml(p.Jenis_Kegiatan)+'</div>';
-      if(p.Lokasi) html += '<div>Lokasi: '+escapeHtml(p.Lokasi)+'</div>';
-      if(p.Wilayah) html += '<div>Wilayah: '+escapeHtml(p.Wilayah)+'</div>';
-      if(p.Tahun_Pembangunan) html += '<div>Tahun Bangun: '+escapeHtml(p.Tahun_Pembangunan)+'</div>';
-      if(p.Status_Keberfungsian) html += '<div>Status: '+escapeHtml(p.Status_Keberfungsian)+'</div>';
-      html += '</div>';
-      return html;
-    }
+function buildInfoHtml(p){
+function getProp(names){
+for(let i=0;i<names.length;i++){
+const name = names[i]
+if(p[name] !== undefined && p[name] !== null && String(p[name]).trim() !== '') return p[name]
+}
+for(const k in p){
+for(let i=0;i<names.length;i++){
+if(k.toLowerCase() === names[i].toLowerCase() && p[k] !== undefined && String(p[k]).trim() !== '') return p[k]
+}
+}
+return ''
+}
+
+const nama = getProp(['Nama_Infrastruktur','Nama Infrastruktur','nama','name'])
+const sektor = getProp(['Sektor','sektor','sector'])
+const jenis = getProp(['Jenis_Kegiatan','Jenis Kegiatan','jenis','sub_kelas','subkelas'])
+const lokasi = getProp(['Lokasi','lokasi','Location','alamat','address'])
+const wilayah = getProp(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota'])
+const tahun = getProp(['Tahun_Pembangunan','Tahun Bangun','tahun'])
+const status = getProp(['Status_Keberfungsian','Status Keberfungsian','status','kondisi'])
+
+let html = '<div class="custom-iw">'
+if(nama) html += '<div><strong>'+escapeHtml(String(nama))+'</strong></div>'
+if(sektor) html += '<div>Sektor: '+escapeHtml(String(sektor))+'</div>'
+if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(String(jenis))+'</div>'
+if(lokasi) html += '<div>Lokasi: '+escapeHtml(String(lokasi))+'</div>'
+if(wilayah) html += '<div>Wilayah: '+escapeHtml(String(wilayah))+'</div>'
+if(tahun) html += '<div>Tahun Bangun: '+escapeHtml(String(tahun))+'</div>'
+if(status) html += '<div>Status: '+escapeHtml(String(status))+'</div>'
+html += '</div>'
+return html
+}
 
     function clearMarkers(){
       allMarkers.forEach(x=>x.marker.setMap(null));
