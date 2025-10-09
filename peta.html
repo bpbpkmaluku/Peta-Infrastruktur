@@ -253,27 +253,37 @@
 }
 
 function populateFilters(geo){
-  uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
-  const uniqueJenis = new Set();
-  const uniqueStatusRaw = new Set();
-  if(!geo || !Array.isArray(geo.features)) return;
+uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
+const uniqueJenis = new Set();
+const uniqueStatus = new Set();
+if(!geo || !Array.isArray(geo.features)) return;
+geo.features.forEach(f=>{
+const p = normalizeProperties(f.properties || {});
+if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
+if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
+if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
+if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
+if(p.Status_Keberfungsian) uniqueStatus.add(String(p.Status_Keberfungsian).trim());
+});
 
-  geo.features.forEach(f=>{
-    // tangkap asli sebelum normalisasi untuk diagnosis
-    const rawVal = (f.properties && (f.properties['Status Keberfungsian'] || f.properties.Status || f.properties.status || f.properties['status_keberfungsian'])) || '';
-    const rawClean = String(rawVal).normalize('NFKC').replace(/\u00A0/g,' ').trim();
-    uniqueStatusRaw.add(rawClean);
+document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
+document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
+document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
 
-    const p = normalizeProperties(f.properties || {});
-    if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
-    if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
-    if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
-    if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
-    if(p.Status_Keberfungsian) {
-      // gunakan nilai hasil normalisasi
-      uniqueStatusRaw.add(String(p.Status_Keberfungsian).trim());
-    }
-  });
+const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi','Tidak Diketahui'];
+const statusSet = new Set(Array.from(uniqueStatus).map(s=>String(s||'').trim()).filter(Boolean));
+ordered.forEach(s=>statusSet.add(s));
+const statusOptions = Array.from(statusSet).sort((a,b)=>{
+const ia = ordered.indexOf(a), ib = ordered.indexOf(b);
+if(ia!==-1 && ib!==-1) return ia-ib;
+if(ia!==-1) return -1;
+if(ib!==-1) return 1;
+return a.localeCompare(b);
+});
+document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+console.log('STATUS_OPTIONS:', statusOptions.map(s=>'['+s+']'));
+}
 
   document.getElementById('sectorFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
   document.getElementById('yearFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
