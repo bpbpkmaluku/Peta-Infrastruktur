@@ -152,76 +152,96 @@
       return s.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
     }
 
-    function normalizeProperties(props){
-      const out = {}; if(!props) return out;
-      Object.keys(props).forEach(k=>{ out[k] = props[k]; });
+   function normalizeProperties(props){
+  const out = {};
+  if(!props) return out;
 
-      function getVal(names){
-        for(const n of names){
-          if(props[n] !== undefined && props[n] !== null && String(props[n]).trim() !== '') return String(props[n]).trim();
-        }
-        for(const key in props){
-          const lk = key.toLowerCase().replace(/\s+/g,'_');
-          for(const n of names){
-            if(lk === n.toLowerCase().replace(/\s+/g,'_') && props[key] !== undefined && String(props[key]).trim() !== '') return String(props[key]).trim();
-          }
-        }
-        return '';
+  // salin mentah
+  Object.keys(props).forEach(k => { out[k] = props[k]; });
+
+  function normal(v){
+    if(v === null || v === undefined) return '';
+    const s = String(v).trim();
+    if(s === '' ) return '';
+    const low = s.toLowerCase();
+    if(low === 'null' || low === 'undefined' || low === '-' ) return '';
+    return s;
+  }
+
+  function getVal(names){
+    // cek nama exact first
+    for(const n of names){
+      if(props[n] !== undefined && props[n] !== null){
+        const v = normal(props[n]);
+        if(v) return v;
       }
-
-      out.Sektor = getVal(['Sektor','sektor','sector']);
-      out.Nama_Infrastruktur = getVal(['Nama Infrastruktur','nama_infrastruktur','nama','name']);
-      out.Jenis_Kegiatan = getVal(['Jenis Kegiatan','jenis_kegiatan','jenis','sub_kelas','subkelas']);
-      out.Lokasi = getVal(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']);
-      out.Wilayah = getVal(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']);
-      out.Tahun_Pembangunan = getVal(['Tahun Pembangunan','tahun_bangun','tahun']);
-      out.Status_Keberfungsian = getVal(['Status Keberfungsian','status_keberfungsian','status','kondisi']);
-
-      out.Wilayah = normalizeRegion(out.Wilayah || '');
-
-      const raw = (out.Status_Keberfungsian || '').normalize('NFKC').replace(/\u00A0/g,' ').trim();
-      const s = raw.toLowerCase();
-      if(/^(berfungsi|baik|operasional)$/.test(s)) out.Status_Keberfungsian = 'Berfungsi';
-      else if(/^(belum\s*berfungsi|belum|perencanaan|rencana|planned|prepared)$/.test(s)) out.Status_Keberfungsian = 'Belum Berfungsi';
-      else if(/(tidak\s*berfungsi|tidakberfungsi|tidak\s*berfungi|tidak\s*diketahui|rusak|mati|off|non[\-\s]?operasional)/.test(s)) out.Status_Keberfungsian = 'Tidak Berfungsi';
-      else if(/(tidak\s*diketahui|unknown)/.test(s)) out.Status_Keberfungsian = 'Tidak Diketahui';
-      else out.Status_Keberfungsian = raw || '';
-      return out;
     }
-
-    function buildInfoHtml(p){
-      function find(names){
-        for(const n of names){
-          if(p[n] !== undefined && p[n] !== null && String(p[n]).trim() !== '') return p[n];
+    // cek case-insensitive / whitespace-insensitive keys
+    for(const key in props){
+      const lk = key.toLowerCase().replace(/\s+/g,'_');
+      for(const n of names){
+        if(lk === n.toLowerCase().replace(/\s+/g,'_')){
+          const v = normal(props[key]);
+          if(v) return v;
         }
-        for(const key in p){
-          const lk = key.toLowerCase().replace(/\s+/g,'_');
-          for(const n of names){
-            if(lk === n.toLowerCase().replace(/\s+/g,'_') && p[key] !== undefined && String(p[key]).trim() !== '') return p[key];
-          }
-        }
-        return '';
       }
-
-      const nama = String(find(['Nama_Infrastruktur','Nama Infrastruktur','nama','name']) || '').trim();
-      const sektor = String(find(['Sektor','sektor','sector']) || '').trim();
-      const jenis = String(find(['Jenis_Kegiatan','Jenis Kegiatan','jenis','sub_kelas','subkelas']) || '').trim();
-      const lokasi = String(find(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']) || '').trim();
-      const wilayah = String(find(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']) || '').trim();
-      const tahun = String(find(['Tahun_Pembangunan','Tahun Bangun','tahun_bangun','tahun']) || '').trim();
-      const status = String(find(['Status_Keberfungsian','Status Keberfungsian','status','kondisi']) || '').trim();
-
-      let html = '<div class="custom-iw">';
-      if(nama) html += '<div><strong>'+escapeHtml(nama)+'</strong></div>';
-      if(sektor) html += '<div>Sektor: '+escapeHtml(sektor)+'</div>';
-      if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(jenis)+'</div>';
-      if(lokasi) html += '<div>Lokasi: '+escapeHtml(lokasi)+'</div>';
-      if(wilayah) html += '<div>Wilayah: '+escapeHtml(wilayah)+'</div>';
-      if(tahun) html += '<div>Tahun Bangun: '+escapeHtml(tahun)+'</div>';
-      if(status) html += '<div>Status: '+escapeHtml(status)+'</div>';
-      html += '</div>';
-      return html;
     }
+    return '';
+  }
+
+  out.Sektor = getVal(['Sektor','sektor','sector']);
+  out.Nama_Infrastruktur = getVal(['Nama Infrastruktur','nama_infrastruktur','nama','name']);
+  out.Jenis_Kegiatan = getVal(['Jenis Kegiatan','jenis_kegiatan','jenis','sub_kelas','subkelas']);
+  out.Lokasi = getVal(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']);
+  out.Wilayah = getVal(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']);
+  out.Tahun_Pembangunan = getVal(['Tahun Pembangunan','tahun_bangun','tahun']);
+  out.Status_Keberfungsian = getVal(['Status Keberfungsian','status_keberfungsian','status','kondisi']);
+
+  // fallback: jika field normalized kosong, coba ambil beberapa kandidat mentah (untuk kasus nama kolom tak standar)
+  if(!out.Lokasi){
+    const alt = getVal(['Alamat','alamat_lengkap','address_detail','place']);
+    if(alt) out.Lokasi = alt;
+  }
+  if(!out.Wilayah){
+    const altw = getVal(['WADMK','WADMKK','NAMOBJ','nama_kab','kabupaten_kota','district']);
+    if(altw) out.Wilayah = altw;
+  }
+
+  out.Wilayah = normalizeRegion(out.Wilayah || '');
+
+  // normalisasi status sederhana
+  const raw = (out.Status_Keberfungsian || '').normalize('NFKC').replace(/\u00A0/g,' ').trim();
+  const s = raw.toLowerCase();
+  if(/^(berfungsi|baik|operasional)$/.test(s)) out.Status_Keberfungsian = 'Berfungsi';
+  else if(/^(belum\s*berfungsi|belum|perencanaan|rencana|planned|prepared)$/.test(s)) out.Status_Keberfungsian = 'Belum Berfungsi';
+  else if(/(tidak\s*berfungsi|tidakberfungsi|rusak|mati|off|non[\-\s]?operasional)/.test(s)) out.Status_Keberfungsian = 'Tidak Berfungsi';
+  else if(/(tidak\s*diketahui|unknown)/.test(s)) out.Status_Keberfungsian = 'Tidak Diketahui';
+  else out.Status_Keberfungsian = raw || '';
+
+  return out;
+}
+
+function buildInfoHtml(p){
+  // prefer nilai ter-normalisasi dari objek p
+  const nama = p.Nama_Infrastruktur || p.nama || p.name || '';
+  const sektor = p.Sektor || p.sektor || p.sector || '';
+  const jenis = p.Jenis_Kegiatan || p.jenis || p['Jenis Kegiatan'] || '';
+  const lokasi = p.Lokasi || p.Lokasi || p.alamat || p.address || '';
+  const wilayah = p.Wilayah || p.Wilayah || p.NAMOBJ || p.WADMKK || '';
+  const tahun = p.Tahun_Pembangunan || p.tahun || '';
+  const status = p.Status_Keberfungsian || p.status || '';
+
+  let html = '<div class="custom-iw">';
+  if(nama) html += '<div><strong>'+escapeHtml(String(nama))+'</strong></div>';
+  if(sektor) html += '<div>Sektor: '+escapeHtml(String(sektor))+'</div>';
+  if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(String(jenis))+'</div>';
+  if(lokasi) html += '<div>Lokasi: '+escapeHtml(String(lokasi))+'</div>';
+  if(wilayah) html += '<div>Wilayah: '+escapeHtml(String(wilayah))+'</div>';
+  if(tahun) html += '<div>Tahun Bangun: '+escapeHtml(String(tahun))+'</div>';
+  if(status) html += '<div>Status: '+escapeHtml(String(status))+'</div>';
+  html += '</div>';
+  return html;
+}
 
     function clearMarkers(){ allMarkers.forEach(x=>x.marker.setMap(null)); allMarkers = []; }
 
