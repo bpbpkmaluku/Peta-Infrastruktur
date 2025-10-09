@@ -311,28 +311,41 @@
       return allMarkers.length;
     }
 
-    function populateFilters(geo){
-      uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
-      const uniqueJenis = new Set();
-      const uniqueStatus = new Set();
-      if(!geo || !Array.isArray(geo.features)) return;
-      geo.features.forEach(f=>{
-        const p = normalizeProperties(f.properties || {});
-        if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
-        if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
-        if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
-        if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
-        if(p.Status_Keberfungsian) uniqueStatus.add(String(p.Status_Keberfungsian).trim());
-      });
-      document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-      document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
-      document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
-      document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
-      // status options order: Berfungsi, Belum Berfungsi, Tidak Berfungsi
-      const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi'];
-      const statusOptions = ordered.filter(s=>uniqueStatus.has(s)).concat(Array.from(uniqueStatus).filter(s=>!ordered.includes(s)).sort());
-      document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-    }
+function populateFilters(geo){
+uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
+const uniqueJenis = new Set();
+const uniqueStatus = new Set();
+if(!geo || !Array.isArray(geo.features)) return;
+geo.features.forEach(f=>{
+const p = normalizeProperties(f.properties || {});
+if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
+if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
+if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
+if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
+if(p.Status_Keberfungsian) uniqueStatus.add(String(p.Status_Keberfungsian).trim());
+});
+
+// debug: tampilkan status unik ke console dengan tanda kurung untuk deteksi spasi
+console.log('STATUS_UNIK:', Array.from(uniqueStatus).map(s=>'['+s+']'));
+
+document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
+document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
+document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
+
+// pastikan opsi utama selalu ada
+const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi'];
+const statusSet = new Set(Array.from(uniqueStatus).map(s=>s.trim()));
+ordered.forEach(s=>statusSet.add(s));
+const statusOptions = Array.from(statusSet).sort((a,b)=>{
+const ia = ordered.indexOf(a), ib = ordered.indexOf(b);
+if(ia!==-1 && ib!==-1) return ia-ib;
+if(ia!==-1) return -1;
+if(ib!==-1) return 1;
+return a.localeCompare(b);
+});
+document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+}
 
     function applyFilter(){
       const sector = document.getElementById('sectorFilter').value.trim();
