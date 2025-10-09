@@ -5,12 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Peta Infrastruktur - MalukuInfraZone</title>
   <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <!-- Fonts: Raleway + Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
   <style>
     :root{--bg:#071024;--muted:#a7b6c8;--accent:#3b82f6}
-    html,body{height:100%;margin:0;font-family:"Poppins",system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,var(--bg),#05060a);color:#fff}
+    html,body{
+      height:100%;margin:0;
+      font-family:"Poppins",system-ui,Segoe UI,Roboto,Arial;
+      background:linear-gradient(180deg,var(--bg),#05060a);
+      color:#fff;
+    }
+
     .wrap{max-width:1400px;margin:20px auto;padding:20px;text-align:center}
     header{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left}
     .title{font-weight:700;font-family:"Raleway",Poppins,system-ui,Segoe UI,Roboto,Arial}
@@ -18,21 +27,74 @@
     .btn-back{background:rgba(255,255,255,0.04);color:#e6eef7;border:1px solid rgba(255,255,255,0.08)}
     .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     .select-wrap{position:relative;display:inline-block}
-    .select{background:#ffffff;color:#021129;padding:8px 12px;border-radius:8px;border:1px solid var(--accent);min-width:160px;font-weight:600;appearance:none}
-    .select-wrap::after{content:"";position:absolute;right:10px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #021129;pointer-events:none}
+    .select{
+      background:#ffffff;color:#021129;padding:8px 12px;border-radius:8px;
+      border:1px solid var(--accent);min-width:160px;font-weight:600;appearance:none;
+    }
+    .select-wrap::after{
+      content:"";position:absolute;right:10px;top:50%;transform:translateY(-50%);
+      width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;
+      border-top:8px solid #021129;pointer-events:none
+    }
     select::-ms-expand{display:none}
-    #map{width:100%;height:85vh;border-radius:12px;background:#0b1220;box-shadow:0 10px 30px rgba(0,0,0,0.6);margin-top:14px;display:block}
+
+    /* MAP */
+    #map{width:100%;height:85vh;border-radius:12px;background:#0b1220;
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);margin-top:14px;display:block}
     .status{margin-top:8px;color:var(--muted);font-size:13px}
-    .legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:12px;padding:10px 12px;background:rgba(0,0,0,0.45);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.45);z-index:9999;position:relative}
-    .legend-item{display:flex;align-items:center;gap:8px;padding:6px 8px;background:rgba(255,255,255,0.02);border-radius:8px;font-size:14px;color:#e6eef7}
+
+    /* LEGEND */
+    .legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:12px;
+      padding:10px 12px;background:rgba(0,0,0,0.45);border-radius:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.45);z-index:9999;position:relative}
+    .legend-item{display:flex;align-items:center;gap:8px;padding:6px 8px;
+      background:rgba(255,255,255,0.02);border-radius:8px;font-size:14px;color:#e6eef7}
     .legend-item img{width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4))}
-    .gm-style .gm-style-iw{padding:0!important;margin:0!important;max-width:320px!important;box-shadow:none!important}
-    .custom-iw{font-size:13px;color:#021129;background:#fff;padding:8px;border-radius:6px;max-width:320px;text-align:left;line-height:1.4}
-    .custom-iw>div{margin:0;padding:0}
+
+    /* InfoWindow adjustments */
+    .gm-style .gm-style-iw { padding:0!important; margin:0!important; max-width:320px!important; box-shadow:none!important; }
+    .gm-style .gm-style-iw > div, .gm-style .gm-style-iw-d, .gm-style .gm-style-iw-c { padding:0!important; margin:0!important; }
+    .gm-ui-hover-effect{
+      width:22px!important;height:22px!important;top:6px!important;right:6px!important;
+      border-radius:6px!important;background:rgba(0,0,0,0.06)!important;
+      display:flex!important;align-items:center!important;justify-content:center!important;
+      border:1px solid rgba(0,0,0,0.08)!important;box-shadow:0 1px 2px rgba(0,0,0,0.05)!important;
+    }
+    .gm-ui-hover-effect > span, .gm-ui-hover-effect svg, .gm-ui-hover-effect img {
+      width:12px!important;height:12px!important;transform:none!important;display:block!important;margin:0!important;
+    }
+    .custom-iw{
+      font-size:13px;color:#021129;background:#fff;padding:8px;border-radius:6px;max-width:320px;text-align:left;line-height:1.4;
+    }
+    .custom-iw > div{margin:0;padding:0}
+
+    /* Hero below */
+    .site-hero{margin-top:28px;text-align:center}
+    .hero-logo{font-weight:800;font-size:28px;color:#fff;font-family:"Raleway",Poppins,system-ui}
+    .hero-title{font-weight:600;font-size:24px;line-height:1.3;margin:8px 0;color:#fff}
+    .hero-sub{color:var(--muted);font-size:15px;margin-top:6px}
+
+    /* Footer: centered */
     .site-footer{background:#050505;color:#d1d5db;padding:36px 20px;margin-top:20px;border-radius:8px;text-align:center}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;gap:40px;justify-content:center;align-items:flex-start;flex-wrap:wrap;text-align:center}
+    .footer-brand,.footer-col{flex:1 1 300px;min-width:220px}
+    .footer-brand .logo{font-weight:800;font-size:28px;color:#fff;margin-bottom:6px;font-family:"Raleway",Poppins}
+    .footer-note{color:#9ca3af;font-size:14px;line-height:1.6}
+    .footer-col h4{color:#fff;font-weight:700;margin-bottom:12px;font-size:16px}
+    .footer-links{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none;align-items:center}
+    .footer-links a{color:#9ca3af;text-decoration:none;font-size:15px;line-height:1.6}
+    .footer-links a:hover{color:#fff}
+
     .goto-top{position:fixed;right:20px;bottom:28px;width:44px;height:44px;border-radius:22px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
     .goto-top span{font-size:18px}
-    @media(max-width:900px){#map{height:65vh}.controls{flex-direction:column;align-items:flex-start}}
+
+    @media(max-width:900px){
+      #map{height:65vh}
+      .controls{flex-direction:column;align-items:flex-start}
+      .footer-inner{gap:20px;justify-content:center}
+      .footer-brand,.footer-col{flex:1 1 100%}
+      .hero-title{font-size:20px}
+    }
   </style>
 </head>
 <body>
@@ -47,79 +109,98 @@
       </div>
     </header>
 
+    <!-- Filters -->
     <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
       <label style="font-size:13px;color:var(--muted)">Sektor</label>
       <div class="select-wrap"><select id="sectorFilter" class="select"></select></div>
-
       <label style="font-size:13px;color:var(--muted)">Wilayah</label>
       <div class="select-wrap"><select id="regionFilter" class="select"></select></div>
-
       <label style="font-size:13px;color:var(--muted)">Tahun</label>
       <div class="select-wrap"><select id="yearFilter" class="select"></select></div>
-
-      <label style="font-size:13px;color:var(--muted)">Jenis Kegiatan</label>
-      <div class="select-wrap"><select id="jenisFilter" class="select"></select></div>
-
-      <label style="font-size:13px;color:var(--muted)">Status Keberfungsian</label>
-      <div class="select-wrap"><select id="statusFilter" class="select"></select></div>
-
       <button id="applyBtn" class="btn" style="background:var(--accent);color:#021129">Terapkan</button>
       <button id="resetBtn" class="btn btn-back">Reset</button>
     </div>
 
+    <!-- Map -->
     <div id="map" role="application" aria-label="Peta Infrastruktur"></div>
     <div id="status" class="status">Menunggu pemuatan peta...</div>
 
-    <div class="legend" role="region" aria-label="Legend Sektor" id="legendContainer">
-      <div class="legend-item"><img src="images/icon-air-reguler.png" alt=""><span>Air Minum - Reguler</span></div>
-      <div class="legend-item"><img src="images/icon-air-masyarakat.png" alt=""><span>Air Minum - Berbasis Masyarakat</span></div>
-      <div class="legend-item"><img src="images/icon-sanitasi-reguler.png" alt=""><span>Sanitasi - Reguler</span></div>
-      <div class="legend-item"><img src="images/icon-sanitasi-masyarakat.png" alt=""><span>Sanitasi - Berbasis Masyarakat</span></div>
+    <!-- Legend -->
+    <div class="legend" role="region" aria-label="Legend Sektor">
+      <div class="legend-item"><img src="images/icon-air.png" alt=""><span>Air Minum</span></div>
+      <div class="legend-item"><img src="images/icon-sanitasi.png" alt=""><span>Sanitasi</span></div>
       <div class="legend-item"><img src="images/icon-bina.png" alt=""><span>Bina Penataan Bangunan</span></div>
       <div class="legend-item"><img src="images/icon-kawasan.png" alt=""><span>Pengembangan Kawasan Strategis</span></div>
     </div>
-  </div>
 
+  <!-- Footer -->
   <footer class="site-footer" role="contentinfo">
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="logo">MalukuInfraZone</div>
         <div class="tag">BPBPK Maluku</div>
-        <div class="footer-note">© 2025 Balai Penataan Bangunan, Prasarana dan Kawasan Maluku. Semua hak dilindungi.</div>
+        <div class="footer-note">
+          © 2025 Balai Penataan Bangunan, Prasarana dan Kawasan Maluku. Semua hak dilindungi.
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Indonesia</h4>
+        <div>Jl. D. I. Panjaitan, Uritetu, Kec. Sirimau</div>
+        <div>Kota Ambon, Maluku</div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Follow us</h4>
+        <nav aria-label="Sosial media">
+          <ul class="footer-links">
+            <li>
+              <a href="https://www.instagram.com/pu_ciptakarya_maluku" target="_blank" rel="noopener noreferrer" aria-label="Instagram BPBPK Maluku" style="display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none">
+                <img src="images/instagram.png" alt="" style="width:18px;height:18px;display:block;flex-shrink:0" />
+                <span>Instagram</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </footer>
 
   <div class="goto-top" id="gotoTop" title="Kembali ke atas"><span>↑</span></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0&callback=initMap" async defer></script>
 
   <script>
-    // config
+    // goto top
+    const goto=document.getElementById('gotoTop');
+    goto.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+    window.addEventListener('scroll',()=>{ goto.style.display = window.scrollY>200 ? 'flex' : 'none'; });
+    goto.style.display='none';
+  </script>
+
+  <script>
+    /* Clean, corrected full map script */
     const RAW_GEOJSON = "https://raw.githubusercontent.com/bpbpkmaluku/Peta-Infrastruktur/main/data/DATA_SPASIAL.geojson";
     const ADMIN_PROV_URL = "data/maluku_prov.geojson";
     const ADMIN_KAB_URL  = "data/maluku_kabkota.geojson";
+
     const iconMap = {
-      "Air Minum|Reguler": "images/icon-air-reguler.png",
-      "Air Minum|Berbasis Masyarakat": "images/icon-air-masyarakat.png",
-      "Sanitasi|Reguler": "images/icon-sanitasi-reguler.png",
-      "Sanitasi|Berbasis Masyarakat": "images/icon-sanitasi-masyarakat.png",
-      "Bina Penataan Bangunan": "images/icon-bina.png",
-      "Pengembangan Kawasan Strategis": "images/icon-kawasan.png",
-      "default": "images/icon-default.png"
+      "Air Minum":"images/icon-air.png",
+      "Sanitasi":"images/icon-sanitasi.png",
+      "Bina Penataan Bangunan":"images/icon-bina.png",
+      "Pengembangan Kawasan Strategis":"images/icon-kawasan.png",
+      "default":"images/icon-default.png"
     };
 
-    // state
     let map, infoWindow, allMarkers = [], geoData = null;
     const uniqueSectors = new Set(), uniqueYears = new Set(), uniqueRegions = new Set();
 
-    // helpers
-    function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
-    function setStatus(t){ document.getElementById('status').textContent = t || ''; }
-
-    function normalizeKey(k){
-      return String(k||'').trim().toLowerCase().replace(/\s+/g,'_').replace(/[^\w]/g,'');
+    function escapeHtml(s){
+      return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
     }
+
+    function setStatus(t){ document.getElementById('status').textContent = t || ''; }
 
     function normalizeRegion(s){
       if(!s) return '';
@@ -133,151 +214,59 @@
       return s.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
     }
 
-    function cleanVal(v){
-      if(v === null || v === undefined) return '';
-      const s = String(v).trim();
-      if(!s) return '';
-      const low = s.toLowerCase();
-      if(['null','undefined','-','n/a','na','none'].includes(low)) return '';
-      return s;
-    }
-
-    // strong normalizeProperties with robust key mapping
     function normalizeProperties(props){
       const out = {};
-      if(!props) return out;
-
-      // build map from normalizedKey -> originalKey
-      const keyMap = {};
-      Object.keys(props).forEach(k=>{
-        const nk = normalizeKey(k);
-        keyMap[nk] = k;
+      Object.keys(props||{}).forEach(k=>{
+        const v = props[k];
+        const lower = String(k).toLowerCase().replace(/\s+/g,'_');
+        out[k] = v;
+        if(['sektor','sector'].includes(lower)) out.Sektor = v;
+        if(['tahun','tahun_pembangunan','year'].includes(lower)) out.Tahun_Pembangunan = v;
+        if(['nama','nama_infrastruktur','name'].includes(lower)) out.Nama_Infrastruktur = v;
+        if(['status','status_keberfungsian','kondisi'].includes(lower)) out.Status_Keberfungsian = v;
+        if(['lokasi','location'].includes(lower)) out.Lokasi = v;
+        if(['wilayah','wadmkk','namobj','kabupaten','kota'].includes(lower)) out.Wilayah = v;
       });
-
-      function getVal(names){
-        // try exact candidate name
-        for(const name of names){
-          const nk = normalizeKey(name);
-          if(keyMap[nk]){
-            const v = cleanVal(props[keyMap[nk]]);
-            if(v) return v;
-          }
-        }
-        // try fuzzy: find a key that contains candidate or candidate contains key
-        for(const name of names){
-          const nk = normalizeKey(name);
-          for(const nk2 in keyMap){
-            if(nk2.includes(nk) || nk.includes(nk2)){
-              const v = cleanVal(props[keyMap[nk2]]);
-              if(v) return v;
-            }
-          }
-        }
-        // try any key that looks like the candidate words present
-        for(const nk2 in keyMap){
-          const orig = keyMap[nk2];
-          const v = cleanVal(props[orig]);
-          if(v){
-            // prefer keys with words like 'lokasi','wilayah','kab','kota','alamat'
-            const hint = nk2;
-            for(const name of names){
-              const hintName = normalizeKey(name);
-              if(hint.includes(hintName) || hintName.includes(hint)) return v;
-            }
-          }
-        }
-        return '';
-      }
-
-      out.Sektor = getVal(['Sektor','sektor','sector']);
-      out.Nama_Infrastruktur = getVal(['Nama Infrastruktur','nama_infrastruktur','nama','name']);
-      out.Jenis_Kegiatan = getVal(['Jenis Kegiatan','jenis_kegiatan','jenis','sub_kelas','subkelas']);
-      out.Lokasi = getVal(['Lokasi','lokasi','location','alamat','address','alamat_lengkap','alamat_lokasi','place']);
-      out.Wilayah = getVal(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec','nama_kab','kab_kota']);
-      out.Tahun_Pembangunan = getVal(['Tahun Pembangunan','tahun_bangun','tahun']);
-      out.Status_Keberfungsian = getVal(['Status Keberfungsian','status_keberfungsian','status','kondisi']);
-
-      // fallback attempts for lokasi and wilayah using common alternate fields
-      if(!out.Lokasi){
-        out.Lokasi = getVal(['Alamat','alamat_lengkap','address_detail','place_name']);
-      }
-      if(!out.Wilayah){
-        out.Wilayah = getVal(['district','regency','kabupaten_kota','nama_kab']);
-      }
-
       out.Wilayah = normalizeRegion(out.Wilayah || '');
-
-      // normalize status values
-      const raw = (out.Status_Keberfungsian || '').normalize('NFKC').replace(/\u00A0/g,' ').trim();
-      const s = raw.toLowerCase();
-      if(/^(berfungsi|baik|operasional)$/.test(s)) out.Status_Keberfungsian = 'Berfungsi';
-      else if(/^(belum\s*berfungsi|belum|perencanaan|rencana|planned|prepared)$/.test(s)) out.Status_Keberfungsian = 'Belum Berfungsi';
-      else if(/(tidak\s*berfungsi|tidakberfungsi|rusak|mati|off|non[\-\s]?operasional)/.test(s)) out.Status_Keberfungsian = 'Tidak Berfungsi';
-      else if(/(tidak\s*diketahui|unknown)/.test(s)) out.Status_Keberfungsian = 'Tidak Diketahui';
-      else out.Status_Keberfungsian = raw || '';
-
       return out;
     }
 
-    // robust info window builder
     function buildInfoHtml(p){
-      const nama = cleanVal(p.Nama_Infrastruktur || p.nama || p.name || '');
-      const sektor = cleanVal(p.Sektor || p.sektor || '');
-      const jenis = cleanVal(p.Jenis_Kegiatan || p.jenis || '');
-      const lokasi = cleanVal(p.Lokasi || p.alamat || p.address || '');
-      const wilayah = cleanVal(p.Wilayah || p.NAMOBJ || p.WADMKK || '');
-      const tahun = cleanVal(p.Tahun_Pembangunan || p.tahun || '');
-      const status = cleanVal(p.Status_Keberfungsian || p.status || '');
-
       let html = '<div class="custom-iw">';
-      if(nama) html += '<div><strong>' + escapeHtml(nama) + '</strong></div>';
-      if(sektor) html += '<div>Sektor: ' + escapeHtml(sektor) + '</div>';
-      if(jenis) html += '<div>Jenis Kegiatan: ' + escapeHtml(jenis) + '</div>';
-      if(lokasi) html += '<div>Lokasi: ' + escapeHtml(lokasi) + '</div>';
-      if(wilayah) html += '<div>Wilayah: ' + escapeHtml(wilayah) + '</div>';
-      if(tahun) html += '<div>Tahun Bangun: ' + escapeHtml(tahun) + '</div>';
-      if(status) html += '<div>Status: ' + escapeHtml(status) + '</div>';
+      if(p.Nama_Infrastruktur) html += '<div><strong>'+escapeHtml(p.Nama_Infrastruktur)+'</strong></div>';
+      if(p.Sektor) html += '<div>Sektor: '+escapeHtml(p.Sektor)+'</div>';
+      if(p.Lokasi) html += '<div>Lokasi: '+escapeHtml(p.Lokasi)+'</div>';
+      if(p.Wilayah) html += '<div>Wilayah: '+escapeHtml(p.Wilayah)+'</div>';
+      if(p.Tahun_Pembangunan) html += '<div>Tahun Bangun: '+escapeHtml(p.Tahun_Pembangunan)+'</div>';
+      if(p.Status_Keberfungsian) html += '<div>Status: '+escapeHtml(p.Status_Keberfungsian)+'</div>';
       html += '</div>';
-
-      // ensure IW always shows something
-      if(html === '<div class="custom-iw"></div>') html = '<div class="custom-iw"><div>Data atribut tidak tersedia</div></div>';
       return html;
     }
 
-    function clearMarkers(){ allMarkers.forEach(x=>x.marker.setMap(null)); allMarkers = []; }
+    function clearMarkers(){
+      allMarkers.forEach(x=>x.marker.setMap(null));
+      allMarkers = [];
+    }
 
     function createMarkersFromGeo(geo){
       clearMarkers();
       if(!geo || !Array.isArray(geo.features)) return 0;
       const bounds = new google.maps.LatLngBounds();
-
       geo.features.forEach(f=>{
-        if(!f.geometry) return;
-        // accept Point or geometry with coordinates array (some CSV->GeoJSON produce x,y fields)
-        if(f.geometry.type !== 'Point') return;
+        if(!f.geometry || f.geometry.type !== 'Point') return;
         const c = f.geometry.coordinates;
         if(!Array.isArray(c) || c.length < 2) return;
         const lng = Number(c[0]), lat = Number(c[1]);
         if(!isFinite(lat) || !isFinite(lng)) return;
-
         const props = normalizeProperties(f.properties || {});
-        const sectorName = props.Sektor ? String(props.Sektor).trim() : '';
-        const jenis = props.Jenis_Kegiatan ? String(props.Jenis_Kegiatan).trim() : '';
-        let iconUrl = iconMap['default'];
-        if(sectorName === 'Air Minum' || sectorName === 'Sanitasi'){
-          const key = sectorName + '|' + (jenis || 'Reguler');
-          iconUrl = iconMap[key] || iconMap[sectorName + '|Reguler'] || iconMap['default'];
-        } else {
-          iconUrl = iconMap[sectorName] || iconMap['default'];
-        }
-
+        const sectorName = props.Sektor ? String(props.Sektor).trim() : 'default';
+        const iconUrl = iconMap[sectorName] || iconMap['default'];
         const marker = new google.maps.Marker({
           position: {lat, lng},
           map,
-          title: props.Nama_Infrastruktur || props.nama || '',
+          title: props.Nama_Infrastruktur || props.Nama || '',
           icon: { url: iconUrl, scaledSize: new google.maps.Size(36,36) }
         });
-
         marker.addListener('click', ()=>{
           const targetZoom = 14;
           map.panTo(marker.getPosition());
@@ -289,72 +278,41 @@
             infoWindow.setContent(buildInfoHtml(props)); infoWindow.open(map, marker);
           }
         });
-
         allMarkers.push({marker, props});
         bounds.extend(marker.getPosition());
       });
-
       if(!bounds.isEmpty()) map.fitBounds(bounds);
       return allMarkers.length;
     }
 
     function populateFilters(geo){
       uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
-      const uniqueJenis = new Set();
-      const uniqueStatus = new Set();
       if(!geo || !Array.isArray(geo.features)) return;
-
       geo.features.forEach(f=>{
         const p = normalizeProperties(f.properties || {});
         if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
         if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
         if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
-        if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
-        if(p.Status_Keberfungsian) uniqueStatus.add(String(p.Status_Keberfungsian).trim());
       });
-
       document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
       document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
       document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
-      document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
-
-      const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi','Tidak Diketahui'];
-      const statusSet = new Set(Array.from(uniqueStatus).map(s=>String(s||'').trim()).filter(Boolean));
-      ordered.forEach(s=>statusSet.add(s));
-      const statusOptions = Array.from(statusSet).sort((a,b)=>{
-        const ia = ordered.indexOf(a), ib = ordered.indexOf(b);
-        if(ia !== -1 && ib !== -1) return ia - ib;
-        if(ia !== -1) return -1;
-        if(ib !== -1) return 1;
-        return a.localeCompare(b);
-      });
-
-      document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-      console.log('STATUS_OPTIONS:', statusOptions.map(s=>'['+s+']'));
     }
 
     function applyFilter(){
       const sector = document.getElementById('sectorFilter').value.trim();
       const year = document.getElementById('yearFilter').value.trim();
       const region = document.getElementById('regionFilter').value.trim();
-      const jenis = document.getElementById('jenisFilter').value.trim();
-      const status = document.getElementById('statusFilter').value.trim();
       let visible = 0;
-
       allMarkers.forEach(({marker, props})=>{
         const mSector = props.Sektor ? String(props.Sektor).trim() : '';
         const mYear = props.Tahun_Pembangunan ? String(props.Tahun_Pembangunan).trim() : '';
         const mRegion = props.Wilayah ? String(props.Wilayah).trim() : '';
-        const mJenis = props.Jenis_Kegiatan ? String(props.Jenis_Kegiatan).trim() : '';
-        const mStatus = props.Status_Keberfungsian ? String(props.Status_Keberfungsian).trim() : '';
         const match = !sector || mSector === sector;
         const matchY = !year || mYear === year;
         const matchR = !region || mRegion === region;
-        const matchJ = !jenis || mJenis === jenis;
-        const matchS = !status || mStatus === status;
-        if(match && matchY && matchR && matchJ && matchS){ marker.setMap(map); visible++; } else { marker.setMap(null); }
+        if(match && matchY && matchR){ marker.setMap(map); visible++; } else { marker.setMap(null); }
       });
-
       setStatus('Menampilkan ' + visible + ' titik.');
       if(visible > 0){
         const b = new google.maps.LatLngBounds();
@@ -367,8 +325,6 @@
       document.getElementById('sectorFilter').value = '';
       document.getElementById('yearFilter').value = '';
       document.getElementById('regionFilter').value = '';
-      document.getElementById('jenisFilter').value = '';
-      document.getElementById('statusFilter').value = '';
       allMarkers.forEach(x=>x.marker.setMap(map));
       setStatus('Menampilkan ' + allMarkers.length + ' titik.');
       const b = new google.maps.LatLngBounds();
@@ -381,34 +337,6 @@
       const r = await fetch(url);
       if(!r.ok) throw new Error('HTTP ' + r.status);
       return await r.json();
-    }
-
-    // CSV fallback loader
-    function csvTextToGeoJSON(text, delimiter=','){
-      const parsed = Papa.parse(text, {delimiter: delimiter, header: true, skipEmptyLines: true});
-      const features = parsed.data.map(row=>{
-        const lon = Number((row.Longitude||row.lon||row.Long||row.X||row.x||'').toString().trim());
-        const lat = Number((row.Latitude||row.lat||row.Y||row.y||'').toString().trim());
-        const props = Object.assign({}, row);
-        if(!isFinite(lat) || !isFinite(lon)) return null;
-        return { type: "Feature", geometry: { type: "Point", coordinates: [lon, lat] }, properties: props };
-      }).filter(Boolean);
-      return { type: "FeatureCollection", features };
-    }
-
-    async function loadSpatialData(url){
-      setStatus('Memuat: ' + url);
-      const r = await fetch(url);
-      if(!r.ok) throw new Error('HTTP ' + r.status);
-      const ct = r.headers.get('content-type') || '';
-      const text = await r.text();
-      if(ct.includes('application/json') || text.trim().startsWith('{') || text.trim().startsWith('[')){
-        try { return JSON.parse(text); } catch(e){ /* fallthrough */ }
-      }
-      const semCount = (text.match(/;/g)||[]).length;
-      const commaCount = (text.match(/,/g)||[]).length;
-      const delimiter = semCount > commaCount ? ';' : ',';
-      return csvTextToGeoJSON(text, delimiter);
     }
 
     function refreshAdminStyle(){
@@ -435,18 +363,19 @@
     async function initMap(){
       map = new google.maps.Map(document.getElementById('map'), { center:{lat:-3.3,lng:129.1}, zoom:7, mapTypeControl:false, streetViewControl:false });
       infoWindow = new google.maps.InfoWindow({ maxWidth:320, pixelOffset: new google.maps.Size(0, -25) });
+
       document.getElementById('applyBtn').addEventListener('click', applyFilter);
       document.getElementById('resetBtn').addEventListener('click', resetFilter);
 
       try {
-        const geoMarkers = await loadSpatialData(RAW_GEOJSON);
+        const geoMarkers = await loadGeoJSON(RAW_GEOJSON);
         geoData = geoMarkers;
         createMarkersFromGeo(geoMarkers);
         populateFilters(geoMarkers);
         resetFilter();
       } catch(e){
         console.error(e);
-        setStatus('Gagal muat DATA_SPASIAL. Cek URL atau format file.');
+        setStatus('Gagal muat DATA_SPASIAL.geojson');
       }
 
       try{ map.data.addGeoJson(await loadGeoJSON(ADMIN_KAB_URL)); } catch(e){ /* ignore */ }
@@ -456,23 +385,6 @@
       attachAdminInteractions();
     }
 
-    // UI: goto top
-    const goto=document.getElementById('gotoTop');
-    goto.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-    window.addEventListener('scroll',()=>{ goto.style.display = window.scrollY>200 ? 'flex' : 'none'; });
-    goto.style.display='none';
-
-    // Google Maps loader and init
-    function loadGoogleMapsThenInit(apiKey){
-      if(window.google && google.maps && typeof initMap === 'function'){ try{ initMap(); }catch(e){ console.error(e); } return; }
-      const s = document.createElement('script');
-      s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(apiKey) + '&callback=initMap';
-      s.async = true; s.defer = true;
-      s.onerror = function(e){ console.error('Failed to load Google Maps script', e); };
-      document.head.appendChild(s);
-    }
-
-    loadGoogleMapsThenInit('AIzaSyBEZqcze-RGCcRGIBjyEt0-ID99TCDJeS0');
     window.initMap = initMap;
   </script>
 </body>
