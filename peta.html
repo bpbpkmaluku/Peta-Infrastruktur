@@ -222,69 +222,118 @@
       return s.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
     }
 
-   function normalizeProperties(props){
+  function normalizeProperties(props){
   const out = {};
-  Object.keys(props||{}).forEach(k=>{
-    const v = props[k];
-    const lower = String(k).toLowerCase().replace(/\s+/g,'_');
-    // simpan asli (tanpa mutasi) untuk kolom referensi
-    out[k] = v;
-    if(['sektor','sector'].includes(lower)) out.Sektor = String(v || '').trim();
-    if(['tahun','tahun_pembangunan','year'].includes(lower)) out.Tahun_Pembangunan = String(v || '').trim();
-    if(['nama','nama_infrastruktur','name'].includes(lower)) out.Nama_Infrastruktur = String(v || '').trim();
-    if(['status','status_keberfungsian','kondisi'].includes(lower)) out.Status_Keberfungsian = String(v || '').trim();
-    if(['lokasi','location'].includes(lower)) out.Lokasi = String(v || '').trim();
-    if(['wilayah','wadmkk','namobj','kabupaten','kota'].includes(lower)) out.Wilayah = String(v || '').trim();
-    if(['jenis_kegiatan','jenis','subkelas','sub_kelas'].includes(lower)) out.Jenis_Kegiatan = String(v || '').trim();
-  });
+  if(!props) return out;
+
+  // salin semua properti mentah
+  Object.keys(props).forEach(k => { out[k] = props[k]; });
+
+  // helper untuk ambil nilai dari beberapa kandidat nama kolom
+  function getVal(names){
+    for(const n of names){
+      if(props[n] !== undefined && props[n] !== null && String(props[n]).trim() !== '') return String(props[n]).trim();
+    }
+    for(const key in props){
+      const lk = key.toLowerCase().replace(/\s+/g,'_');
+      for(const n of names){
+        if(lk === n.toLowerCase().replace(/\s+/g,'_') && props[key] !== undefined && String(props[key]).trim() !== '') return String(props[key]).trim();
+      }
+    }
+    return '';
+  }
+
+  out.Sektor = getVal(['Sektor','sektor','sector']);
+  out.Nama_Infrastruktur = getVal(['Nama Infrastruktur','nama_infrastruktur','nama','name']);
+  out.Jenis_Kegiatan = getVal(['Jenis Kegiatan','jenis_kegiatan','jenis','sub_kelas','subkelas']);
+  out.Lokasi = getVal(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']);
+  out.Wilayah = getVal(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']);
+  out.Tahun_Pembangunan = getVal(['Tahun Pembangunan','tahun_bangun','tahun']);
+  out.Status_Keberfungsian = getVal(['Status Keberfungsian','status_keberfungsian','status','kondisi']);
 
   out.Wilayah = normalizeRegion(out.Wilayah || '');
 
-  // normalisasi status dengan trimming dan pemeriksaan pola yang lebih tolerant
-  if(out.Status_Keberfungsian){
-    const sRaw = String(out.Status_Keberfungsian || '').trim();
-    const s = sRaw.normalize('NFKC').replace(/\u00A0/g,' ').trim().toLowerCase();
-    if(/berfungsi|baik|operasional/.test(s)) out.Status_Keberfungsian = 'Berfungsi';
-    else if(/tidak\s*berfungsi|tidakberfungsi|rusak|mati|off|non[\-\s]?operasional/.test(s)) out.Status_Keberfungsian = 'Tidak Berfungsi';
-    else if(/belum\s*berfungsi|belum|perencanaan|rencana|prepared|planned/.test(s)) out.Status_Keberfungsian = 'Belum Berfungsi';
-    else out.Status_Keberfungsian = sRaw; // jika tidak cocok, gunakan nilai mentah yang sudah di-trim
-  }
+  // normalisasi status toleran terhadap typo dan variasi
+  const raw = (out.Status_Keberfungsian || '').normalize('NFKC').replace(/\u00A0/g,' ').trim();
+  const s = raw.toLowerCase();
+
+  if(/^(berfungsi|baik|operasional)$/.test(s)) out.Status_Keberfungsian = 'Berfungsi';
+  else if(/^(belum\s*berfungsi|belum|perencanaan|rencana|planned|prepared)$/.test(s)) out.Status_Keberfungsian = 'Belum Berfungsi';
+  else if(/(tidak\s*berfungsi|tidakberfungsi|tidak\s*berfungi|tidak\s*diketahui|tidakberfungsi|rusak|mati|off|non[\-\s]?operasional)/.test(s)) out.Status_Keberfungsian = 'Tidak Berfungsi';
+  else if(/(tidak\s*diketahui|unknown)/.test(s)) out.Status_Keberfungsian = 'Tidak Diketahui';
+  else out.Status_Keberfungsian = raw || '';
+
   return out;
 }
 
-function populateFilters(geo){
-uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
-const uniqueJenis = new Set();
-const uniqueStatus = new Set();
-if(!geo || !Array.isArray(geo.features)) return;
-geo.features.forEach(f=>{
-const p = normalizeProperties(f.properties || {});
-if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
-if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
-if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
-if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
-if(p.Status_Keberfungsian) uniqueStatus.add(String(p.Status_Keberfungsian).trim());
-});
+function buildInfoHtml(p){
+  function find(names){
+    for(const n of names){
+      if(p[n] !== undefined && p[n] !== null && String(p[n]).trim() !== '') return p[n];
+    }
+    for(const key in p){
+      const lk = key.toLowerCase().replace(/\s+/g,'_');
+      for(const n of names){
+        if(lk === n.toLowerCase().replace(/\s+/g,'_') && p[key] !== undefined && String(p[key]).trim() !== '') return p[key];
+      }
+    }
+    return '';
+  }
 
-document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
-document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
-document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
+  const nama = String(find(['Nama_Infrastruktur','Nama Infrastruktur','nama','name']) || '').trim();
+  const sektor = String(find(['Sektor','sektor','sector']) || '').trim();
+  const jenis = String(find(['Jenis_Kegiatan','Jenis Kegiatan','jenis','sub_kelas','subkelas']) || '').trim();
+  const lokasi = String(find(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']) || '').trim();
+  const wilayah = String(find(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']) || '').trim();
+  const tahun = String(find(['Tahun_Pembangunan','Tahun Bangun','tahun_bangun','tahun']) || '').trim();
+  const status = String(find(['Status_Keberfungsian','Status Keberfungsian','status','kondisi']) || '').trim();
 
-const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi','Tidak Diketahui'];
-const statusSet = new Set(Array.from(uniqueStatus).map(s=>String(s||'').trim()).filter(Boolean));
-ordered.forEach(s=>statusSet.add(s));
-const statusOptions = Array.from(statusSet).sort((a,b)=>{
-const ia = ordered.indexOf(a), ib = ordered.indexOf(b);
-if(ia!==-1 && ib!==-1) return ia-ib;
-if(ia!==-1) return -1;
-if(ib!==-1) return 1;
-return a.localeCompare(b);
-});
-document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-console.log('STATUS_OPTIONS:', statusOptions.map(s=>'['+s+']'));
+  let html = '<div class="custom-iw">';
+  if(nama) html += '<div><strong>'+escapeHtml(nama)+'</strong></div>';
+  if(sektor) html += '<div>Sektor: '+escapeHtml(sektor)+'</div>';
+  if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(jenis)+'</div>';
+  if(lokasi) html += '<div>Lokasi: '+escapeHtml(lokasi)+'</div>';
+  if(wilayah) html += '<div>Wilayah: '+escapeHtml(wilayah)+'</div>';
+  if(tahun) html += '<div>Tahun Bangun: '+escapeHtml(tahun)+'</div>';
+  if(status) html += '<div>Status: '+escapeHtml(status)+'</div>';
+  html += '</div>';
+  return html;
 }
 
+function populateFilters(geo){
+  uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
+  const uniqueJenis = new Set();
+  const uniqueStatus = new Set();
+  if(!geo || !Array.isArray(geo.features)) return;
+
+  geo.features.forEach(f=>{
+    const p = normalizeProperties(f.properties || {});
+    if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
+    if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
+    if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
+    if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
+    if(p.Status_Keberfungsian) uniqueStatus.add(String(p.Status_Keberfungsian).trim());
+  });
+
+  document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+  document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
+  document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
+  document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
+
+  const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi','Tidak Diketahui'];
+  const statusSet = new Set(Array.from(uniqueStatus).map(s=>String(s||'').trim()).filter(Boolean));
+  ordered.forEach(s=>statusSet.add(s));
+  const statusOptions = Array.from(statusSet).sort((a,b)=>{
+    const ia = ordered.indexOf(a), ib = ordered.indexOf(b);
+    if(ia !== -1 && ib !== -1) return ia - ib;
+    if(ia !== -1) return -1;
+    if(ib !== -1) return 1;
+    return a.localeCompare(b);
+  });
+
+  document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+  console.log('STATUS_OPTIONS:', statusOptions.map(s=>'['+s+']'));
+}
   document.getElementById('sectorFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
   document.getElementById('yearFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
   document.getElementById('regionFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
