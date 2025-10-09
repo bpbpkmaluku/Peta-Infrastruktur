@@ -222,173 +222,44 @@
       return s.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
     }
 
-  function normalizeProperties(props){
-  const out = {};
-  if(!props) return out;
-
-  // salin semua properti mentah
-  Object.keys(props).forEach(k => { out[k] = props[k]; });
-
-  // helper untuk ambil nilai dari beberapa kandidat nama kolom
-  function getVal(names){
-    for(const n of names){
-      if(props[n] !== undefined && props[n] !== null && String(props[n]).trim() !== '') return String(props[n]).trim();
-    }
-    for(const key in props){
-      const lk = key.toLowerCase().replace(/\s+/g,'_');
-      for(const n of names){
-        if(lk === n.toLowerCase().replace(/\s+/g,'_') && props[key] !== undefined && String(props[key]).trim() !== '') return String(props[key]).trim();
+    function normalizeProperties(props){
+      const out = {};
+      Object.keys(props||{}).forEach(k=>{
+        const v = props[k];
+        const lower = String(k).toLowerCase().replace(/\s+/g,'_');
+        out[k] = v;
+        if(['sektor','sector'].includes(lower)) out.Sektor = v;
+        if(['tahun','tahun_pembangunan','year'].includes(lower)) out.Tahun_Pembangunan = v;
+        if(['nama','nama_infrastruktur','name'].includes(lower)) out.Nama_Infrastruktur = v;
+        if(['status','status_keberfungsian','kondisi'].includes(lower)) out.Status_Keberfungsian = v;
+        if(['lokasi','location'].includes(lower)) out.Lokasi = v;
+        if(['wilayah','wadmkk','namobj','kabupaten','kota'].includes(lower)) out.Wilayah = v;
+        if(['jenis_kegiatan','jenis','subkelas','sub_kelas'].includes(lower)) out.Jenis_Kegiatan = v;
+      });
+      out.Wilayah = normalizeRegion(out.Wilayah || '');
+      // standardize status values
+      if(out.Status_Keberfungsian){
+        const s = String(out.Status_Keberfungsian||'').trim().toLowerCase();
+        if(/berfungsi|baik|operasional/.test(s)) out.Status_Keberfungsian = 'Berfungsi';
+        else if(/tidak\s*berfungsi|rusak|mati|off|non-operasional/.test(s)) out.Status_Keberfungsian = 'Tidak Berfungsi';
+        else if(/belum\s*berfungsi|belum|perencanaan|rencana|prepared|planned/.test(s)) out.Status_Keberfungsian = 'Belum Berfungsi';
+        else out.Status_Keberfungsian = String(out.Status_Keberfungsian).trim();
       }
+      return out;
     }
-    return '';
-  }
 
-  out.Sektor = getVal(['Sektor','sektor','sector']);
-  out.Nama_Infrastruktur = getVal(['Nama Infrastruktur','nama_infrastruktur','nama','name']);
-  out.Jenis_Kegiatan = getVal(['Jenis Kegiatan','jenis_kegiatan','jenis','sub_kelas','subkelas']);
-  out.Lokasi = getVal(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']);
-  out.Wilayah = getVal(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']);
-  out.Tahun_Pembangunan = getVal(['Tahun Pembangunan','tahun_bangun','tahun']);
-  out.Status_Keberfungsian = getVal(['Status Keberfungsian','status_keberfungsian','status','kondisi']);
-
-  out.Wilayah = normalizeRegion(out.Wilayah || '');
-
-  // normalisasi status toleran terhadap typo dan variasi
-  const raw = (out.Status_Keberfungsian || '').normalize('NFKC').replace(/\u00A0/g,' ').trim();
-  const s = raw.toLowerCase();
-
-  if(/^(berfungsi|baik|operasional)$/.test(s)) out.Status_Keberfungsian = 'Berfungsi';
-  else if(/^(belum\s*berfungsi|belum|perencanaan|rencana|planned|prepared)$/.test(s)) out.Status_Keberfungsian = 'Belum Berfungsi';
-  else if(/(tidak\s*berfungsi|tidakberfungsi|tidak\s*berfungi|tidak\s*diketahui|tidakberfungsi|rusak|mati|off|non[\-\s]?operasional)/.test(s)) out.Status_Keberfungsian = 'Tidak Berfungsi';
-  else if(/(tidak\s*diketahui|unknown)/.test(s)) out.Status_Keberfungsian = 'Tidak Diketahui';
-  else out.Status_Keberfungsian = raw || '';
-
-  return out;
-}
-
-function buildInfoHtml(p){
-  function find(names){
-    for(const n of names){
-      if(p[n] !== undefined && p[n] !== null && String(p[n]).trim() !== '') return p[n];
+    function buildInfoHtml(p){
+      let html = '<div class="custom-iw">';
+      if(p.Nama_Infrastruktur) html += '<div><strong>'+escapeHtml(p.Nama_Infrastruktur)+'</strong></div>';
+      if(p.Sektor) html += '<div>Sektor: '+escapeHtml(p.Sektor)+'</div>';
+      if(p.Jenis_Kegiatan) html += '<div>Jenis Kegiatan: '+escapeHtml(p.Jenis_Kegiatan)+'</div>';
+      if(p.Lokasi) html += '<div>Lokasi: '+escapeHtml(p.Lokasi)+'</div>';
+      if(p.Wilayah) html += '<div>Wilayah: '+escapeHtml(p.Wilayah)+'</div>';
+      if(p.Tahun_Pembangunan) html += '<div>Tahun Bangun: '+escapeHtml(p.Tahun_Pembangunan)+'</div>';
+      if(p.Status_Keberfungsian) html += '<div>Status: '+escapeHtml(p.Status_Keberfungsian)+'</div>';
+      html += '</div>';
+      return html;
     }
-    for(const key in p){
-      const lk = key.toLowerCase().replace(/\s+/g,'_');
-      for(const n of names){
-        if(lk === n.toLowerCase().replace(/\s+/g,'_') && p[key] !== undefined && String(p[key]).trim() !== '') return p[key];
-      }
-    }
-    return '';
-  }
-
-  const nama = String(find(['Nama_Infrastruktur','Nama Infrastruktur','nama','name']) || '').trim();
-  const sektor = String(find(['Sektor','sektor','sector']) || '').trim();
-  const jenis = String(find(['Jenis_Kegiatan','Jenis Kegiatan','jenis','sub_kelas','subkelas']) || '').trim();
-  const lokasi = String(find(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']) || '').trim();
-  const wilayah = String(find(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']) || '').trim();
-  const tahun = String(find(['Tahun_Pembangunan','Tahun Bangun','tahun_bangun','tahun']) || '').trim();
-  const status = String(find(['Status_Keberfungsian','Status Keberfungsian','status','kondisi']) || '').trim();
-
-  let html = '<div class="custom-iw">';
-  if(nama) html += '<div><strong>'+escapeHtml(nama)+'</strong></div>';
-  if(sektor) html += '<div>Sektor: '+escapeHtml(sektor)+'</div>';
-  if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(jenis)+'</div>';
-  if(lokasi) html += '<div>Lokasi: '+escapeHtml(lokasi)+'</div>';
-  if(wilayah) html += '<div>Wilayah: '+escapeHtml(wilayah)+'</div>';
-  if(tahun) html += '<div>Tahun Bangun: '+escapeHtml(tahun)+'</div>';
-  if(status) html += '<div>Status: '+escapeHtml(status)+'</div>';
-  html += '</div>';
-  return html;
-}
-
-function populateFilters(geo){
-  uniqueSectors.clear(); uniqueYears.clear(); uniqueRegions.clear();
-  const uniqueJenis = new Set();
-  const uniqueStatus = new Set();
-  if(!geo || !Array.isArray(geo.features)) return;
-
-  geo.features.forEach(f=>{
-    const p = normalizeProperties(f.properties || {});
-    if(p.Sektor) uniqueSectors.add(String(p.Sektor).trim());
-    if(p.Tahun_Pembangunan && !isNaN(Number(p.Tahun_Pembangunan))) uniqueYears.add(String(p.Tahun_Pembangunan).trim());
-    if(p.Wilayah) uniqueRegions.add(String(p.Wilayah).trim());
-    if(p.Sektor && (String(p.Sektor).trim() === 'Air Minum' || String(p.Sektor).trim() === 'Sanitasi') && p.Jenis_Kegiatan) uniqueJenis.add(String(p.Jenis_Kegiatan).trim());
-    if(p.Status_Keberfungsian) uniqueStatus.add(String(p.Status_Keberfungsian).trim());
-  });
-
-  document.getElementById('sectorFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-  document.getElementById('yearFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
-  document.getElementById('regionFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
-  document.getElementById('jenisFilter').innerHTML = '<option value="">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
-
-  const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi','Tidak Diketahui'];
-  const statusSet = new Set(Array.from(uniqueStatus).map(s=>String(s||'').trim()).filter(Boolean));
-  ordered.forEach(s=>statusSet.add(s));
-  const statusOptions = Array.from(statusSet).sort((a,b)=>{
-    const ia = ordered.indexOf(a), ib = ordered.indexOf(b);
-    if(ia !== -1 && ib !== -1) return ia - ib;
-    if(ia !== -1) return -1;
-    if(ib !== -1) return 1;
-    return a.localeCompare(b);
-  });
-
-  document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-  console.log('STATUS_OPTIONS:', statusOptions.map(s=>'['+s+']'));
-}
-  document.getElementById('sectorFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueSectors).sort().map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-  document.getElementById('yearFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueYears).sort((a,b)=>Number(a)-Number(b)).map(y=>'<option>'+escapeHtml(y)+'</option>').join('');
-  document.getElementById('regionFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueRegions).sort().map(r=>'<option>'+escapeHtml(r)+'</option>').join('');
-  document.getElementById('jenisFilter').innerHTML = '<option value=\"\">Semua</option>' + Array.from(uniqueJenis).sort().map(j=>'<option>'+escapeHtml(j)+'</option>').join('');
-
-  // bersihkan nilai tidak bermakna dan trim
-  const cleaned = Array.from(uniqueStatusRaw).map(s=>String(s||'').trim()).filter(s=>s && s !== '-' && s !== 'null' && s !== 'undefined');
-  const ordered = ['Berfungsi','Belum Berfungsi','Tidak Berfungsi'];
-  const statusSet = new Set(cleaned);
-  ordered.forEach(s=>statusSet.add(s));
-  const statusOptions = Array.from(statusSet).sort((a,b)=>{
-    const ia = ordered.indexOf(a), ib = ordered.indexOf(b);
-    if(ia!==-1 && ib!==-1) return ia-ib;
-    if(ia!==-1) return -1;
-    if(ib!==-1) return 1;
-    return a.localeCompare(b);
-  });
-
-  document.getElementById('statusFilter').innerHTML = '<option value=\"\">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
-  console.log('STATUS_OPTIONS:', statusOptions.map(s=>'['+s+']'));
-}
-
-function buildInfoHtml(p){
-function getProp(names){
-for(let i=0;i<names.length;i++){
-const name = names[i]
-if(p[name] !== undefined && p[name] !== null && String(p[name]).trim() !== '') return p[name]
-}
-for(const k in p){
-for(let i=0;i<names.length;i++){
-if(k.toLowerCase() === names[i].toLowerCase() && p[k] !== undefined && String(p[k]).trim() !== '') return p[k]
-}
-}
-return ''
-}
-
-const nama = getProp(['Nama_Infrastruktur','Nama Infrastruktur','nama','name'])
-const sektor = getProp(['Sektor','sektor','sector'])
-const jenis = getProp(['Jenis_Kegiatan','Jenis Kegiatan','jenis','sub_kelas','subkelas'])
-const lokasi = getProp(['Lokasi','lokasi','Location','alamat','address'])
-const wilayah = getProp(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota'])
-const tahun = getProp(['Tahun_Pembangunan','Tahun Bangun','tahun'])
-const status = getProp(['Status_Keberfungsian','Status Keberfungsian','status','kondisi'])
-
-let html = '<div class="custom-iw">'
-if(nama) html += '<div><strong>'+escapeHtml(String(nama))+'</strong></div>'
-if(sektor) html += '<div>Sektor: '+escapeHtml(String(sektor))+'</div>'
-if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(String(jenis))+'</div>'
-if(lokasi) html += '<div>Lokasi: '+escapeHtml(String(lokasi))+'</div>'
-if(wilayah) html += '<div>Wilayah: '+escapeHtml(String(wilayah))+'</div>'
-if(tahun) html += '<div>Tahun Bangun: '+escapeHtml(String(tahun))+'</div>'
-if(status) html += '<div>Status: '+escapeHtml(String(status))+'</div>'
-html += '</div>'
-return html
-}
 
     function clearMarkers(){
       allMarkers.forEach(x=>x.marker.setMap(null));
