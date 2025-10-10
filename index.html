@@ -275,196 +275,379 @@
     </div>
   </section>
 
-  <!-- START: Rekapitulasi Formal Final -->
-<section id="rekap-section" style="max-width:1160px;margin:40px auto;padding:28px;border-radius:12px;">
-  <h2 style="font-family:var(--font-montserrat);color:#fff;margin:0 0 8px;text-align:center;">
-    Rekapitulasi Status Keberfungsian Infrastruktur Terbangun<br>Tahun Anggaran 2020 - 2024
-  </h2>
-  <p style="text-align:center;margin:10px 0 24px;color:var(--muted);font-size:14px;">
-    Data sumber: Balai Penataan Bangunan, Prasarana dan Kawasan Permukiman Wilayah Maluku
-  </p>
+  <!-- START: Dashboard Interaktif Rekap (paste sebelum </body>) -->
+<!-- Requires: data/rekap_reguler.json and data/rekap_ibm.json in repo/data -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js/dist/Chart.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <div style="display:flex;gap:8px;justify-content:center;margin-bottom:22px;">
-    <button id="tab-all" class="rekap-tab" style="padding:8px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:#08263f;color:#ffd54f;font-weight:700">Gabungan</button>
-    <button id="tab-reg" class="rekap-tab" style="padding:8px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);font-weight:600">Reguler</button>
-    <button id="tab-ibm" class="rekap-tab" style="padding:8px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);font-weight:600">IBM</button>
+<section id="dash-rekap" style="max-width:1160px;margin:40px auto;padding:20px;border-radius:12px;">
+  <!-- Header / KPI -->
+  <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px;">
+    <div style="flex:1;min-width:280px">
+      <h3 style="margin:0;color:#fff;font-family:var(--font-montserrat);">Rekapitulasi Status Keberfungsian Infrastruktur Terbangun Tahun Anggaran 2020 - 2024</h3>
+      <p style="margin:6px 0 0;color:var(--muted);font-size:13px">Sumber: Balai Penataan Bangunan, Prasarana dan Kawasan Permukiman Wilayah Maluku</p>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="background:#0b1220;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)">
+        <div style="font-size:12px;color:var(--muted)">Total Investasi</div>
+        <div id="kpi-invest" style="font-weight:800;color:#ffd54f">-</div>
+      </div>
+      <div style="background:#0b1220;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)">
+        <div style="font-size:12px;color:var(--muted)">Total Unit Terbangun</div>
+        <div id="kpi-units" style="font-weight:800;color:#fff">-</div>
+      </div>
+      <div style="background:#0b1220;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);width:120px;text-align:center">
+        <div style="font-size:12px;color:var(--muted)">Keberfungsian</div>
+        <canvas id="kpi-donut" width="120" height="80"></canvas>
+        <div id="kpi-donut-label" style="font-weight:800;color:#88e28f;font-size:13px;margin-top:6px">-</div>
+      </div>
+    </div>
   </div>
 
-  <div id="rekapGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;align-items:start;"></div>
+  <!-- Controls: Filter Tahun / Sumber -->
+  <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+    <label style="color:var(--muted);font-size:13px">Tahun:</label>
+    <select id="filter-year" style="padding:6px;border-radius:6px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.06)"></select>
+
+    <label style="color:var(--muted);font-size:13px">Sumber:</label>
+    <select id="filter-source" style="padding:6px;border-radius:6px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.06)">
+      <option value="gabungan">Gabungan</option>
+      <option value="reguler">Reguler</option>
+      <option value="ibm">IBM</option>
+    </select>
+
+    <label style="margin-left:12px;color:var(--muted);font-size:13px">
+      <input type="checkbox" id="toggle-hide-empty" checked style="margin-right:6px"> Sembunyikan Baris Data Kosong
+    </label>
+  </div>
+
+  <!-- Middle: Charts -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+    <div style="background:#0f1620;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)">
+      <div style="color:var(--muted);margin-bottom:8px">Nilai Investasi per Program</div>
+      <canvas id="chart-invest" height="240"></canvas>
+    </div>
+
+    <div style="background:#0f1620;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)">
+      <div style="color:var(--muted);margin-bottom:8px">Status Keberfungsian (Berfungsi / Tidak)</div>
+      <canvas id="chart-status" height="240"></canvas>
+    </div>
+  </div>
+
+  <!-- Bottom: Detail Technical Table -->
+  <div style="background:#0f1620;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="color:var(--muted)">Tabel Detail Teknis</div>
+      <div style="color:var(--muted);font-size:13px">Satuan tertampil pada kolom</div>
+    </div>
+
+    <div style="overflow:auto">
+      <table id="detail-table" style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="color:var(--muted);text-align:left;border-bottom:1px solid rgba(255,255,255,0.04)">
+            <th style="padding:8px">Jenis</th>
+            <th style="padding:8px">Program/Sektor</th>
+            <th style="padding:8px">Kapasitas Terpasang</th>
+            <th style="padding:8px">Kapasitas Terpakai</th>
+            <th style="padding:8px">Idle Capacity</th>
+            <th style="padding:8px">Luas Penanganan</th>
+            <th style="padding:8px">Luas Kawasan</th>
+          </tr>
+        </thead>
+        <tbody id="detail-body"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
+
+<!-- Modal drill-down -->
+<div id="modal-drill" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999">
+  <div style="width:820px;max-width:95%;background:#08101a;padding:18px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-weight:800;color:#ffd54f" id="modal-title">Detail</div>
+      <button id="modal-close" style="background:transparent;border:0;color:var(--muted);font-weight:700;cursor:pointer">Tutup</button>
+    </div>
+    <div id="modal-body" style="max-height:60vh;overflow:auto;color:#fff;font-size:13px"></div>
+  </div>
+</div>
 
 <script>
 (function(){
   const PATH_REG = 'data/rekap_reguler.json';
   const PATH_IBM = 'data/rekap_ibm.json';
-  const grid = document.getElementById('rekapGrid');
-  const tabs = { all: document.getElementById('tab-all'), reg: document.getElementById('tab-reg'), ibm: document.getElementById('tab-ibm') };
+
+  // charts
+  let chartInvest = null, chartStatus = null, donutChart = null;
+
+  // data store
   let dataReg = [], dataIbm = [];
 
-  function setActive(btn){
-    Object.values(tabs).forEach(b=>{
-      b.style.background='transparent';
-      b.style.color='var(--muted)';
-      b.style.borderColor='rgba(255,255,255,0.06)';
-    });
-    btn.style.background='#08263f';
-    btn.style.color='#ffd54f';
-    btn.style.borderColor='#08263f';
-  }
-
-  function cap(v){ return v===undefined || v==='' ? '-' : v; }
-  function fmtNum(n, decimals=2){
-    if(n===null||n===undefined||n==='-'||n==='') return '-';
+  // helpers
+  const $ = sel => document.querySelector(sel);
+  const el = tag => document.createElement(tag);
+  const fmt = (n, d=2) => {
+    if(n===undefined||n===null||n==='-'||n==='') return 'N/A';
     const num = Number(String(n).replace(/[^0-9.-]/g,''));
     if(isNaN(num)) return n;
-    return num.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: decimals});
+    return num.toLocaleString('id-ID',{minimumFractionDigits:0,maximumFractionDigits:d});
+  };
+
+  function aggregateForCharts(sourceArr, sourceType){
+    // returns per-program object for IBM or per-sector for Reguler
+    // structure: {key: {label, invest, unitTotal, berfungsi, tidak}}
+    const map = {};
+    sourceArr.forEach(r=>{
+      const key = sourceType==='ibm' ? (r.Program || 'Unknown') : (r.Sektor || r.Sektor || 'Unknown');
+      if(!map[key]) map[key] = { label:key, invest:0, unit:0, berfungsi:0, tidak:0, capacities: {tp:0, pakai:0, idle:0}, technical: {} };
+      map[key].invest += Number(r['Nilai Investasi (Miliar)']||0);
+      map[key].unit += Number(r['Jumlah Unit']||0);
+      map[key].berfungsi += Number(r['Berfungsi']||0);
+      map[key].tidak += Number(r['Tidak Berfungsi']||0);
+
+      // capacities numeric for KPI
+      const parseNum = v => {
+        if(!v || v==='-' ) return 0;
+        const m = String(v).match(/[-+]?[0-9]*[.,]?[0-9]+/);
+        return m ? Number(m[0].replace(',','.')) : 0;
+      };
+      map[key].capacities.tp += parseNum(r['Kapasitas Terpasang']);
+      map[key].capacities.pakai += parseNum(r['Kapasitas Terpakai']);
+      map[key].capacities.idle += parseNum(r['Idle Capacity']);
+
+      // keep technical fields (first non-empty)
+      ['Luas Penanganan','Luas Kawasan','Satuan Kapasitas'].forEach(f=>{
+        if((!map[key].technical[f] || map[key].technical[f]==='-') && r[f] && r[f]!== '-') map[key].technical[f] = r[f];
+      });
+
+      // store raw rows for drill-down
+      if(!map[key].rows) map[key].rows = [];
+      map[key].rows.push(r);
+    });
+    return Object.values(map);
   }
 
-  function buildBadge(text, color){
-    const badge = document.createElement('div');
-    badge.textContent = text;
-    badge.style.position = 'absolute';
-    badge.style.top = '10px';
-    badge.style.right = '12px';
-    badge.style.background = color;
-    badge.style.color = '#021129';
-    badge.style.fontWeight = 700;
-    badge.style.fontSize = '11px';
-    badge.style.padding = '4px 8px';
-    badge.style.borderRadius = '6px';
-    badge.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
-    return badge;
-  }
+  // build KPI summary
+  function buildKPI(combinedAll){
+    const totInvest = combinedAll.reduce((s,i)=>s + Number(i['Nilai Investasi (Miliar)']||0),0);
+    const totUnits = combinedAll.reduce((s,i)=>s + Number(i['Jumlah Unit']||0),0);
+    const totBerfungsi = combinedAll.reduce((s,i)=>s + Number(i['Berfungsi']||0),0);
+    // donut values: berfungsi, tidak
+    const totTidak = combinedAll.reduce((s,i)=>s + Number(i['Tidak Berfungsi']||0),0);
 
-  function buildCard(title, dataObj, satuan, type){
-    const card = document.createElement('div');
-    card.style.background = '#0f1620';
-    card.style.border = '1px solid rgba(255,255,255,0.05)';
-    card.style.borderRadius = '12px';
-    card.style.padding = '16px';
-    card.style.position = 'relative';
-    card.style.boxShadow = '0 8px 28px rgba(0,0,0,0.45)';
+    $('#kpi-invest').textContent = totInvest ? 'Rp ' + fmt(totInvest,2) + ' M' : 'N/A';
+    $('#kpi-units').textContent = totUnits ? fmt(totUnits,0) : 'N/A';
+    const pct = totUnits ? Math.round((totBerfungsi / totUnits) * 100) : 0;
+    $('#kpi-donut-label').textContent = pct ? (pct + '%') : 'N/A';
 
-    // Add badge (color based on type)
-    const badgeColor = type === 'ibm' ? '#fcd34d' : '#3b82f6';
-    card.appendChild(buildBadge('Data s.d. 2024', badgeColor));
-
-    const titleDiv = document.createElement('div');
-    titleDiv.textContent = title;
-    titleDiv.style.fontFamily = 'var(--font-montserrat)';
-    titleDiv.style.fontWeight = 800;
-    titleDiv.style.fontSize = '16px';
-    titleDiv.style.color = badgeColor;
-    titleDiv.style.marginBottom = '10px';
-    card.appendChild(titleDiv);
-
-    const inv = document.createElement('div');
-    inv.style.background = '#08263f';
-    inv.style.padding = '8px 10px';
-    inv.style.borderRadius = '6px';
-    inv.style.marginBottom = '12px';
-    inv.style.display = 'flex';
-    inv.style.justifyContent = 'space-between';
-    inv.innerHTML = '<div style="font-size:13px;color:var(--muted)">Nilai Investasi</div><div style="font-weight:800;color:'+badgeColor+'">'+
-      (dataObj['Nilai Investasi (Miliar)']?('Rp '+fmtNum(dataObj['Nilai Investasi (Miliar)'],2)+' M'):'-')+'</div>';
-    card.appendChild(inv);
-
-    const rows = [
-      ['Jumlah Unit', dataObj['Jumlah Unit']],
-      ['Berfungsi', dataObj['Berfungsi']],
-      ['Tidak Berfungsi', dataObj['Tidak Berfungsi']],
-      ['Kapasitas Terpasang', dataObj['Kapasitas Terpasang']],
-      ['Kapasitas Terpakai', dataObj['Kapasitas Terpakai']],
-      ['Idle Capacity', dataObj['Idle Capacity']],
-      ['Luas Penanganan', dataObj['Luas Penanganan']],
-      ['Luas Kawasan', dataObj['Luas Kawasan']]
-    ];
-
-    rows.forEach((r,i)=>{
-      const row=document.createElement('div');
-      row.style.display='flex';
-      row.style.justifyContent='space-between';
-      row.style.padding='6px 4px';
-      row.style.borderBottom=i<rows.length-1?'1px solid rgba(255,255,255,0.05)':'none';
-      const l=document.createElement('div');l.textContent=r[0];l.style.color='var(--muted)';l.style.fontSize='13px';
-      const v=document.createElement('div');v.style.fontWeight='700';v.style.fontSize='13px';
-      let val=r[1];
-      if(r[0].includes('Kapasitas') && val && val!=='-'){
-        const num=Number(String(val).replace(/[^0-9.,]/g,'').replace(',','.'));
-        val=isNaN(num)?val:fmtNum(num,2)+(satuan&&satuan!=='-'?' '+satuan:'');
+    const ctx = document.getElementById('kpi-donut').getContext('2d');
+    if(donutChart) donutChart.destroy();
+    donutChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Berfungsi','Tidak'],
+        datasets: [{ data:[totBerfungsi, totTidak], backgroundColor:['#88e28f','#ff9b8a'], borderWidth:0 }]
+      },
+      options: {
+        plugins:{tooltip:{callbacks:{label:ctx=>{ return ctx.label+': '+fmt(ctx.raw,0); }}}},
+        cutout:'70%',
+        responsive:true,
+        maintainAspectRatio:true
       }
-      v.textContent=cap(val);
-      row.appendChild(l);row.appendChild(v);card.appendChild(row);
-    });
-    return card;
-  }
-
-  function isEmptySector(obj){
-    const keys=['Jumlah Unit','Nilai Investasi (Miliar)','Berfungsi','Tidak Berfungsi','Kapasitas Terpasang','Kapasitas Terpakai','Idle Capacity'];
-    return keys.every(k=>{
-      const v=obj[k];
-      return v===undefined||v==='-'||v===0||v==='0';
     });
   }
 
-  function renderSectors(data,type){
-    grid.innerHTML='';
-    const order=['Air Minum','Air Limbah','Persampahan','PKS','BPB'];
-    const map={};
-    data.forEach(r=>{
-      const key=(r.Sektor||'').trim()||'Unknown';
-      if(!map[key]) map[key]=Object.assign({},r);
-      else{
-        const parseNum=v=>Number(String(v).replace(/[^0-9.,]/g,'').replace(',','.'))||0;
-        map[key]['Jumlah Unit']=(Number(map[key]['Jumlah Unit']||0)+Number(r['Jumlah Unit']||0));
-        map[key]['Nilai Investasi (Miliar)']=(Number(map[key]['Nilai Investasi (Miliar)']||0)+Number(r['Nilai Investasi (Miliar)']||0));
-        map[key]['Berfungsi']=(Number(map[key]['Berfungsi']||0)+Number(r['Berfungsi']||0));
-        map[key]['Tidak Berfungsi']=(Number(map[key]['Tidak Berfungsi']||0)+Number(r['Tidak Berfungsi']||0));
-        map[key]['Kapasitas Terpasang']=(Number(map[key]['Kapasitas Terpasang']||0)+parseNum(r['Kapasitas Terpasang']));
-        map[key]['Kapasitas Terpakai']=(Number(map[key]['Kapasitas Terpakai']||0)+parseNum(r['Kapasitas Terpakai']));
-        map[key]['Idle Capacity']=(Number(map[key]['Idle Capacity']||0)+parseNum(r['Idle Capacity']));
+  // build Invest bar chart (horizontal)
+  function buildInvestChart(items){
+    const labels = items.map(i=>i.label);
+    const data = items.map(i=>Number(i.invest || 0));
+    const ctx = document.getElementById('chart-invest').getContext('2d');
+    if(chartInvest) chartInvest.destroy();
+    chartInvest = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets:[{ label:'Nilai Investasi (Miliar)', data, backgroundColor:'#3b82f6' }]},
+      options: {
+        indexAxis:'y',
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=> 'Rp '+fmt(ctx.raw,2)+' M | '+items[ctx.dataIndex].unit+' unit'}}},
+        responsive:true, maintainAspectRatio:false,
+        scales:{x:{ticks:{callback:val=>'Rp '+fmt(val,2)+' M'}}}
       }
     });
 
-    order.forEach(k=>{
-      const item=map[k];
-      if(!item || isEmptySector(item)) return;
-      grid.appendChild(buildCard(item.Sektor,item,item['Satuan Kapasitas']||'-',type));
-    });
-    if(grid.children.length===0){
-      grid.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px;">Tidak ada data sektor aktif.</div>';
-    }
+    // add click handler to drill-down
+    document.getElementById('chart-invest').onclick = function(evt){
+      const points = chartInvest.getElementsAtEventForMode(evt,'nearest',{intersect:true},true);
+      if(points.length){
+        const idx = points[0].index;
+        openDrillModal(items[idx]);
+      }
+    };
   }
 
-  function renderIbm(data){
-    grid.innerHTML='';
-    data.forEach(it=>{
-      if(isEmptySector(it)) return;
-      grid.appendChild(buildCard(it['Program'],it,it['Satuan Kapasitas']||'-','ibm'));
+  // build stacked bar for Berfungsi vs Tidak
+  function buildStatusChart(items){
+    const labels = items.map(i=>i.label);
+    const dataBer = items.map(i=>Number(i.berfungsi||0));
+    const dataTidak = items.map(i=>Number(i.tidak||0));
+    const ctx = document.getElementById('chart-status').getContext('2d');
+    if(chartStatus) chartStatus.destroy();
+    chartStatus = new Chart(ctx, {
+      type:'bar',
+      data: { labels, datasets:[
+        { label:'Berfungsi', data:dataBer, backgroundColor:'#88e28f' },
+        { label:'Tidak Berfungsi', data:dataTidak, backgroundColor:'#ff9b8a' }
+      ]},
+      options:{
+        plugins:{tooltip:{callbacks:{label:ctx=> ctx.dataset.label+': '+fmt(ctx.raw,0)}}},
+        responsive:true, maintainAspectRatio:false, scales:{x:{stacked:true}, y:{stacked:true}}
+      }
     });
-    if(grid.children.length===0){
-      grid.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px;">Tidak ada data IBM aktif.</div>';
-    }
+
+    document.getElementById('chart-status').onclick = function(evt){
+      const points = chartStatus.getElementsAtEventForMode(evt,'nearest',{intersect:true},true);
+      if(points.length){
+        const idx = points[0].index;
+        openDrillModal(items[idx]);
+      }
+    };
   }
 
-  Promise.all([fetch(PATH_REG).then(r=>r.json()), fetch(PATH_IBM).then(r=>r.json())])
-  .then(([reg,ibm])=>{
-    dataReg=reg; dataIbm=ibm;
-    setActive(tabs.all);
-    renderSectors(dataReg.concat(dataIbm),'gabungan');
-  })
-  .catch(err=>{
-    grid.innerHTML='<div style="color:#ffb4b4">Gagal memuat data. Periksa path JSON di folder repo.</div>';
-    console.error(err);
+  // render detail table (with toggle hide empty)
+  function renderDetailTable(allData, hideEmpty){
+    const tbody = $('#detail-body');
+    tbody.innerHTML = '';
+    // rows: each raw row from reg or ibm, but standardize columns
+    const sources = [];
+    allData.forEach(r=> {
+      if(r.Sektor) sources.push({jenis:'Reguler', key:r.Sektor, row:r});
+      if(r.Program) sources.push({jenis:'IBM', key:r.Program, row:r});
+    });
+
+    // build one table row per source-row
+    sources.forEach(s=>{
+      const r = s.row;
+      // hide if hideEmpty and all technical fields empty
+      const techFields = ['Kapasitas Terpasang','Kapasitas Terpakai','Idle Capacity','Luas Penanganan','Luas Kawasan'];
+      const allEmpty = techFields.every(f=>{
+        const v = r[f];
+        return v===undefined || v==='' || v==='-' || v===0 || v==='0';
+      });
+      if(hideEmpty && allEmpty) return;
+
+      const tr = el('tr');
+      tr.style.borderBottom = '1px solid rgba(255,255,255,0.04)';
+      tr.style.color = '#fff';
+      tr.innerHTML = `<td style="padding:8px">${s.jenis}</td>
+        <td style="padding:8px">${capv(r.Sektor||r.Program)}</td>
+        <td style="padding:8px">${r['Kapasitas Terpasang']? (r['Kapasitas Terpasang'] + (r['Satuan Kapasitas']? ' '+r['Satuan Kapasitas']:'')) : 'N/A'}</td>
+        <td style="padding:8px">${r['Kapasitas Terpakai']? (r['Kapasitas Terpakai'] + (r['Satuan Kapasitas']? ' '+r['Satuan Kapasitas']:'')) : 'N/A'}</td>
+        <td style="padding:8px">${r['Idle Capacity']? (r['Idle Capacity'] + (r['Satuan Kapasitas']? ' '+r['Satuan Kapasitas']:'')) : 'N/A'}</td>
+        <td style="padding:8px">${r['Luas Penanganan']? r['Luas Penanganan'] : 'N/A'}</td>
+        <td style="padding:8px">${r['Luas Kawasan']? r['Luas Kawasan'] : 'N/A'}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // drill modal
+  function openDrillModal(item){
+    $('#modal-title').textContent = item.label || item.Sektor || item.Program || 'Detail';
+    const body = $('#modal-body');
+    body.innerHTML = '';
+    // if item has rows, show list
+    if(item.rows && item.rows.length){
+      const list = el('div');
+      item.rows.forEach(r=>{
+        const card = el('div');
+        card.style.padding='8px';
+        card.style.borderBottom='1px solid rgba(255,255,255,0.04)';
+        card.innerHTML = `<div style="font-weight:700">${r.NamaUnit || (r.UnitName || r.ID || 'Unit')}</div>
+          <div style="color:var(--muted);font-size:13px">Lokasi: ${r.Lokasi || r.Kecamatan || 'N/A'}</div>
+          <div style="margin-top:6px;font-size:13px">Status: Berfungsi ${fmt(r.Berfungsi,0)} | Tidak ${fmt(r['Tidak Berfungsi'],0)}</div>`;
+        list.appendChild(card);
+      });
+      body.appendChild(list);
+    } else {
+      body.innerHTML = '<div style="color:var(--muted)">Detail unit tidak tersedia pada sumber data. Jika tersedia, field "rows" akan ditampilkan di modal.</div>';
+    }
+    $('#modal-drill').style.display = 'flex';
+  }
+
+  // UI bindings
+  $('#modal-close').addEventListener('click', ()=> $('#modal-drill').style.display='none');
+  $('#toggle-hide-empty').addEventListener('change', ()=> {
+    const hide = $('#toggle-hide-empty').checked;
+    renderDetailTable(dataReg.concat(dataIbm), hide);
   });
 
-  tabs.reg.addEventListener('click',()=>{setActive(tabs.reg);renderSectors(dataReg,'reguler');});
-  tabs.ibm.addEventListener('click',()=>{setActive(tabs.ibm);renderIbm(dataIbm);});
-  tabs.all.addEventListener('click',()=>{setActive(tabs.all);renderSectors(dataReg.concat(dataIbm),'gabungan');});
+  function capv(v){ return v===undefined||v===''? 'N/A' : v; }
+
+  // Load data + init UI
+  Promise.all([fetch(PATH_REG).then(r=>r.json()), fetch(PATH_IBM).then(r=>r.json())])
+    .then(([reg, ibm])=>{
+      dataReg = reg; dataIbm = ibm;
+      // collect possible years from data if present (field 'Tahun' or 'Tahun Anggaran')
+      const years = new Set();
+      [...dataReg, ...dataIbm].forEach(r=>{
+        if(r.Tahun) years.add(String(r.Tahun));
+        if(r['Tahun Anggaran']) years.add(String(r['Tahun Anggaran']));
+      });
+      const yearSel = $('#filter-year');
+      yearSel.innerHTML = '<option value="all">Semua</option>';
+      Array.from(years).sort().forEach(y=>{
+        const opt = el('option'); opt.value= y; opt.textContent = y; yearSel.appendChild(opt);
+      });
+
+      // initial render with Gabungan, all years
+      const combined = dataReg.concat(dataIbm);
+      buildKPI(combined);
+
+      const aggIbm = aggregateForCharts(dataIbm,'ibm');
+      const aggReg = aggregateForCharts(dataReg,'reguler');
+
+      // default charts: use IBM programs first (per request)
+      const chartItems = aggIbm.length ? aggIbm : aggReg;
+      buildInvestChart(chartItems);
+      buildStatusChart(chartItems);
+
+      renderDetailTable(combined, $('#toggle-hide-empty').checked);
+
+      // filter handlers
+      $('#filter-source').addEventListener('change', (e)=>{
+        const val = e.target.value;
+        let items = [];
+        if(val==='ibm'){ items = aggIbm; buildInvestChart(aggIbm); buildStatusChart(aggIbm); }
+        else if(val==='reguler'){ items = aggReg; buildInvestChart(aggReg); buildStatusChart(aggReg); }
+        else { const merged = aggReg.concat(aggIbm); buildInvestChart(merged); buildStatusChart(merged); }
+      });
+
+      $('#filter-year').addEventListener('change', (e)=>{
+        const y = e.target.value;
+        // filter data arrays by year if year present; otherwise no-op
+        const pick = arr => arr.filter(r=> {
+          if(y==='all') return true;
+          return String(r.Tahun || r['Tahun Anggaran'] || '') === y;
+        });
+        const regF = pick(dataReg), ibmF= pick(dataIbm);
+        buildKPI(regF.concat(ibmF));
+        const aggI = aggregateForCharts(ibmF,'ibm'), aggR = aggregateForCharts(regF,'reguler');
+        const source = $('#filter-source').value;
+        if(source==='ibm'){ buildInvestChart(aggI); buildStatusChart(aggI); }
+        else if(source==='reguler'){ buildInvestChart(aggR); buildStatusChart(aggR); }
+        else { buildInvestChart(aggR.concat(aggI)); buildStatusChart(aggR.concat(aggI)); }
+        renderDetailTable(regF.concat(ibmF), $('#toggle-hide-empty').checked);
+      });
+
+    })
+    .catch(err=>{
+      console.error(err);
+      grid.innerHTML = '<div style="color:#ffb4b4">Gagal memuat data. Periksa file JSON pada folder /data/</div>';
+    });
+
 })();
 </script>
-<!-- END: Rekapitulasi Formal Final -->
-  
+<!-- END: Dashboard Interaktif Rekap -->
+
+ 
   <!-- ===== Footer ===== -->
   <footer>
     &copy; 2025 MalukuInfraZone - BPBPK Maluku. Semua Hak Dilindungi.
