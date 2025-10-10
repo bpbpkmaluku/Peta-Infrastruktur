@@ -158,24 +158,50 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:c
 </footer>
 
 <script>
-/* Basic JSON loader */
-async function loadJSON(path){
-  try{ const r = await fetch(path,{cache:'no-store'}); if(!r.ok) return []; return await r.json(); }catch(e){ console.error(e); return []; }
+/* DEBUG + RENDER: ganti script lama dengan ini */
+
+/* helper fetch dengan logging */
+async function fetchJsonSafe(path) {
+  try {
+    console.log('Mencoba load', path);
+    const r = await fetch(path, { cache: 'no-store' });
+    if (!r.ok) {
+      console.error('Fetch gagal', path, r.status, r.statusText);
+      return { error: `Fetch gagal (${r.status}): ${path}`, data: [] };
+    }
+    const txt = await r.text();
+    try {
+      const json = JSON.parse(txt);
+      console.log('JSON parsed', path, Array.isArray(json) ? json.length : typeof json);
+      return { data: json };
+    } catch (err) {
+      console.error('JSON parse error for', path, err);
+      return { error: 'JSON parse error: ' + err.message, data: [] };
+    }
+  } catch (err) {
+    console.error('Fetch exception for', path, err);
+    return { error: 'Fetch exception: ' + err.message, data: [] };
+  }
 }
-/* pick helper */
+
+/* visual error banner */
+function showBanner(containerId, message) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = `<div style="padding:14px;color:#ffd166;background:#2b2f33;border-radius:8px;text-align:center;font-weight:700">${message}</div>`;
+}
+
+/* existing helpers (pick, splitValueUnit, formatInvest) kept */
 function pick(obj, keys){
   for(const k of keys) if(obj && obj[k] !== undefined && obj[k] !== null && String(obj[k]).trim() !== '') return obj[k];
   return null;
 }
-/* format investasi */
 function formatInvest(v){
   if(v === null || v === undefined || v === '') return 'Rp 0';
   const n = Number(String(v).replace(/[^0-9.-]+/g,''));
   if(!isNaN(n)) return 'Rp ' + n.toLocaleString('id-ID', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' Miliar';
   return String(v);
 }
-
-/* split value and unit */
 function splitValueUnit(raw){
   if(raw === null || raw === undefined) return { value:'', unit:'' };
   const s = String(raw).trim();
@@ -186,44 +212,38 @@ function splitValueUnit(raw){
   return { value: s, unit: '' };
 }
 
-/* map JSON item to fields (with unit detection) */
+/* mapItem (same robust mapper) */
 function mapItem(item){
   const name = pick(item, ['Sektor','Program','Nama','Nama Program']) || '-';
   const jumlah = String(pick(item, ['Jumlah Unit','Jumlah','Unit']) ?? '-');
   const investRaw = pick(item, ['Nilai Investasi (Miliar)','Nilai Investasi','Investasi']);
   const invest = formatInvest(investRaw);
-
   const unitKapExplicit = pick(item, ['Satuan Kapasitas','Satuan','Unit Satuan','Satuan Kap']);
   const unitLuasExplicit = pick(item, ['Satuan Luas','Satuan_area','Satuan Kawasan']);
-
   const util = [];
   const ktRaw = pick(item, ['Kapasitas Terpasang','Kapasitas terpasang']);
   const kpRaw = pick(item, ['Kapasitas Terpakai','Kapasitas terpakai']);
   const idleRaw = pick(item, ['Idle Capacity','Idle','Idle Capacity (L/detik)']);
   const luasPenRaw = pick(item, ['Luas Penanganan','Luas Penanganan (ha)']);
   const luasKawRaw = pick(item, ['Luas Kawasan','Luas Total Kawasan']);
-
   function valWithUnit(rawVal, explicitUnit){
     if(rawVal === null || rawVal === undefined || String(rawVal).trim() === '') return '-';
     const su = splitValueUnit(rawVal);
     if(explicitUnit && String(explicitUnit).trim() !== '') return (su.value || String(rawVal).trim()) + ' ' + String(explicitUnit).trim();
     return su.unit ? (su.value + ' ' + su.unit) : su.value;
   }
-
   if(ktRaw !== null) util.push(['Kapasitas Terpasang', valWithUnit(ktRaw, unitKapExplicit)]);
   if(kpRaw !== null) util.push(['Kapasitas Terpakai', valWithUnit(kpRaw, unitKapExplicit)]);
   if(idleRaw !== null) util.push(['Idle Capacity', valWithUnit(idleRaw, unitKapExplicit)]);
   if(luasPenRaw !== null) util.push(['Luas Penanganan', valWithUnit(luasPenRaw, unitLuasExplicit)]);
   if(luasKawRaw !== null) util.push(['Luas Total Kawasan', valWithUnit(luasKawRaw, unitLuasExplicit)]);
-
   const berf = pick(item, ['Berfungsi','Berfungsi Unit','Jumlah Berfungsi']);
   const tbf = pick(item, ['Tidak Berfungsi','Tidak Berfungsi Unit','Jumlah Tidak Berfungsi']);
   const status = [['Berfungsi', berf !== null ? String(berf) : '-'], ['Tidak Berfungsi', tbf !== null ? String(tbf) : '-']];
-
   return { prefix: 'Infrastruktur', name, jumlah, invest, util, status };
 }
 
-/* build card HTML */
+/* buildCard same as before */
 function buildCard(prefix, name, jumlah, invest, utilRows, statusRows){
   const utilHtml = (utilRows && utilRows.length) ? `<div class="body"><div class="section-title">Utilisasi</div><table>${utilRows.map(r=>`<tr><td class="k">${r[0]}</td><td class="v">${r[1]||'-'}</td></tr>`).join('')}</table></div>` : '';
   const statusHtml = `<div class="body"><div class="section-title">Status Keberfungsian</div><table>${statusRows.map(r=>`<tr><td class="k">${r[0]}</td><td class="v">${r[1]||'-'}</td></tr>`).join('')}</table></div>`;
@@ -241,49 +261,39 @@ function buildCard(prefix, name, jumlah, invest, utilRows, statusRows){
   </div>`;
 }
 
-/* render rows: top 3, bottom 2 */
+/* renderRows with safety messages */
 function renderRows(topId, bottomId, data){
-  const top = document.getElementById(topId); top.innerHTML = '';
-  const bottom = document.getElementById(bottomId); bottom.innerHTML = '';
-  const list = Array.isArray(data) ? data : [];
-  list.slice(0,3).forEach(it => { const f = mapItem(it); top.insertAdjacentHTML('beforeend', buildCard(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
-  list.slice(3,5).forEach(it => { const f = mapItem(it); bottom.insertAdjacentHTML('beforeend', buildCard(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
-}
-
-/* load and render */
-async function loadAndRender(){
-  const reg = await loadJSON('data/rekap_reguler.json');
-  const ibm = await loadJSON('data/rekap_ibm.json');
-  renderRows('cards-reg-top','cards-reg-bottom', Array.isArray(reg)?reg:[]);
-  renderRows('cards-ibm-top','cards-ibm-bottom', Array.isArray(ibm)?ibm:[]);
-}
-
-/* active nav based on pathname or scroll position */
-function setActiveNav(){
-  document.querySelectorAll('#top-nav a.nav-link').forEach(a=>a.classList.remove('active'));
-  const path = window.location.pathname.split('/').pop().toLowerCase();
-  if(path === 'peta.html'){
-    const p = document.getElementById('nav-peta'); if(p) p.classList.add('active'); return;
+  const top = document.getElementById(topId); const bottom = document.getElementById(bottomId);
+  top.innerHTML = ''; bottom.innerHTML = '';
+  if(!Array.isArray(data) || data.length === 0){
+    const msg = '<div style="padding:14px;color:#9fb0c6;text-align:center">Tidak ada data untuk ditampilkan.</div>';
+    top.innerHTML = msg; return;
   }
-  const sections = [{id:'hero', nav:'nav-home'},{id:'dashboard', nav:'nav-dashboard'}];
-  const offset = window.scrollY + 90;
-  let active = 'nav-home';
-  for(const s of sections){ const el = document.getElementById(s.id); if(el && el.offsetTop <= offset) active = s.nav; }
-  const activeEl = document.getElementById(active); if(activeEl) activeEl.classList.add('active');
+  data.slice(0,3).forEach(it => { const f = mapItem(it); top.insertAdjacentHTML('beforeend', buildCard(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
+  data.slice(3,5).forEach(it => { const f = mapItem(it); bottom.insertAdjacentHTML('beforeend', buildCard(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
 }
 
-/* smooth internal scroll */
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    const target = a.getAttribute('href').slice(1);
-    const el = document.getElementById(target);
-    if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
-  });
-});
+/* main loader with error banners */
+async function loadAndRender(){
+  // paths
+  const regPath = 'data/rekap_reguler.json';
+  const ibmPath = 'data/rekap_ibm.json';
+
+  // fetch both
+  const [regRes, ibmRes] = await Promise.all([fetchJsonSafe(regPath), fetchJsonSafe(ibmPath)]);
+
+  // show errors if any
+  if(regRes.error) showBanner('cards-reg-top', 'Error load rekap_reguler.json — ' + regRes.error);
+  if(ibmRes.error) showBanner('cards-ibm-top', 'Error load rekap_ibm.json — ' + ibmRes.error);
+
+  // render (use data arrays even if empty)
+  renderRows('cards-reg-top','cards-reg-bottom', regRes.data || []);
+  renderRows('cards-ibm-top','cards-ibm-bottom', ibmRes.data || []);
+}
 
 /* init */
-window.addEventListener('load', ()=>{ loadAndRender(); setActiveNav(); if(!location.hash) window.scrollTo(0,0); });
-window.addEventListener('scroll', setActiveNav);
+window.addEventListener('load', ()=>{ loadAndRender(); setActiveNav && setActiveNav(); if(!location.hash) window.scrollTo(0,0); });
+window.addEventListener('scroll', ()=>{ setActiveNav && setActiveNav(); });
 </script>
 </body>
 </html>
