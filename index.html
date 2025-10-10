@@ -295,5 +295,165 @@
     window.addEventListener('load', checkHeader);
     window.addEventListener('scroll', checkHeader, { passive: true });
   </script>
+<!-- START: Rekapitulasi (disesuaikan dengan style MalukuInfraZone) -->
+<section id="rekap-section" style="max-width:1160px;margin:40px auto;padding:28px;border-radius:12px;">
+  <h2 style="font-family:var(--font-montserrat);color:#fff;margin:0 0 18px;text-align:center;">Rekapitulasi Infrastruktur</h2>
+
+  <div style="display:flex;gap:8px;justify-content:center;margin-bottom:18px;">
+    <button id="tab-all" class="rekap-tab" style="padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:#08263f;color:#ffd54f;font-weight:700">Gabungan</button>
+    <button id="tab-reg" class="rekap-tab" style="padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);font-weight:600">Reguler</button>
+    <button id="tab-ibm" class="rekap-tab" style="padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);font-weight:600">IBM</button>
+  </div>
+
+  <div id="rekapGrid" style="display:flex;flex-wrap:wrap;gap:18px;justify-content:center;"></div>
+</section>
+
+<script>
+(function(){
+  const PATH_REG = 'data/rekap_reguler.json';
+  const PATH_IBM = 'data/rekap_ibm.json';
+
+  const grid = document.getElementById('rekapGrid');
+  const tabs = { all: document.getElementById('tab-all'), reg: document.getElementById('tab-reg'), ibm: document.getElementById('tab-ibm') };
+
+  let dataReg = [], dataIbm = [];
+
+  function setActive(btn){
+    Object.values(tabs).forEach(b=>{
+      b.style.background='transparent';
+      b.style.color='var(--muted)';
+      b.style.borderColor='rgba(255,255,255,0.06)';
+    });
+    btn.style.background='#08263f';
+    btn.style.color='#ffd54f';
+    btn.style.borderColor='#08263f';
+  }
+
+  function capv(v){ return v===undefined || v==='' ? '-' : v; }
+
+  function buildCard(title, item, satuan){
+    const card = document.createElement('div');
+    card.className = 'sector-card';
+    card.style.width = '320px';
+    card.style.background = '#161b26';
+    card.style.borderRadius = '12px';
+    card.style.padding = '14px';
+    card.style.boxShadow = '0 10px 30px rgba(0,0,0,0.45)';
+    card.style.border = '1px solid rgba(255,255,255,0.03)';
+    card.style.color = '#fff';
+
+    const hdr = document.createElement('div');
+    hdr.style.background = '#0b2740';
+    hdr.style.padding = '12px';
+    hdr.style.textAlign = 'center';
+    hdr.style.fontWeight = 800;
+    hdr.style.color = '#ffd54f';
+    hdr.style.borderRadius = '8px';
+    hdr.style.marginBottom = '10px';
+    hdr.style.fontFamily = 'var(--font-montserrat)';
+    hdr.textContent = title;
+    card.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.style.fontFamily = 'var(--font-poppins)';
+    body.style.fontSize = '14px';
+
+    const rows = [
+      ['Jumlah Unit', capv(item['Jumlah Unit'])],
+      ['Nilai Investasi (Miliar)', capv(item['Nilai Investasi (Miliar)'])],
+      ['Berfungsi', capv(item['Berfungsi'])],
+      ['Tidak Berfungsi', capv(item['Tidak Berfungsi'])],
+      ['Kapasitas Terpasang', capv(item['Kapasitas Terpasang']) + (satuan && satuan!=='-' ? ' ' + satuan : '')],
+      ['Kapasitas Terpakai', capv(item['Kapasitas Terpakai']) + (satuan && satuan!=='-' ? ' ' + satuan : '')],
+      ['Idle Capacity', capv(item['Idle Capacity']) + (satuan && satuan!=='-' ? ' ' + satuan : '')],
+      ['Luas Penanganan', capv(item['Luas Penanganan'])],
+      ['Luas Kawasan', capv(item['Luas Kawasan'])]
+    ];
+
+    rows.forEach((r,i) => {
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.justifyContent = 'space-between';
+      row.style.padding = '8px 6px';
+      row.style.borderBottom = i < rows.length-1 ? '1px solid rgba(255,255,255,0.03)' : 'none';
+      const label = document.createElement('div'); label.style.color = 'var(--muted)'; label.style.fontSize='13px'; label.textContent = r[0];
+      const val = document.createElement('div'); val.style.fontWeight='700'; val.style.fontSize='13px'; val.textContent = r[1];
+      row.appendChild(label); row.appendChild(val); body.appendChild(row);
+    });
+
+    card.appendChild(body);
+    return card;
+  }
+
+  function renderCards(items, type){
+    grid.innerHTML = '';
+    if(type === 'ibm'){
+      items.forEach(it=>{
+        const satuan = it['Satuan Kapasitas'] || '-';
+        grid.appendChild(buildCard(it['Program'], it, satuan));
+      });
+      return;
+    }
+
+    // aggregate per sector
+    const order = ['Air Minum','Air Limbah','Persampahan','PKS','BPB'];
+    const map = {};
+    items.forEach(row=>{
+      const key = (row.Sektor||'').trim() || 'Unknown';
+      if(!map[key]) map[key] = { Sektor:key, 'Jumlah Unit':0, 'Nilai Investasi (Miliar)':0, 'Berfungsi':0, 'Tidak Berfungsi':0, 'Kapasitas Terpasang':0, 'Kapasitas Terpakai':0, 'Idle Capacity':0, 'Luas Penanganan':'-', 'Luas Kawasan':'-', 'Satuan Kapasitas': (row['Satuan Kapasitas']||'-') };
+      map[key]['Jumlah Unit'] += Number(row['Jumlah Unit']||0);
+      map[key]['Nilai Investasi (Miliar)'] += Number(row['Nilai Investasi (Miliar)']||0);
+      map[key]['Berfungsi'] += Number(row['Berfungsi']||0);
+      map[key]['Tidak Berfungsi'] += Number(row['Tidak Berfungsi']||0);
+
+      const parseNum = v => {
+        if(!v) return 0;
+        if(typeof v === 'number') return v;
+        const m = String(v).match(/[-+]?[0-9]*[.,]?[0-9]+/);
+        return m ? Number(m[0].replace(',','.')) : 0;
+      };
+      map[key]['Kapasitas Terpasang'] += parseNum(row['Kapasitas Terpasang']);
+      map[key]['Kapasitas Terpakai'] += parseNum(row['Kapasitas Terpakai']);
+      map[key]['Idle Capacity'] += parseNum(row['Idle Capacity']);
+
+      if(row['Luas Penanganan'] && row['Luas Penanganan'] !== '-') map[key]['Luas Penanganan'] = row['Luas Penanganan'];
+      if(row['Luas Kawasan'] && row['Luas Kawasan'] !== '-') map[key]['Luas Kawasan'] = row['Luas Kawasan'];
+      if(row['Satuan Kapasitas'] && row['Satuan Kapasitas'] !== '-') map[key]['Satuan Kapasitas'] = row['Satuan Kapasitas'];
+    });
+
+    order.forEach(k=>{
+      const item = map[k] || { Sektor:k, 'Jumlah Unit':0, 'Nilai Investasi (Miliar)':0, 'Berfungsi':0, 'Tidak Berfungsi':0, 'Kapasitas Terpasang':0, 'Kapasitas Terpakai':0, 'Idle Capacity':0, 'Luas Penanganan':'-', 'Luas Kawasan':'-', 'Satuan Kapasitas':'-' };
+      const satuan = item['Satuan Kapasitas'] || '-';
+      const display = Object.assign({}, item);
+      display['Kapasitas Terpasang'] = item['Kapasitas Terpasang'] ? Number(item['Kapasitas Terpasang']).toFixed(2) : '-';
+      display['Kapasitas Terpakai'] = item['Kapasitas Terpakai'] ? Number(item['Kapasitas Terpakai']).toFixed(2) : '-';
+      display['Idle Capacity'] = item['Idle Capacity'] ? Number(item['Idle Capacity']).toFixed(2) : '-';
+      display['Nilai Investasi (Miliar)'] = item['Nilai Investasi (Miliar)'] ? Number(item['Nilai Investasi (Miliar)']).toFixed(2) : '-';
+      grid.appendChild(buildCard(item.Sektor, display, satuan));
+    });
+  }
+
+  // load JSON
+  Promise.all([fetch(PATH_REG).then(r=>r.json()), fetch(PATH_IBM).then(r=>r.json())])
+    .then(([reg, ibm])=>{
+      dataReg = reg;
+      dataIbm = ibm;
+      setActive(tabs.all);
+      renderCards(dataReg.concat(dataIbm), 'gabungan');
+    })
+    .catch(err=>{
+      grid.innerHTML = '<div style="color:#ffb4b4">Gagal memuat data. Periksa path JSON di folder repo.</div>';
+      console.error(err);
+    });
+
+  // tab events
+  tabs.reg.addEventListener('click', ()=>{ setActive(tabs.reg); renderCards(dataReg, 'reguler'); });
+  tabs.ibm.addEventListener('click', ()=>{ setActive(tabs.ibm); renderCards(dataIbm, 'ibm'); });
+  tabs.all.addEventListener('click', ()=>{ setActive(tabs.all); renderCards(dataReg.concat(dataIbm), 'gabungan'); });
+
+})();
+</script>
+<!-- END: Rekapitulasi -->
+  
 </body>
 </html>
