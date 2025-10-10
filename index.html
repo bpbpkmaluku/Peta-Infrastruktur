@@ -107,30 +107,39 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
 .recap-header h2{margin:0;font-family:'Montserrat';font-weight:900;font-size:20px;color:var(--text-light);text-align:center}
 .recap-header p{margin:6px 0 0;color:var(--muted);font-size:13px;text-align:center}
 
-/* rows: top 3, bottom 2 */
-.cards-row { display:flex; justify-content:center; gap:14px; width:100%; flex-wrap:wrap; margin-bottom:12px; }
-.card { width: var(--card-w); background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid rgba(255,255,255,0.05); overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
+.cards-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* tetap wrap pada layar kecil */
+}
 
-/* card head */
-.card-head{background:linear-gradient(180deg,var(--navy),#0b3556aa);padding:12px;text-align:center}
-.card-head h4{margin:0;font-family:'Montserrat';font-weight:900;font-size:13px;color:var(--accent);text-align:center}
-.card-head .title-line{display:block;margin-top:8px;font-weight:700;font-size:15px;color:var(--text-light);text-align:center}
-.card-head .label-small{display:block;margin-top:10px;font-size:11px;color:#d6e8fb;font-weight:700;text-align:center}
-.card-head .jumlah{display:block;margin-top:6px;font-size:20px;font-weight:900;color:var(--text-light);text-align:center}
-.card-head .invest-label{display:block;margin-top:8px;font-size:11px;color:#d6e8fb;font-weight:700;text-align:center}
-.card-head .invest-value{display:block;margin-top:4px;font-weight:800;color:var(--accent);font-size:14px;text-align:center}
+/* Tetapkan lebar kartu yang lebih besar dan paksa ukuran tetap */
+.card {
+  flex: 0 0 340px;        /* lebar tetap 340px */
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
+}
 
-/* body and table: smaller font for neatness; center section titles */
-.body{padding:10px;background:rgba(255,255,255,0.01)}
-.section-title{display:block;background:var(--navy);color:#fff;padding:6px 10px;border-radius:6px;font-weight:700;margin-bottom:8px;font-size:12px;text-align:center}
-.card table{width:100%;border-collapse:collapse;font-size:13px;color:var(--muted)}
-.card td{padding:6px 6px;border-bottom:1px solid rgba(255,255,255,0.03)}
-.card .k{text-align:left}
-.card .v{text-align:right;color:var(--muted)}
+/* Table: jangan bungkus teks, tunjukkan ellipsis jika terlalu panjang */
+.card table { width:100%; border-collapse:collapse; }
+.card td { padding:6px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* smaller table font for neatness */
-.card table { font-size:13px; }
-.card td { font-size:13px; }
+/* Alokasikan kolom: kiri 68%, kanan 32% (supaya nilai selalu di samping) */
+.card td.k { width: 68%; text-align:left; padding-right:8px; }
+.card td.v { width: 32%; text-align:right; color:var(--muted); }
+
+/* Jika layar sempit, turunkan lebar kartu agar tetap rapi */
+@media (max-width:1100px) {
+  .card { flex: 0 0 300px; width:300px; min-width:300px; max-width:300px; }
+  .card td.k { width: 65%; } .card td.v { width:35%; }
+}
+@media (max-width:720px) {
+  .card { flex: 0 0 100%; width:100%; min-width:100%; max-width:100%; }
+  .card td { white-space: normal; } /* allow wrapping on very small screens */
+}
+
 
 /* responsive */
 @media(max-width:980px){:root{--card-w:220px}}
