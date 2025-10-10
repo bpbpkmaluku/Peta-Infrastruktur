@@ -59,7 +59,12 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:c
 nav{display:flex;align-items:center;gap:12px}
 
 /* HERO */
-.hero{height:62vh;background:url('images/background-maluku.jpg') center/cover no-repeat;display:flex;align-items:center;justify-content:center;position:relative}
+.hero {
+  height: 75vh;
+  background-image: url('images/background-maluku.jpg');
+  background-size: cover;
+  background-position: center top;
+}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.52),rgba(0,0,0,0.78));}
 .hero-inner{position:relative;z-index:10;text-align:center;padding:20px;max-width:960px}
 .hero h1{font-family:'Montserrat';font-weight:900;font-size:44px;margin:0;}
