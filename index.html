@@ -1,233 +1,55 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>MalukuInfraZone</title>
   <meta name="description" content="Portal data dan peta infrastruktur BPBPK Maluku">
-
-  <!-- Logo Web -->
   <link rel="icon" type="image/png" href="images/logo-pu.png">
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;900&family=Montserrat:wght@400;600;700;900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
   <style>
-    :root {
-      --bg-dark: #0b0f17;
-      --accent: #3b82f6;
-      --accent-2: #f59e0b;
-      --muted: #a7b6c8;
-      --font-poppins: 'Poppins', sans-serif;
-      --font-montserrat: 'Montserrat', sans-serif;
-      --font-raleway: 'Raleway', sans-serif;
+    :root{
+      --bg-dark:#0b0f17;--accent:#3b82f6;--accent-2:#f59e0b;--muted:#a7b6c8;
+      --font-poppins:'Poppins',sans-serif;--font-montserrat:'Montserrat',sans-serif;--font-raleway:'Raleway',sans-serif;
     }
-
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: var(--font-poppins);
-      background: var(--bg-dark);
-      color: #fff;
-      overflow-x: hidden;
-      padding-top: 72px; /* ruang untuk header fixed */
-    }
-
-    /* ===== Header ===== */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 36px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      background: rgba(11, 15, 23, 0.75);
-      backdrop-filter: blur(8px);
-      transition: background .3s ease, box-shadow .3s ease;
-    }
-    header.scrolled {
-      background: rgba(11, 15, 23, 0.92);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .brand img {
-      height: 44px;
-    }
-    .site-title {
-      font-family: var(--font-raleway);
-      font-weight: 800;
-      font-size: 28px;
-    }
-    .nav a {
-      margin-left: 22px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color .2s;
-    }
-    .nav a:hover {
-      color: var(--accent);
-    }
-
-    /* ===== Hero ===== */
-    .hero {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      flex-direction: column;
-      position: relative;
-      background: url('images/background-maluku.jpg') no-repeat center/cover;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.7));
-    }
-    .hero-content {
-      position: relative;
-      z-index: 10;
-      max-width: 880px;
-      padding: 20px;
-    }
-    .hero h1 {
-      font-size: 52px;
-      font-family: var(--font-montserrat);
-      font-weight: 900;
-      margin: 0;
-      letter-spacing: -0.02em;
-    }
-    .hero p {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 18px;
-    }
-    .btn-primary {
-      margin-top: 24px;
-      display: inline-block;
-      padding: 14px 28px;
-      border-radius: 999px;
-      font-weight: 700;
-      background: var(--accent);
-      color: #021129;
-      text-decoration: none;
-      font-size: 18px;
-      transition: transform .18s ease, box-shadow .18s ease;
-    }
-    .btn-primary:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 26px rgba(59,130,246,0.3);
-    }
-
-    /* Fade-in animations */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(8px);
-      animation: fadeUp .7s ease forwards;
-    }
-    .fade-in.delay-1 { animation-delay: .12s; }
-    .fade-in.delay-2 { animation-delay: .28s; }
-    .fade-in.delay-3 { animation-delay: .44s; }
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== Sectors ===== */
-    .sectors {
-      padding: 80px 20px;
-      max-width: 1160px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .sectors h2 {
-      font-size: 32px;
-      font-family: var(--font-montserrat);
-      font-weight: 800;
-      margin-bottom: 40px;
-    }
-    .sector-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 28px;
-    }
-    .sector-card {
-      background: #161b26;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 6px 22px rgba(0,0,0,0.45);
-      transition: transform .28s, box-shadow .28s;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: cardIn .6s ease forwards;
-    }
-    .sector-card:nth-child(1){ animation-delay: .12s; }
-    .sector-card:nth-child(2){ animation-delay: .24s; }
-    .sector-card:nth-child(3){ animation-delay: .36s; }
-    .sector-card:nth-child(4){ animation-delay: .48s; }
-    @keyframes cardIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .sector-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-    }
-    .sector-card .icon {
-      width: 56px;
-      height: 56px;
-      display: inline-block;
-      margin-bottom: 12px;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
-    }
-    .sector-card h3 {
-      margin: 0 0 10px;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-    .sector-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    /* ===== Footer ===== */
-    footer {
-      text-align: center;
-      padding: 40px;
-      color: var(--muted);
-      font-size: 14px;
-      background: #0b0f17;
-    }
-    footer .tagline {
-      display: block;
-      margin-top: 8px;
-      font-size: 16px;
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* ===== Responsive ===== */
-    @media(max-width:720px) {
-      .hero h1 { font-size: 34px; }
-      .hero p { font-size: 16px; }
-    }
+    html,body{height:100%;margin:0;font-family:var(--font-poppins);background:var(--bg-dark);color:#fff;padding-top:72px;overflow-x:hidden}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 36px;position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,15,23,0.75);backdrop-filter:blur(8px)}
+    .brand{display:flex;align-items:center;gap:20px}.brand img{height:44px}.site-title{font-family:var(--font-raleway);font-weight:800;font-size:28px}
+    .nav a{margin-left:22px;color:#fff;text-decoration:none;font-weight:600}.nav a:hover{color:var(--accent)}
+    .hero{height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column;position:relative;background:url('images/background-maluku.jpg') no-repeat center/cover}
+    .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.7))}
+    .hero-content{position:relative;z-index:10;max-width:880px;padding:20px}
+    .hero h1{font-size:44px;font-family:var(--font-montserrat);font-weight:900;margin:0}
+    .hero p{margin-top:12px;color:var(--muted);font-size:16px}
+    .btn-primary{margin-top:18px;padding:12px 22px;border-radius:999px;font-weight:700;background:var(--accent);color:#021129;text-decoration:none}
+    .sectors{padding:40px 20px;max-width:1160px;margin:0 auto;text-align:center}
+    .sectors h2{font-size:28px;font-family:var(--font-montserrat);font-weight:800;margin-bottom:24px}
+    /* dashboard area */
+    #dash-wrap{max-width:1160px;margin:20px auto 60px;padding:18px;border-radius:12px}
+    .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+    .kpi-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
+    .kpi-card{background:#0b1220;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+    #charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px}
+    #detail-box{background:#0f1620;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    thead th{color:var(--muted);text-align:left;padding:8px;border-bottom:1px solid rgba(255,255,255,0.04)}
+    tbody td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    /* card grid for visual renderer */
+    #rekapGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+    .card{background:#0f1620;border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 24px rgba(0,0,0,0.45)}
+    /* modal */
+    #modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999}
+    #modal .box{width:880px;max-width:95%;background:#08101a;padding:18px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);color:#fff}
+    @media(max-width:820px){#charts{grid-template-columns:1fr} .hero{height:50vh}}
   </style>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- ===== Header ===== -->
   <header id="site-header">
     <div class="brand">
       <img src="images/favicon.png" alt="Logo MalukuInfraZone">
@@ -239,16 +61,14 @@
     </nav>
   </header>
 
-  <!-- ===== Hero Section ===== -->
   <section class="hero">
     <div class="hero-content">
-      <h1 class="fade-in delay-1">Platform Digital BPBPK Maluku</h1>
-      <p class="fade-in delay-2">Transparansi Data — Akses Informasi Infrastruktur Terbangun Balai Penataan Bangunan, Prasarana dan Kawasan Maluku</p>
-      <a href="peta.html" class="btn-primary fade-in delay-3">Lihat Peta Infrastruktur</a>
+      <h1>Platform Digital BPBPK Maluku</h1>
+      <p>Transparansi Data — Akses Informasi Infrastruktur Terbangun Balai Penataan Bangunan, Prasarana dan Kawasan Maluku</p>
+      <a href="peta.html" class="btn-primary">Lihat Peta Infrastruktur</a>
     </div>
   </section>
 
-  <!-- ===== Sectors Section ===== -->
   <section class="sectors">
     <h2>Sektor-Sektor di BPBPK Maluku</h2>
     <div class="sector-list">
@@ -275,202 +95,311 @@
     </div>
   </section>
 
+  <!-- DASHBOARD -->
+  <div id="dash-wrap" style="max-width:1160px;margin:20px auto;">
+    <div class="kpi-row">
+      <div>
+        <h2 style="font-family:var(--font-montserrat);margin:0 0 6px">Rekapitulasi Status Keberfungsian Infrastruktur Terbangun<br>Tahun Anggaran 2020 - 2024</h2>
+        <div style="color:var(--muted);font-size:13px;margin-bottom:8px">Sumber: Balai Penataan Bangunan, Prasarana dan Kawasan Permukiman Wilayah Maluku</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="kpi-card"><div style="font-size:12px;color:var(--muted)">Total Investasi</div><div id="kpi-invest" style="font-weight:800;color:#ffd54f">-</div></div>
+        <div class="kpi-card"><div style="font-size:12px;color:var(--muted)">Total Unit Terbangun</div><div id="kpi-units" style="font-weight:800">-</div></div>
+        <div class="kpi-card" style="text-align:center">
+          <div style="font-size:12px;color:var(--muted)">Keberfungsian</div>
+          <canvas id="kpi-donut" width="100" height="70"></canvas>
+          <div id="kpi-donut-label" style="font-weight:800;color:#88e28f;margin-top:6px">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label style="color:var(--muted)">Tahun:</label>
+      <select id="filter-year" style="padding:6px;border-radius:6px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.06)"><option value="all">Semua</option></select>
+
+      <label style="color:var(--muted)">Sumber:</label>
+      <select id="filter-source" style="padding:6px;border-radius:6px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.06)">
+        <option value="gabungan">Gabungan</option>
+        <option value="reguler">Reguler</option>
+        <option value="ibm">IBM</option>
+      </select>
+
+      <label style="color:var(--muted);margin-left:auto"><input id="toggle-hide-empty" type="checkbox" checked style="margin-right:6px">Sembunyikan Baris Data Kosong</label>
+    </div>
+
+    <div id="charts">
+      <div id="chart-invest-wrap" style="background:#0f1620;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)">
+        <div style="color:var(--muted);margin-bottom:8px">Nilai Investasi per Program</div>
+        <canvas id="chart-invest" height="240"></canvas>
+      </div>
+      <div id="chart-status-wrap" style="background:#0f1620;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04)">
+        <div style="color:var(--muted);margin-bottom:8px">Status Keberfungsian</div>
+        <canvas id="chart-status" height="240"></canvas>
+      </div>
+    </div>
+
+    <div id="detail-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="color:var(--muted)">Tabel Detail Teknis</div>
+        <div style="color:var(--muted);font-size:13px">Satuan tertampil pada kolom</div>
+      </div>
+      <div style="overflow:auto">
+        <table id="detail-table">
+          <thead>
+            <tr>
+              <th>Jenis</th><th>Program/Sektor</th><th>Kapasitas Terpasang</th><th>Kapasitas Terpakai</th><th>Idle Capacity</th><th>Luas Penanganan</th><th>Luas Kawasan</th>
+            </tr>
+          </thead>
+          <tbody id="detail-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top:18px">
+      <div id="rekapGrid"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal"><div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div id="modal-title" style="font-weight:800;color:#ffd54f">Detail</div>
+      <button id="modal-close" style="background:transparent;border:0;color:var(--muted);font-weight:700;cursor:pointer">Tutup</button>
+    </div>
+    <div id="modal-body" style="max-height:60vh;overflow:auto;font-size:13px"></div>
+  </div></div>
+
+  <footer style="margin-top:24px;text-align:center;padding:40px;color:var(--muted);background:#0b0f17">
+    &copy; 2025 MalukuInfraZone - BPBPK Maluku. Semua Hak Dilindungi.
+    <span class="tagline" style="display:block;margin-top:8px;font-size:16px;color:#fff;font-weight:600">Transparansi Data, Akselerasi Pembangunan Negeri.</span>
+  </footer>
+
 <script>
 (function(){
   const PATH_REG = 'data/rekap_reguler.json';
   const PATH_IBM = 'data/rekap_ibm.json';
+  let dataReg=[], dataIbm=[];
   const grid = document.getElementById('rekapGrid');
-  const tabs = { all: document.getElementById('tab-all'), reg: document.getElementById('tab-reg'), ibm: document.getElementById('tab-ibm') };
-  let dataReg = [], dataIbm = [];
 
-  function setActive(btn){
-    Object.values(tabs).forEach(b=>{
-      b.style.background='transparent';
-      b.style.color='var(--muted)';
-      b.style.borderColor='rgba(255,255,255,0.06)';
-    });
-    btn.style.background='#08263f';
-    btn.style.color='#ffd54f';
-    btn.style.borderColor='#08263f';
-  }
+  // chart instances
+  let chartInvest=null, chartStatus=null, donutChart=null;
 
-  function cap(v){ return v===undefined || v==='' ? '-' : v; }
-  function fmtNum(n, decimals=2){
-    if(n===null||n===undefined||n==='-'||n==='') return '-';
+  // helpers
+  const $ = s => document.querySelector(s);
+  const el = t => document.createElement(t);
+  const fmt = (n,d=2) => {
+    if(n===undefined||n===null||n==='-'||n==='') return 'N/A';
     const num = Number(String(n).replace(/[^0-9.-]/g,''));
     if(isNaN(num)) return n;
-    return num.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: decimals});
-  }
+    return num.toLocaleString('id-ID',{minimumFractionDigits:0,maximumFractionDigits:d});
+  };
 
-  function buildBadge(text, color){
-    const badge = document.createElement('div');
-    badge.textContent = text;
-    badge.style.position = 'absolute';
-    badge.style.top = '10px';
-    badge.style.right = '12px';
-    badge.style.background = color;
-    badge.style.color = '#021129';
-    badge.style.fontWeight = 700;
-    badge.style.fontSize = '11px';
-    badge.style.padding = '4px 8px';
-    badge.style.borderRadius = '6px';
-    badge.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
-    return badge;
-  }
-
-  function buildCard(title, dataObj, satuan, type){
-    const card = document.createElement('div');
-    card.style.background = '#0f1620';
-    card.style.border = '1px solid rgba(255,255,255,0.05)';
-    card.style.borderRadius = '12px';
-    card.style.padding = '16px';
-    card.style.position = 'relative';
-    card.style.boxShadow = '0 8px 28px rgba(0,0,0,0.45)';
-
-    const badgeColor = type === 'ibm' ? '#fcd34d' : '#3b82f6';
-    card.appendChild(buildBadge('Data s.d. 2024', badgeColor));
-
-    const titleDiv = document.createElement('div');
-    titleDiv.textContent = title;
-    titleDiv.style.fontFamily = 'var(--font-montserrat)';
-    titleDiv.style.fontWeight = 800;
-    titleDiv.style.fontSize = '16px';
-    titleDiv.style.color = badgeColor;
-    titleDiv.style.marginBottom = '10px';
-    card.appendChild(titleDiv);
-
-    const inv = document.createElement('div');
-    inv.style.background = '#08263f';
-    inv.style.padding = '8px 10px';
-    inv.style.borderRadius = '6px';
-    inv.style.marginBottom = '12px';
-    inv.style.display = 'flex';
-    inv.style.justifyContent = 'space-between';
-    inv.innerHTML = '<div style="font-size:13px;color:var(--muted)">Nilai Investasi</div><div style="font-weight:800;color:'+badgeColor+'">'+
-      (dataObj['Nilai Investasi (Miliar)']?('Rp '+fmtNum(dataObj['Nilai Investasi (Miliar)'],2)+' M'):'-')+'</div>';
-    card.appendChild(inv);
-
-    const rows = [
-      ['Jumlah Unit', dataObj['Jumlah Unit']],
-      ['Berfungsi', dataObj['Berfungsi']],
-      ['Tidak Berfungsi', dataObj['Tidak Berfungsi']],
-      ['Kapasitas Terpasang', dataObj['Kapasitas Terpasang']],
-      ['Kapasitas Terpakai', dataObj['Kapasitas Terpakai']],
-      ['Idle Capacity', dataObj['Idle Capacity']],
-      ['Luas Penanganan', dataObj['Luas Penanganan']],
-      ['Luas Kawasan', dataObj['Luas Kawasan']]
-    ];
-
-    // Tampilkan hanya baris yang relevan (bukan kosong atau '-')
-    rows.forEach((r,i)=>{
-      const valRaw = r[1];
-      if(valRaw===undefined || valRaw==='-' || valRaw===0 || valRaw==='0' || valRaw==='') return;
-      
-      const row=document.createElement('div');
-      row.style.display='flex';
-      row.style.justifyContent='space-between';
-      row.style.padding='6px 4px';
-      row.style.borderBottom='1px solid rgba(255,255,255,0.05)';
-      const l=document.createElement('div');l.textContent=r[0];l.style.color='var(--muted)';l.style.fontSize='13px';
-      const v=document.createElement('div');v.style.fontWeight='700';v.style.fontSize='13px';
-      let val=valRaw;
-      if(r[0].includes('Kapasitas') && val && val!=='-'){
-        const num=Number(String(val).replace(/[^0-9.,]/g,'').replace(',','.'));
-        val=isNaN(num)?val:fmtNum(num,2)+(satuan&&satuan!=='-'?' '+satuan:'');
-      }
-      v.textContent=cap(val);
-      row.appendChild(l);row.appendChild(v);card.appendChild(row);
+  // aggregate for charts
+  function aggregate(items, keyField){
+    const map = {};
+    items.forEach(r=>{
+      const key = keyField==='Program' ? (r.Program||'Unknown') : (r.Sektor||'Unknown');
+      if(!map[key]) map[key]={label:key, invest:0, unit:0, berfungsi:0, tidak:0, rows:[]};
+      map[key].invest += Number(r['Nilai Investasi (Miliar)']||0);
+      map[key].unit += Number(r['Jumlah Unit']||0);
+      map[key].berfungsi += Number(r['Berfungsi']||0);
+      map[key].tidak += Number(r['Tidak Berfungsi']||0);
+      map[key].rows.push(r);
     });
-
-    return card;
+    return Object.values(map);
   }
 
-  function isEmptySector(obj){
-    const keys=['Jumlah Unit','Nilai Investasi (Miliar)','Berfungsi','Tidak Berfungsi','Kapasitas Terpasang','Kapasitas Terpakai','Idle Capacity'];
-    return keys.every(k=>{
-      const v=obj[k];
-      return v===undefined||v==='-'||v===0||v==='0';
+  // KPI build
+  function buildKPI(all){
+    const totInvest = all.reduce((s,i)=>s+Number(i['Nilai Investasi (Miliar)']||0),0);
+    const totUnits = all.reduce((s,i)=>s+Number(i['Jumlah Unit']||0),0);
+    const totBerfungsi = all.reduce((s,i)=>s+Number(i['Berfungsi']||0),0);
+    const totTidak = all.reduce((s,i)=>s+Number(i['Tidak Berfungsi']||0),0);
+    $('#kpi-invest').textContent = totInvest?('Rp '+fmt(totInvest,2)+' M'):'N/A';
+    $('#kpi-units').textContent = totUnits?fmt(totUnits,0):'N/A';
+    const pct = totUnits?Math.round((totBerfungsi/totUnits)*100):0;
+    $('#kpi-donut-label').textContent = pct? (pct+'%') : 'N/A';
+    const ctx = $('#kpi-donut').getContext('2d');
+    if(donutChart) donutChart.destroy();
+    donutChart = new Chart(ctx, {
+      type:'doughnut',
+      data:{labels:['Berfungsi','Tidak'],datasets:[{data:[totBerfungsi,totTidak],backgroundColor:['#88e28f','#ff9b8a']}]},
+      options:{cutout:'70%',plugins:{tooltip:{callbacks:{label(c){return c.label+': '+fmt(c.raw,0)}}}},maintainAspectRatio:true}
     });
   }
 
-  function renderSectors(data,type){
-    grid.innerHTML='';
-    const order=['Air Minum','Air Limbah','Persampahan','PKS','BPB'];
-    const map={};
-    data.forEach(r=>{
-      const key=(r.Sektor||'').trim()||'Unknown';
-      if(!map[key]) map[key]=Object.assign({},r);
-      else{
-        const parseNum=v=>Number(String(v).replace(/[^0-9.,]/g,'').replace(',','.'))||0;
-        map[key]['Jumlah Unit']=(Number(map[key]['Jumlah Unit']||0)+Number(r['Jumlah Unit']||0));
-        map[key]['Nilai Investasi (Miliar)']=(Number(map[key]['Nilai Investasi (Miliar)']||0)+Number(r['Nilai Investasi (Miliar)']||0));
-        map[key]['Berfungsi']=(Number(map[key]['Berfungsi']||0)+Number(r['Berfungsi']||0));
-        map[key]['Tidak Berfungsi']=(Number(map[key]['Tidak Berfungsi']||0)+Number(r['Tidak Berfungsi']||0));
-        map[key]['Kapasitas Terpasang']=(Number(map[key]['Kapasitas Terpasang']||0)+parseNum(r['Kapasitas Terpasang']));
-        map[key]['Kapasitas Terpakai']=(Number(map[key]['Kapasitas Terpakai']||0)+parseNum(r['Kapasitas Terpakai']));
-        map[key]['Idle Capacity']=(Number(map[key]['Idle Capacity']||0)+parseNum(r['Idle Capacity']));
-      }
+  // invest chart
+  function buildInvestChart(items){
+    const labels = items.map(i=>i.label);
+    const data = items.map(i=>Number(i.invest||0));
+    const ctx = $('#chart-invest').getContext('2d');
+    if(chartInvest) chartInvest.destroy();
+    chartInvest = new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Nilai Investasi (Miliar)',data,backgroundColor:'#3b82f6'}]},options:{
+      indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label(ctx){return 'Rp '+fmt(ctx.raw,2)+' M | '+items[ctx.dataIndex].unit+' unit'}}}},responsive:true,maintainAspectRatio:false,
+      scales:{x:{ticks:{callback:val=>'Rp '+fmt(val,2)+' M'}}}
     });
+    $('#chart-invest').onclick = (evt)=>{ const pts = chartInvest.getElementsAtEventForMode(evt,'nearest',{intersect:true},true); if(pts.length){ const idx=pts[0].index; openDrillModal(items[idx]); }};
+  }
 
-    order.forEach(k=>{
-      const item=map[k];
-      if(!item || isEmptySector(item)) return;
-      grid.appendChild(buildCard(item.Sektor,item,item['Satuan Kapasitas']||'-',type));
+  // status chart
+  function buildStatusChart(items){
+    const labels = items.map(i=>i.label);
+    const dataBer = items.map(i=>Number(i.berfungsi||0));
+    const dataTidak = items.map(i=>Number(i.tidak||0));
+    const ctx = $('#chart-status').getContext('2d');
+    if(chartStatus) chartStatus.destroy();
+    chartStatus = new Chart(ctx,{type:'bar',data:{labels,datasets:[
+      {label:'Berfungsi',data:dataBer,backgroundColor:'#88e28f'},{label:'Tidak Berfungsi',data:dataTidak,backgroundColor:'#ff9b8a'}
+    ]},options:{plugins:{tooltip:{callbacks:{label(c){return c.dataset.label+': '+fmt(c.raw,0)}}}},responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true},y:{stacked:true}}});
+    $('#chart-status').onclick = (evt)=>{ const pts = chartStatus.getElementsAtEventForMode(evt,'nearest',{intersect:true},true); if(pts.length){ const idx=pts[0].index; openDrillModal(items[idx]); }};
+  }
+
+  // detail table
+  function renderDetailTable(all, hideEmpty){
+    const tbody = $('#detail-body'); tbody.innerHTML='';
+    const rows = [];
+    all.forEach(r=>{
+      const jenis = r.Program? 'IBM' : (r.Sektor? 'Reguler' : 'Lain');
+      rows.push({jenis,key:(r.Program||r.Sektor||''),row:r});
     });
-    if(grid.children.length===0){
-      grid.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px;">Tidak ada data sektor aktif.</div>';
+    rows.forEach(s=>{
+      const r=s.row;
+      const tech = ['Kapasitas Terpasang','Kapasitas Terpakai','Idle Capacity','Luas Penanganan','Luas Kawasan'];
+      const allEmpty = tech.every(f=> r[f]===undefined || r[f]==='' || r[f]==='-' || r[f]===0 || r[f]==='0');
+      if(hideEmpty && allEmpty) return;
+      const tr = el('tr');
+      tr.innerHTML = `<td>${s.jenis}</td>
+        <td>${(r.Sektor||r.Program||'N/A')}</td>
+        <td>${r['Kapasitas Terpasang']? r['Kapasitas Terpasang'] + (r['Satuan Kapasitas']? ' '+r['Satuan Kapasitas'] : '') : 'N/A'}</td>
+        <td>${r['Kapasitas Terpakai']? r['Kapasitas Terpakai'] + (r['Satuan Kapasitas']? ' '+r['Satuan Kapasitas'] : '') : 'N/A'}</td>
+        <td>${r['Idle Capacity']? r['Idle Capacity'] + (r['Satuan Kapasitas']? ' '+r['Satuan Kapasitas'] : '') : 'N/A'}</td>
+        <td>${r['Luas Penanganan']? r['Luas Penanganan'] : 'N/A'}</td>
+        <td>${r['Luas Kawasan']? r['Luas Kawasan'] : 'N/A'}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // visual card renderer
+  function makeCard(title, meta, typeKey){
+    const c = el('div'); c.className='card';
+    const hdr = el('div'); hdr.style.display='flex'; hdr.style.justifyContent='space-between'; hdr.style.alignItems='center';
+    const t = el('div'); t.textContent = title; t.style.color = (typeKey==='ibm' ? '#fcd34d' : '#3b82f6'); t.style.fontWeight=800;
+    const badge = el('div'); badge.textContent='Data s.d. 2024'; badge.style.background = typeKey==='ibm' ? '#fcd34d' : '#3b82f6'; badge.style.color='#021129'; badge.style.padding='4px 8px'; badge.style.borderRadius='6px'; badge.style.fontWeight=700; badge.style.fontSize='12px';
+    hdr.appendChild(t); hdr.appendChild(badge); c.appendChild(hdr);
+
+    const top = el('div'); top.style.display='flex'; top.style.justifyContent='space-between'; top.style.alignItems='center'; top.style.margin='8px 0';
+    top.innerHTML = `<div style="color:var(--muted);font-size:12px">Nilai Investasi</div><div style="font-weight:800;color:#ffd54f">${meta.invest?('Rp '+Number(meta.invest).toLocaleString('id-ID')+' M'):'N/A'}</div>`;
+    const units = el('div'); units.innerHTML = `<div style="color:var(--muted);font-size:12px">Unit</div><div style="font-weight:800">${meta.unit?Number(meta.unit).toLocaleString('id-ID'):'N/A'}</div>`;
+    top.appendChild(units); c.appendChild(top);
+
+    const row = el('div'); row.style.display='flex'; row.style.gap='12px'; row.style.alignItems='center';
+    const progWrap = el('div'); progWrap.style.flex='1';
+    const pct = meta.unit? Math.round((meta.berfungsi/meta.unit||0)*100):0;
+    const lbl = el('div'); lbl.style.color='var(--muted)'; lbl.style.fontSize='12px'; lbl.textContent='Keberfungsian';
+    const barBg = el('div'); barBg.style.height='10px'; barBg.style.background='rgba(255,255,255,0.04)'; barBg.style.borderRadius='6px'; barBg.style.marginTop='6px';
+    const bar = el('div'); bar.style.width=pct+'%'; bar.style.height='100%'; bar.style.background = pct>80? '#88e28f' : (pct>40? '#f59e0b' : '#ff7b7b'); bar.style.borderRadius='6px';
+    barBg.appendChild(bar); progWrap.appendChild(lbl); progWrap.appendChild(barBg); row.appendChild(progWrap);
+
+    const canWrap = el('div'); canWrap.style.width='80px'; canWrap.style.height='80px';
+    const canvas = el('canvas'); canvas.width=80; canvas.height=80; canWrap.appendChild(canvas); row.appendChild(canWrap);
+    c.appendChild(row);
+
+    const foot = el('div'); foot.style.display='flex'; foot.style.justifyContent='space-between'; foot.style.alignItems='center'; foot.style.marginTop='8px';
+    foot.innerHTML = `<div style="color:var(--muted);font-size:12px">Berfungsi: ${meta.berfungsi||0} | Tidak: ${meta.tidak||0}</div>`;
+    const btn = el('button'); btn.textContent='Detail'; btn.style.background='transparent'; btn.style.border='1px solid rgba(255,255,255,0.06)'; btn.style.color='var(--muted)'; btn.style.padding='6px 10px'; btn.style.borderRadius='8px'; btn.style.cursor='pointer';
+    btn.addEventListener('click',()=>openDrillModal(meta));
+    foot.appendChild(btn); c.appendChild(foot);
+
+    if(window.Chart){
+      new Chart(canvas.getContext('2d'),{type:'doughnut',data:{labels:['Berfungsi','Tidak'],datasets:[{data:[meta.berfungsi||0,meta.tidak||0],backgroundColor:['#88e28f','#ff9b8a']}]},options:{plugins:{legend:{display:false}},cutout:'70%',maintainAspectRatio:true}});
     }
+    return c;
   }
 
-  function renderIbm(data){
-    grid.innerHTML='';
-    data.forEach(it=>{
-      if(isEmptySector(it)) return;
-      grid.appendChild(buildCard(it['Program'],it,it['Satuan Kapasitas']||'-','ibm'));
-    });
-    if(grid.children.length===0){
-      grid.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px;">Tidak ada data IBM aktif.</div>';
+  function renderCardsVisual(data, keyField, typeKey){
+    grid.innerHTML=''; const items = aggregate(data,keyField);
+    const nonEmpty = items.filter(it=>!(it.unit===0 && it.invest===0 && it.berfungsi===0 && it.tidak===0));
+    if(nonEmpty.length===0){ grid.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px">Tidak ada data aktif.</div>'; return; }
+    nonEmpty.forEach(it=> grid.appendChild(makeCard(it.label, it, typeKey||keyField==='Program'?'ibm':'reguler')));
+  }
+
+  // modal functions
+  function openDrillModal(item){
+    $('#modal-title').textContent = item.label || 'Detail';
+    const body = $('#modal-body'); body.innerHTML = '';
+    if(item.rows && item.rows.length){
+      item.rows.forEach(r=>{
+        const block = el('div'); block.style.padding='8px'; block.style.borderBottom='1px solid rgba(255,255,255,0.04)';
+        block.innerHTML = `<div style="font-weight:700">${r.NamaUnit||r.Unit||r.ID||'Unit'}</div>
+          <div style="color:var(--muted);font-size:13px">Lokasi: ${r.Lokasi || r.Kecamatan || 'N/A'}</div>
+          <div style="margin-top:6px;font-size:13px">Status: Berfungsi ${r.Berfungsi||0} | Tidak ${r['Tidak Berfungsi']||0}</div>`;
+        body.appendChild(block);
+      });
+    } else {
+      body.innerHTML = '<div style="color:var(--muted)">Detail unit tidak tersedia di data. Untuk detail unit, tambahkan field NamaUnit/Lokasi pada JSON.</div>';
     }
+    $('#modal').style.display='flex';
   }
+  $('#modal-close').addEventListener('click',()=>$('#modal').style.display='none');
 
+  // load and initialize
   Promise.all([fetch(PATH_REG).then(r=>r.json()), fetch(PATH_IBM).then(r=>r.json())])
   .then(([reg,ibm])=>{
     dataReg=reg; dataIbm=ibm;
-    setActive(tabs.all);
-    renderSectors(dataReg.concat(dataIbm),'gabungan');
+    // build year list if present
+    const years = new Set();
+    [...dataReg,...dataIbm].forEach(r=>{ if(r.Tahun) years.add(String(r.Tahun)); if(r['Tahun Anggaran']) years.add(String(r['Tahun Anggaran'])); });
+    const yearSel = $('#filter-year'); years.size && Array.from(years).sort().forEach(y=>{ const o = el('option'); o.value=y; o.textContent=y; yearSel.appendChild(o); });
+
+    const combined = dataReg.concat(dataIbm);
+    buildKPI(combined);
+
+    // charts initial: prefer IBM if present
+    const aggIbm = aggregate(dataIbm,'Program'), aggReg = aggregate(dataReg,'Sektor');
+    const chartSource = aggIbm.length? aggIbm : aggReg;
+    buildInvestChart(chartSource); buildStatusChart(chartSource);
+
+    renderDetailTable(combined, $('#toggle-hide-empty').checked);
+    renderCardsVisual(combined, 'Sektor');
+
+    // UI handlers
+    $('#filter-source').addEventListener('change', (e)=>{
+      const v=e.target.value;
+      if(v==='ibm'){ buildInvestChart(aggIbm); buildStatusChart(aggIbm); renderCardsVisual(dataIbm,'Program','ibm'); }
+      else if(v==='reguler'){ buildInvestChart(aggReg); buildStatusChart(aggReg); renderCardsVisual(dataReg,'Sektor','reguler'); }
+      else { const merged = aggReg.concat(aggIbm); buildInvestChart(merged); buildStatusChart(merged); renderCardsVisual(combined,'Sektor'); }
+    });
+
+    $('#filter-year').addEventListener('change',(e)=>{
+      const y = e.target.value;
+      const pick = arr => arr.filter(r=> { if(y==='all') return true; return String(r.Tahun||r['Tahun Anggaran']||'')===y; });
+      const regF = pick(dataReg), ibmF = pick(dataIbm);
+      buildKPI(regF.concat(ibmF));
+      const aI = aggregate(ibmF,'Program'), aR = aggregate(regF,'Sektor');
+      const src = $('#filter-source').value;
+      if(src==='ibm'){ buildInvestChart(aI); buildStatusChart(aI); renderCardsVisual(ibmF,'Program','ibm'); }
+      else if(src==='reguler'){ buildInvestChart(aR); buildStatusChart(aR); renderCardsVisual(regF,'Sektor','reguler'); }
+      else { buildInvestChart(aR.concat(aI)); buildStatusChart(aR.concat(aI)); renderCardsVisual(regF.concat(ibmF),'Sektor'); }
+      renderDetailTable(regF.concat(ibmF), $('#toggle-hide-empty').checked);
+    });
+
+    $('#toggle-hide-empty').addEventListener('change', ()=> renderDetailTable(dataReg.concat(dataIbm), $('#toggle-hide-empty').checked));
+
   })
   .catch(err=>{
-    grid.innerHTML='<div style="color:#ffb4b4">Gagal memuat data. Periksa path JSON di folder repo.</div>';
     console.error(err);
+    document.getElementById('dash-wrap').innerHTML = '<div style="color:#ffb4b4;padding:20px">Gagal memuat data. Periksa file JSON pada /data/</div>';
   });
 
-  tabs.reg.addEventListener('click',()=>{setActive(tabs.reg);renderSectors(dataReg,'reguler');});
-  tabs.ibm.addEventListener('click',()=>{setActive(tabs.ibm);renderIbm(dataIbm);});
-  tabs.all.addEventListener('click',()=>{setActive(tabs.all);renderSectors(dataReg.concat(dataIbm),'gabungan');});
 })();
 </script>
 
- 
-  <!-- ===== Footer ===== -->
-  <footer>
-    &copy; 2025 MalukuInfraZone - BPBPK Maluku. Semua Hak Dilindungi.
-    <span class="tagline">Transparansi Data, Akselerasi Pembangunan Negeri.</span>
-  </footer>
+<script>
+  // header scroll effect
+  const header = document.getElementById('site-header');
+  function checkHeader(){ if(!header) return; if(window.scrollY>50) header.classList.add('scrolled'); else header.classList.remove('scrolled'); }
+  window.addEventListener('load', checkHeader); window.addEventListener('scroll', checkHeader, {passive:true});
+</script>
 
-  <!-- ===== Script Header Scroll ===== -->
-  <script>
-    const header = document.getElementById('site-header');
-    function checkHeader() {
-      if (!header) return;
-      if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    }
-    window.addEventListener('load', checkHeader);
-    window.addEventListener('scroll', checkHeader, { passive: true });
-  </script>
-  
 </body>
 </html>
