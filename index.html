@@ -6,6 +6,50 @@
 <title>MalukuInfraZone</title>
 <link rel="icon" href="images/logo-pu.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+  /* --- Tombol dan Nav: shape seragam + nav aktif biru/text kuning --- */
+.btn, #top-nav a.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.45);
+}
+
+/* default look for nav links (non-active) */
+#top-nav a.nav-link {
+  background: transparent;
+  color: var(--text-light);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* hero buttons use same shape */
+.hero .btn { background: var(--accent); color: #071016; border: none; }
+
+/* special outline variant if needed */
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.08); color: var(--text-light); }
+
+/* NAV ACTIVE: solid navy background, yellow text (elegant) */
+#top-nav a.nav-link.active {
+  background: var(--navy);
+  color: var(--accent);
+  border: none;
+  box-shadow: 0 10px 30px rgba(4,26,54,0.55);
+  transform: translateY(-2px);
+}
+
+/* hover micro interaction */
+#top-nav a.nav-link:hover,
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(2,6,23,0.55);
+}
+
 <style>
 :root{
   --bg:#071016;
@@ -101,21 +145,21 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
     <div class="site-title">MalukuInfraZone</div>
   </div>
 
-  <nav id="top-nav">
-    <a href="#hero" data-target="hero" id="nav-home">Beranda</a>
-    <a href="peta.html" class="btn-secondary" id="nav-peta">Peta Infrastruktur</a>
-    <a href="#dashboard" data-target="dashboard" id="nav-dashboard">Dashboard</a>
-  </nav>
+<nav id="top-nav">
+  <a href="#hero" class="nav-link" id="nav-home">Beranda</a>
+  <a href="peta.html" class="nav-link" id="nav-peta">Peta Infrastruktur</a>
+  <a href="#dashboard" class="nav-link" id="nav-dashboard">Dashboard</a>
+</nav>
 </header>
 
 <section class="hero" id="hero" aria-label="Hero">
   <div class="hero-inner">
     <h1>Platform Digital BPBPK Maluku</h1>
     <p>Transparansi Data — Akses Informasi Infrastruktur Terbangun BPBPK Maluku</p>
-    <div class="cta-row">
-      <a class="btn-primary" href="#dashboard">Lihat Dashboard</a>
-      <a class="btn-secondary" href="peta.html">Peta Infrastruktur</a>
-    </div>
+   <div class="cta-row">
+  <a class="btn" href="#dashboard">Lihat Dashboard</a>
+  <a class="btn" href="peta.html">Peta Infrastruktur</a>
+</div>
   </div>
 </section>
 
