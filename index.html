@@ -102,9 +102,9 @@ nav{display:flex;align-items:center;gap:12px}
 <section class="hero" id="hero" aria-label="Hero">
   <div class="hero-inner">
     <h1>Platform Digital BPBPK Maluku</h1>
-    <p>Transparansi Data — Akses Informasi Infrastruktur Terbangun BPBPK Maluku</p>
+    <p>Transparansi Data — Akses Informasi Infrastruktur Terbangun Balai Penataan Bangunan, Prasarana dan Kawasan Maluku</p>
     <div class="cta-row">
-      <a class="btn" href="#dashboard">Lihat Dashboard</a>
+      <a class="btn" href="#dashboard">Dashboard</a>
       <a class="btn" href="peta.html">Peta Infrastruktur</a>
     </div>
   </div>
@@ -113,10 +113,10 @@ nav{display:flex;align-items:center;gap:12px}
 <section class="section" aria-labelledby="sectors-title">
   <h2 id="sectors-title" style="text-align:center;font-family:Montserrat;font-weight:800;margin-bottom:12px">Sektor-Sektor di BPBPK Maluku</h2>
   <div class="sector-grid">
-    <div class="sector-card"><img src="images/icon-air.png" alt=""><h3>Air Minum</h3><p>Penyediaan infrastruktur air minum layak bagi masyarakat Maluku.</p></div>
-    <div class="sector-card"><img src="images/icon-sanitasi.png" alt=""><h3>Sanitasi</h3><p>Pembangunan dan pengelolaan sanitasi untuk lingkungan sehat.</p></div>
-    <div class="sector-card"><img src="images/icon-bina.png" alt=""><h3>Penataan Bangunan</h3><p>Penataan dan pengawasan kualitas bangunan.</p></div>
-    <div class="sector-card"><img src="images/icon-kawasan.png" alt=""><h3>Kawasan Strategis</h3><p>Pengembangan kawasan prioritas di Maluku.</p></div>
+    <div class="sector-card"><img src="images/icon-air.png" alt=""><h3>Air Minum</h3><p>Menyediakan infrastruktur air minum layak untuk masyarakat Maluku.</p></div>
+    <div class="sector-card"><img src="images/icon-sanitasi.png" alt=""><h3>Sanitasi</h3><p>Pembangunan dan pengelolaan infrastruktur sanitasi yang mendukung kesehatan lingkungan.</p></div>
+    <div class="sector-card"><img src="images/icon-bina.png" alt=""><h3>Bina Penataan Bangunan</h3><p>Pengelolaan tata bangunan dan pengawasan kualitas pembangunan gedung.</p></div>
+    <div class="sector-card"><img src="images/icon-kawasan.png" alt=""><h3>Pengembangan Kawasan Strategis</h3><p>Pengembangan kawasan strategis untuk mendukung pertumbuhan wilayah Maluku.</p></div>
   </div>
 </section>
 
@@ -124,7 +124,6 @@ nav{display:flex;align-items:center;gap:12px}
   <div class="container">
     <div class="recap-header">
       <h2 id="recap-title">Rekapitulasi Status Keberfungsian Infrastruktur Reguler Terbangun Tahun Anggaran 2020–2024</h2>
-      <p>Ringkasan per sektor. Angka jumlah, nilai investasi, utilisasi (termasuk satuan), dan status keberfungsian.</p>
     </div>
 
     <div id="cards-reg-top" class="cards-row" aria-live="polite"></div>
@@ -134,7 +133,6 @@ nav{display:flex;align-items:center;gap:12px}
 
     <div class="recap-header">
       <h2>Rekapitulasi Status Keberfungsian Infrastruktur IBM Terbangun Tahun Anggaran 2020–2024</h2>
-      <p>Ringkasan program IBM. Angka jumlah, nilai investasi, utilisasi (termasuk satuan) dan status keberfungsian.</p>
     </div>
 
     <div id="cards-ibm-top" class="cards-row" aria-live="polite"></div>
@@ -181,7 +179,7 @@ function normalizeUtilRows(utilRows, targetCount){
 
 /* build card with flex rows */
 function buildCardFlex(prefix, name, jumlah, invest, utilRows, statusRows){
-  const TARGET_UTIL_ROWS = 5;
+  const TARGET_UTIL_ROWS = 3;
   const util = normalizeUtilRows(utilRows, TARGET_UTIL_ROWS);
   const utilHtml = `<div class="body">
     <div class="section-title">Utilisasi</div>
