@@ -192,6 +192,15 @@ nav{display:flex;align-items:center;gap:12px}
 /* responsive */
 @media(max-width:1100px){.card{width:300px}}
 @media(max-width:740px){.card{width:100%}.util-row .k,.util-row .v{white-space:normal}.body{min-height:0}}
+
+  .update-info {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+}
+
 </style>
 </head>
 <body>
@@ -231,26 +240,29 @@ nav{display:flex;align-items:center;gap:12px}
 
 <section id="dashboard" class="dashboard" aria-labelledby="recap-title">
   <div class="container">
-    <div class="recap-header">
-      <h2 id="recap-title">
-  Rekapitulasi Status Keberfungsian Infrastruktur 
-  <span class="reguler">Reguler</span> 
-  Terbangun Tahun Anggaran 2020–2024
-</h2>
-    </div>
+<div class="recap-header">
+  <h2 id="recap-title">
+    Rekapitulasi Status Keberfungsian Infrastruktur 
+    <span class="reguler">Reguler</span> 
+    Terbangun Tahun Anggaran 2020–2024
+  </h2>
+  <div class="update-info">Data per September 2025</div>
+</div>
 
     <div id="cards-reg-top" class="cards-row" aria-live="polite"></div>
     <div id="cards-reg-bottom" class="cards-row" aria-live="polite"></div>
 
     <div style="height:22px"></div>
 
-    <div class="recap-header">
-     <h2>
-  Rekapitulasi Status Keberfungsian Infrastruktur 
-  <span class="ibm">IBM</span> 
-  Terbangun Tahun Anggaran 2020–2024
-</h2>
-    </div>
+   <div class="recap-header">
+  <h2>
+    Rekapitulasi Status Keberfungsian Infrastruktur 
+    <span class="ibm">IBM</span> 
+    Terbangun Tahun Anggaran 2020–2024
+  </h2>
+  <div class="update-info">Data per September 2025</div>
+</div>
+
 
     <div id="cards-ibm-top" class="cards-row" aria-live="polite"></div>
     <div id="cards-ibm-bottom" class="cards-row" aria-live="polite"></div>
