@@ -4,9 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>MalukuInfraZone</title>
-<link rel="icon" href="images/logo-pu.png">
+<link rel="icon" href="images/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-
 <style>
 :root{
   --bg:#071016;
@@ -40,17 +39,14 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:c
 .brand img{height:40px}
 .site-title{font-family:'Montserrat';font-weight:800;font-size:20px}
 nav{display:flex;align-items:center;gap:12px}
-nav a{padding:8px 12px;border-radius:8px;color:var(--text-light);font-weight:600}
-nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,0.45)}
 
 /* HERO */
-.hero{height:62vh;background:url('images/background-maluku.jpg') center/cover;display:flex;align-items:center;justify-content:center;position:relative}
+.hero{height:62vh;background:url('images/background-maluku.jpg') center/cover no-repeat;display:flex;align-items:center;justify-content:center;position:relative}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.52),rgba(0,0,0,0.78));}
 .hero-inner{position:relative;z-index:10;text-align:center;padding:20px;max-width:960px}
 .hero h1{font-family:'Montserrat';font-weight:900;font-size:44px;margin:0;}
 .hero p{color:var(--muted);margin-top:10px;font-size:16px;}
 .hero .cta-row{margin-top:18px;display:flex;gap:12px;justify-content:center}
-.btn-primary,.btn-secondary{background:var(--accent);color:#071016;padding:12px 18px;border-radius:12px;font-weight:800}
 
 /* SEKTOR */
 .section{padding:54px 18px;max-width:1200px;margin:0 auto}
@@ -69,26 +65,28 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
 
 /* CARD GRID */
 .cards-row{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-bottom:20px;}
-.card{background:linear-gradient(180deg,rgba(11,19,30,0.78),rgba(8,12,18,0.7));border-radius:12px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 30px rgba(4,26,54,0.35);overflow:hidden;width:320px;max-width:90%;transition:transform .2s}
-.card:hover{transform:translateY(-4px);}
+.card{background:linear-gradient(180deg,rgba(11,19,30,0.78),rgba(8,12,18,0.7));border-radius:12px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 30px rgba(4,26,54,0.35);overflow:hidden;width:320px;max-width:90%;transition:transform .2s;display:flex;flex-direction:column;}
+.card:hover{transform:translateY(-4px)}
 .card-head{text-align:center;background:linear-gradient(180deg,rgba(12,39,62,0.98),rgba(9,31,50,0.92));padding:14px 10px;}
 .card-head h4{font-size:13px;margin:0;color:var(--accent);font-weight:800;}
 .card-head .title-line{font-size:15px;margin-top:8px;font-weight:800;color:var(--text-light);display:block;}
-.card-head .label-small{margin-top:10px;font-size:11px;color:#d6e8fb;font-weight:700;display:block;}
+.card-head .label-small,.card-head .invest-label{margin-top:10px;font-size:11px;color:#d6e8fb;font-weight:700;display:block;}
 .card-head .jumlah{font-size:20px;margin-top:6px;font-weight:900;color:var(--text-light);display:block;}
-.card-head .invest-label{margin-top:10px;font-size:11px;color:#d6e8fb;font-weight:700;display:block;}
 .card-head .invest-value{font-size:14px;margin-top:6px;color:var(--accent);font-weight:800;display:block;}
-.body{padding:12px;background:rgba(255,255,255,0.02);}
-.section-title{text-align:center;background:var(--navy);color:#fff;padding:6px 10px;border-radius:8px;font-weight:700;margin:0 auto 10px;width:86%;}
-.util-row,.status-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 6px;color:var(--muted);font-size:13px;}
-.util-row .k,.status-row .k{flex:1;color:#dfe9f5;}
-.util-row .v,.status-row .v{flex:0 0 auto;color:var(--muted);white-space:nowrap;}
-@media(max-width:1100px){.card{width:300px;}}
-@media(max-width:740px){.card{width:100%;}.util-row .k,.util-row .v{white-space:normal;}}
+.body{padding:12px;background:rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px;min-height:220px;justify-content:flex-start;}
+.section-title{text-align:center;background:var(--navy);color:#fff;padding:6px 10px;border-radius:8px;font-weight:700;margin:0 auto 6px;width:86%}
+.util-row,.status-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;color:var(--muted);font-size:13px;}
+.util-row .k,.status-row .k{flex:1;color:#dfe9f5;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.util-row .v,.status-row .v{flex:0 0 auto;color:var(--muted);white-space:nowrap;margin-left:8px;}
+.util-row.empty,.status-row.empty{opacity:0.08}
+
+/* responsive */
+@media(max-width:1100px){.card{width:300px}}
+@media(max-width:740px){.card{width:100%}.util-row .k,.util-row .v{white-space:normal}.body{min-height:0}}
 </style>
 </head>
-
 <body>
+
 <header>
   <div class="brand">
     <img src="images/favicon.png" alt="logo">
@@ -101,7 +99,7 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
   </nav>
 </header>
 
-<section class="hero" id="hero">
+<section class="hero" id="hero" aria-label="Hero">
   <div class="hero-inner">
     <h1>Platform Digital BPBPK Maluku</h1>
     <p>Transparansi Data — Akses Informasi Infrastruktur Terbangun BPBPK Maluku</p>
@@ -112,26 +110,25 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
   </div>
 </section>
 
-<section class="section">
-  <h2 style="text-align:center;font-family:Montserrat;font-weight:800;">Sektor-Sektor di BPBPK Maluku</h2>
+<section class="section" aria-labelledby="sectors-title">
+  <h2 id="sectors-title" style="text-align:center;font-family:Montserrat;font-weight:800;margin-bottom:12px">Sektor-Sektor di BPBPK Maluku</h2>
   <div class="sector-grid">
-    <div class="sector-card"><img src="images/icon-air.png"><h3>Air Minum</h3><p>Penyediaan infrastruktur air minum layak bagi masyarakat Maluku.</p></div>
-    <div class="sector-card"><img src="images/icon-sanitasi.png"><h3>Sanitasi</h3><p>Pembangunan dan pengelolaan sanitasi untuk lingkungan sehat.</p></div>
-    <div class="sector-card"><img src="images/icon-bina.png"><h3>Penataan Bangunan</h3><p>Penataan dan pengawasan kualitas bangunan.</p></div>
-    <div class="sector-card"><img src="images/icon-kawasan.png"><h3>Kawasan Strategis</h3><p>Pengembangan kawasan prioritas di Maluku.</p></div>
+    <div class="sector-card"><img src="images/icon-air.png" alt=""><h3>Air Minum</h3><p>Penyediaan infrastruktur air minum layak bagi masyarakat Maluku.</p></div>
+    <div class="sector-card"><img src="images/icon-sanitasi.png" alt=""><h3>Sanitasi</h3><p>Pembangunan dan pengelolaan sanitasi untuk lingkungan sehat.</p></div>
+    <div class="sector-card"><img src="images/icon-bina.png" alt=""><h3>Penataan Bangunan</h3><p>Penataan dan pengawasan kualitas bangunan.</p></div>
+    <div class="sector-card"><img src="images/icon-kawasan.png" alt=""><h3>Kawasan Strategis</h3><p>Pengembangan kawasan prioritas di Maluku.</p></div>
   </div>
 </section>
 
-<section id="dashboard" class="dashboard">
+<section id="dashboard" class="dashboard" aria-labelledby="recap-title">
   <div class="container">
-
     <div class="recap-header">
-      <h2>Rekapitulasi Status Keberfungsian Infrastruktur Reguler Terbangun Tahun Anggaran 2020–2024</h2>
+      <h2 id="recap-title">Rekapitulasi Status Keberfungsian Infrastruktur Reguler Terbangun Tahun Anggaran 2020–2024</h2>
       <p>Ringkasan per sektor. Angka jumlah, nilai investasi, utilisasi (termasuk satuan), dan status keberfungsian.</p>
     </div>
 
-    <div id="cards-reg-top" class="cards-row"></div>
-    <div id="cards-reg-bottom" class="cards-row"></div>
+    <div id="cards-reg-top" class="cards-row" aria-live="polite"></div>
+    <div id="cards-reg-bottom" class="cards-row" aria-live="polite"></div>
 
     <div style="height:22px"></div>
 
@@ -140,9 +137,8 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
       <p>Ringkasan program IBM. Angka jumlah, nilai investasi, utilisasi (termasuk satuan) dan status keberfungsian.</p>
     </div>
 
-    <div id="cards-ibm-top" class="cards-row"></div>
-    <div id="cards-ibm-bottom" class="cards-row"></div>
-
+    <div id="cards-ibm-top" class="cards-row" aria-live="polite"></div>
+    <div id="cards-ibm-bottom" class="cards-row" aria-live="polite"></div>
   </div>
 </section>
 
@@ -151,88 +147,135 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
 </footer>
 
 <script>
-async function loadJSON(p){try{const r=await fetch(p);return await r.json()}catch{return[]}}
-function pick(o,k){for(const i of k)if(o&&o[i]!=null&&String(o[i]).trim()!=='')return o[i];return null}
-function formatInvest(v){if(v==null||v==='')return'Rp 0';const n=Number(String(v).replace(/[^0-9.-]+/g,''));return!isNaN(n)?'Rp '+n.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' Miliar':String(v)}
-
-function buildCardFlex(prefix,name,jumlah,invest,utilRows,statusRows){
- const utilHtml=(utilRows&&utilRows.length)?
- `<div class="body"><div class="section-title">Utilisasi</div>${utilRows.map(r=>`<div class="util-row"><div class="k">${r[0]}</div><div class="v">${r[1]||'-'}</div></div>`).join('')}</div>`:'';
- const statusHtml=`<div class="body"><div class="section-title">Status Keberfungsian</div>${statusRows.map(r=>`<div class="status-row"><div class="k">${r[0]}</div><div class="v">${r[1]||'-'}</div></div>`).join('')}</div>`;
- return `<div class="card"><div class="card-head"><h4>${prefix}</h4><span class="title-line">${name}</span><span class="label-small">JUMLAH</span><span class="jumlah">${jumlah}</span><span class="invest-label">NILAI INVESTASI</span><span class="invest-value">${invest}</span></div>${utilHtml}${statusHtml}</div>`;
+/* Utilities */
+async function loadJSON(path){
+  try{
+    const r = await fetch(path, { cache: 'no-store' });
+    if(!r.ok) return [];
+    return await r.json();
+  }catch(e){
+    console.error('loadJSON error', e);
+    return [];
+  }
+}
+function pick(obj, keys){
+  for(const k of keys) {
+    if(!obj) continue;
+    if(obj[k] !== undefined && obj[k] !== null && String(obj[k]).trim() !== '') return obj[k];
+  }
+  return null;
+}
+function formatInvest(v){
+  if(v === null || v === undefined || v === '') return 'Rp 0';
+  const n = Number(String(v).replace(/[^0-9.-]+/g,''));
+  if(!isNaN(n)) return 'Rp ' + n.toLocaleString('id-ID', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' Miliar';
+  return String(v);
 }
 
+/* normalize util rows to fixed count */
+function normalizeUtilRows(utilRows, targetCount){
+  const rows = Array.isArray(utilRows) ? utilRows.slice() : [];
+  while(rows.length < targetCount) rows.push(['','']);
+  return rows.slice(0, targetCount);
+}
+
+/* build card with flex rows */
+function buildCardFlex(prefix, name, jumlah, invest, utilRows, statusRows){
+  const TARGET_UTIL_ROWS = 5;
+  const util = normalizeUtilRows(utilRows, TARGET_UTIL_ROWS);
+  const utilHtml = `<div class="body">
+    <div class="section-title">Utilisasi</div>
+    ${util.map(r=>`<div class="util-row ${(!r[0] && !r[1]) ? 'empty' : ''}"><div class="k">${r[0]||'-'}</div><div class="v">${r[1]||'-'}</div></div>`).join('')}
+    <div style="height:10px"></div>
+    <div class="section-title">Status Keberfungsian</div>
+    ${statusRows.map(r=>`<div class="status-row"><div class="k">${r[0]}</div><div class="v">${r[1]||'-'}</div></div>`).join('')}
+    </div>`;
+  return `<div class="card" role="article" aria-label="${prefix} ${name}">
+    <div class="card-head">
+      <h4>${prefix}</h4>
+      <span class="title-line">${name}</span>
+      <span class="label-small">JUMLAH</span>
+      <span class="jumlah">${jumlah}</span>
+      <span class="invest-label">NILAI INVESTASI</span>
+      <span class="invest-value">${invest}</span>
+    </div>
+    ${utilHtml}
+  </div>`;
+}
+
+/* robust mapItem that uses Satuan Kapasitas fallback for luas */
 function mapItem(i){
   const name = pick(i, ['Sektor','Program','Nama','Nama Program']) || '-';
   const jumlah = String(pick(i, ['Jumlah Unit','Jumlah','Unit']) ?? '-');
   const invest = formatInvest(pick(i, ['Nilai Investasi (Miliar)','Nilai Investasi','Investasi']));
 
-  // Ambil satuan dan bersihkan karakter escape
-  let satuanKap = pick(i, ['Satuan Kapasitas','Satuan']) || '';
-  satuanKap = satuanKap.replace(/\\\//g, '/').trim();
-  let satuanLuas = pick(i, ['Satuan Luas','Satuan Luas Kawasan']) || '';
-  satuanLuas = satuanLuas.replace(/\\\//g, '/').trim();
-
-  // Jika tidak ada "Satuan Luas", gunakan satuan kapasitas juga (seperti JSON kamu)
-  if (!satuanLuas && satuanKap) satuanLuas = satuanKap;
+  let satuanKap = (pick(i, ['Satuan Kapasitas','Satuan']) || '').replace(/\\\//g, '/').trim();
+  let satuanLuas = (pick(i, ['Satuan Luas','Satuan Luas Kawasan']) || '').replace(/\\\//g, '/').trim();
+  if(!satuanLuas && satuanKap) satuanLuas = satuanKap;
 
   const util = [];
-  const kt = pick(i, ['Kapasitas Terpasang']);
-  const kp = pick(i, ['Kapasitas Terpakai']);
+  const kt = pick(i, ['Kapasitas Terpasang','Kapasitas terpasang']);
+  const kp = pick(i, ['Kapasitas Terpakai','Kapasitas terpakai']);
   const idle = pick(i, ['Idle Capacity','Idle']);
   const luasPen = pick(i, ['Luas Penanganan']);
   const luasKaw = pick(i, ['Luas Kawasan','Luas Total Kawasan']);
 
-  // Tambahkan hanya jika nilainya bukan '-' dan bukan null
-  if (kt && kt !== '-') util.push(['Kapasitas Terpasang', `${kt}${satuanKap ? ' ' + satuanKap : ''}`]);
-  if (kp && kp !== '-') util.push(['Kapasitas Terpakai', `${kp}${satuanKap ? ' ' + satuanKap : ''}`]);
-  if (idle && idle !== '-') util.push(['Idle Capacity', `${idle}${satuanKap ? ' ' + satuanKap : ''}`]);
-  if (luasPen && luasPen !== '-') util.push(['Luas Penanganan', `${luasPen}${satuanLuas ? ' ' + satuanLuas : ''}`]);
-  if (luasKaw && luasKaw !== '-') util.push(['Luas Kawasan', `${luasKaw}${satuanLuas ? ' ' + satuanLuas : ''}`]);
+  if(kt && kt !== '-') util.push(['Kapasitas Terpasang', `${kt}${satuanKap ? ' ' + satuanKap : ''}`]);
+  if(kp && kp !== '-') util.push(['Kapasitas Terpakai', `${kp}${satuanKap ? ' ' + satuanKap : ''}`]);
+  if(idle && idle !== '-') util.push(['Idle Capacity', `${idle}${satuanKap ? ' ' + satuanKap : ''}`]);
+  if(luasPen && luasPen !== '-') util.push(['Luas Penanganan', `${luasPen}${satuanLuas ? ' ' + satuanLuas : ''}`]);
+  if(luasKaw && luasKaw !== '-') util.push(['Luas Kawasan', `${luasKaw}${satuanLuas ? ' ' + satuanLuas : ''}`]);
 
   const berf = pick(i, ['Berfungsi','Berfungsi Unit','Jumlah Berfungsi']);
   const tbf = pick(i, ['Tidak Berfungsi','Tidak Berfungsi Unit','Jumlah Tidak Berfungsi']);
-
-  const status = [
-    ['Berfungsi', berf ?? '-'],
-    ['Tidak Berfungsi', tbf ?? '-']
-  ];
+  const status = [['Berfungsi', berf ?? '-'], ['Tidak Berfungsi', tbf ?? '-']];
 
   return { prefix: 'Infrastruktur', name, jumlah, invest, util, status };
 }
 
-function renderRowsFlex(topId,bottomId,data){
- const t=document.getElementById(topId),b=document.getElementById(bottomId);
- t.innerHTML='';b.innerHTML='';
- const list=Array.isArray(data)?data:[];
- list.slice(0,3).forEach(it=>{const f=mapItem(it);t.insertAdjacentHTML('beforeend',buildCardFlex(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status));});
- list.slice(3,5).forEach(it=>{const f=mapItem(it);b.insertAdjacentHTML('beforeend',buildCardFlex(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status));});
+/* render helpers */
+function renderRowsFlex(topId, bottomId, data){
+  const t = document.getElementById(topId), b = document.getElementById(bottomId);
+  if(!t || !b) return;
+  t.innerHTML = ''; b.innerHTML = '';
+  const list = Array.isArray(data) ? data : [];
+  list.slice(0,3).forEach(it=>{ const f = mapItem(it); t.insertAdjacentHTML('beforeend', buildCardFlex(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
+  list.slice(3,5).forEach(it=>{ const f = mapItem(it); b.insertAdjacentHTML('beforeend', buildCardFlex(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
 }
 
+/* load & init */
 async function loadAndRender(){
- const reg=await loadJSON('data/rekap_reguler.json'),ibm=await loadJSON('data/rekap_ibm.json');
- renderRowsFlex('cards-reg-top','cards-reg-bottom',reg);
- renderRowsFlex('cards-ibm-top','cards-ibm-bottom',ibm);
+  const reg = await loadJSON('data/rekap_reguler.json');
+  const ibm = await loadJSON('data/rekap_ibm.json');
+  renderRowsFlex('cards-reg-top','cards-reg-bottom', Array.isArray(reg)?reg:[]);
+  renderRowsFlex('cards-ibm-top','cards-ibm-bottom', Array.isArray(ibm)?ibm:[]);
 }
 
+/* nav active (handles peta.html) */
 function setActiveNav(){
- const sections=[{id:'hero',nav:'nav-home'},{id:'dashboard',nav:'nav-dashboard'}];
- const offset=window.scrollY+80;let active='nav-home';
- for(const s of sections){const el=document.getElementById(s.id);if(el&&el.offsetTop<=offset)active=s.nav;}
- document.querySelectorAll('#top-nav a').forEach(a=>a.classList.remove('active'));
- const act=document.getElementById(active);if(act)act.classList.add('active');
+  document.querySelectorAll('#top-nav a.nav-link').forEach(a=>a.classList.remove('active'));
+  const path = window.location.pathname.split('/').pop().toLowerCase();
+  if(path === 'peta.html'){
+    const p = document.getElementById('nav-peta'); if(p) p.classList.add('active'); return;
+  }
+  const sections = [{id:'hero',nav:'nav-home'},{id:'dashboard',nav:'nav-dashboard'}];
+  const offset = window.scrollY + 90;
+  let active = 'nav-home';
+  for(const s of sections){ const el = document.getElementById(s.id); if(el && el.offsetTop <= offset) active = s.nav; }
+  const activeEl = document.getElementById(active); if(activeEl) activeEl.classList.add('active');
 }
 
+/* smooth internal scroll */
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
- a.addEventListener('click',e=>{
-   const target=a.getAttribute('href').slice(1);
-   const el=document.getElementById(target);
-   if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth'});}
- });
+  a.addEventListener('click', e=>{
+    const target = a.getAttribute('href').slice(1);
+    const el = document.getElementById(target);
+    if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
 });
 
-window.addEventListener('load',()=>{loadAndRender();setActiveNav();});
-window.addEventListener('scroll',setActiveNav);
+window.addEventListener('load', ()=>{ loadAndRender(); setActiveNav(); if(!location.hash) window.scrollTo(0,0); });
+window.addEventListener('scroll', setActiveNav);
 </script>
 </body>
 </html>
