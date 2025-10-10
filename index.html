@@ -67,27 +67,64 @@ nav{display:flex;align-items:center;gap:12px}
 .cards-row{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-bottom:20px;}
 .card{background:linear-gradient(180deg,rgba(11,19,30,0.78),rgba(8,12,18,0.7));border-radius:12px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 30px rgba(4,26,54,0.35);overflow:hidden;width:320px;max-width:90%;transition:transform .2s;display:flex;flex-direction:column;}
 .card:hover{transform:translateY(-4px)}
-.card-head{text-align:center;background:linear-gradient(180deg,rgba(12,39,62,0.98),rgba(9,31,50,0.92));padding:14px 10px;}
-.card-head h4{font-size:13px;margin:0;color:var(--accent);font-weight:800;}
-/* replace old sizes with these */
-.card-head h4{
-  font-size:12px;   /* header atas kecil */
-  margin:0;
-  color:var(--accent);
-  font-weight:800;
-  text-transform:none;
-  letter-spacing:0.02em;
+.card-head {
+  background: var(--navy);
+  padding: 16px 10px 20px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  text-align: center;
 }
-.card-head .title-line{
-  font-size:20px;   /* nama sektor/program lebih besar */
-  margin-top:6px;
-  font-weight:900;
-  color:var(--text-light);
-  display:block;
-  line-height:1.05;
+
+.card-head h4 {
+  font-size: 22px; /* headline besar */
+  font-weight: 900;
+  color: var(--accent);
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
-.card-head .jumlah{font-size:20px;margin-top:6px;font-weight:900;color:var(--text-light);display:block;}
-.card-head .invest-value{font-size:14px;margin-top:6px;color:var(--accent);font-weight:800;display:block;}
+
+.card-head .title-line {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-top: 4px;
+  text-transform: capitalize;
+}
+
+.card-head .label-small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.card-head .jumlah {
+  display: block;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--accent); /* warna kuning */
+  margin-top: 4px;
+  line-height: 1.1;
+}
+
+.card-head .invest-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+.card-head .invest-value {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 2px;
+}
+  
 .body{padding:12px;background:rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px;min-height:220px;justify-content:flex-start;}
 .section-title{text-align:center;background:var(--navy);color:#fff;padding:6px 10px;border-radius:8px;font-weight:700;margin:0 auto 6px;width:86%}
 .util-row,.status-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;color:var(--muted);font-size:13px;}
