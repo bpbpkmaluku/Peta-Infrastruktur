@@ -279,7 +279,7 @@ function buildCardFlex(prefix, name, jumlah, invest, utilRows, statusRows){
     <div class="section-title">Status Keberfungsian</div>
     ${statusRows.map(r=>`<div class="status-row"><div class="k">${r[0]}</div><div class="v">${r[1]||'-'}</div></div>`).join('')}
     </div>`;
-  return `<div class="card" role="article" aria-label="${prefix} ${name}">
+ return `<div class="card" data-type="${prefix.includes('IBM') ? 'ibm' : 'reguler'}" role="article" aria-label="${prefix} ${name}">
     <div class="card-head">
       <h4>${prefix}</h4>
       <span class="title-line">${name}</span>
