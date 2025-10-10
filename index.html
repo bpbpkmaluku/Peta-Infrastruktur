@@ -17,6 +17,24 @@
   --ff-sans:"Poppins",system-ui,Arial;
 }
 
+  /* Judul Rekapitulasi: highlight IBM dan Reguler */
+.recap-header h2 {
+  margin: 0;
+  font-family: 'Montserrat';
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.recap-header h2 span.ibm {
+  color: var(--accent); /* kuning */
+}
+
+.recap-header h2 span.reguler {
+  color: #4eaaff; /* biru terang */
+}
+
 /* NAV & BUTTONS */
 .btn, #top-nav a.nav-link {
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -214,7 +232,11 @@ nav{display:flex;align-items:center;gap:12px}
 <section id="dashboard" class="dashboard" aria-labelledby="recap-title">
   <div class="container">
     <div class="recap-header">
-      <h2 id="recap-title">Rekapitulasi Status Keberfungsian Infrastruktur Reguler Terbangun Tahun Anggaran 2020–2024</h2>
+      <h2 id="recap-title">
+  Rekapitulasi Status Keberfungsian Infrastruktur 
+  <span class="reguler">Reguler</span> 
+  Terbangun Tahun Anggaran 2020–2024
+</h2>
     </div>
 
     <div id="cards-reg-top" class="cards-row" aria-live="polite"></div>
@@ -223,7 +245,11 @@ nav{display:flex;align-items:center;gap:12px}
     <div style="height:22px"></div>
 
     <div class="recap-header">
-      <h2>Rekapitulasi Status Keberfungsian Infrastruktur IBM Terbangun Tahun Anggaran 2020–2024</h2>
+     <h2>
+  Rekapitulasi Status Keberfungsian Infrastruktur 
+  <span class="ibm">IBM</span> 
+  Terbangun Tahun Anggaran 2020–2024
+</h2>
     </div>
 
     <div id="cards-ibm-top" class="cards-row" aria-live="polite"></div>
