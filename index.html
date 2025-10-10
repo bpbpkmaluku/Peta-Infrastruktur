@@ -163,19 +163,42 @@ function buildCardFlex(prefix,name,jumlah,invest,utilRows,statusRows){
 }
 
 function mapItem(i){
- const name=pick(i,['Sektor','Program','Nama','Nama Program'])||'-';
- const jumlah=String(pick(i,['Jumlah Unit','Jumlah','Unit'])??'-');
- const invest=formatInvest(pick(i,['Nilai Investasi (Miliar)','Nilai Investasi','Investasi']));
- const satuanKap=pick(i,['Satuan Kapasitas','Satuan'])||'', satuanLuas=pick(i,['Satuan Luas'])||'';
- const util=[], kt=pick(i,['Kapasitas Terpasang']), kp=pick(i,['Kapasitas Terpakai']), idle=pick(i,['Idle Capacity','Idle']), luasPen=pick(i,['Luas Penanganan']), luasKaw=pick(i,['Luas Kawasan','Luas Total Kawasan']);
- if(kt!==null)util.push(['Kapasitas Terpasang',`${kt}${satuanKap?' '+satuanKap:''}`]);
- if(kp!==null)util.push(['Kapasitas Terpakai',`${kp}${satuanKap?' '+satuanKap:''}`]);
- if(idle!==null)util.push(['Idle Capacity',`${idle}${satuanKap?' '+satuanKap:''}`]);
- if(luasPen!==null)util.push(['Luas Penanganan',`${luasPen}${satuanLuas?' '+satuanLuas:''}`]);
- if(luasKaw!==null)util.push(['Luas Total Kawasan',`${luasKaw}${satuanLuas?' '+satuanLuas:''}`]);
- const berf=pick(i,['Berfungsi','Berfungsi Unit']),tbf=pick(i,['Tidak Berfungsi','Tidak Berfungsi Unit']);
- const status=[['Berfungsi',berf??'-'],['Tidak Berfungsi',tbf??'-']];
- return{prefix:'Infrastruktur',name,jumlah,invest,util,status};
+  const name = pick(i, ['Sektor','Program','Nama','Nama Program']) || '-';
+  const jumlah = String(pick(i, ['Jumlah Unit','Jumlah','Unit']) ?? '-');
+  const invest = formatInvest(pick(i, ['Nilai Investasi (Miliar)','Nilai Investasi','Investasi']));
+
+  // Ambil satuan dan bersihkan karakter escape
+  let satuanKap = pick(i, ['Satuan Kapasitas','Satuan']) || '';
+  satuanKap = satuanKap.replace(/\\\//g, '/').trim();
+  let satuanLuas = pick(i, ['Satuan Luas','Satuan Luas Kawasan']) || '';
+  satuanLuas = satuanLuas.replace(/\\\//g, '/').trim();
+
+  // Jika tidak ada "Satuan Luas", gunakan satuan kapasitas juga (seperti JSON kamu)
+  if (!satuanLuas && satuanKap) satuanLuas = satuanKap;
+
+  const util = [];
+  const kt = pick(i, ['Kapasitas Terpasang']);
+  const kp = pick(i, ['Kapasitas Terpakai']);
+  const idle = pick(i, ['Idle Capacity','Idle']);
+  const luasPen = pick(i, ['Luas Penanganan']);
+  const luasKaw = pick(i, ['Luas Kawasan','Luas Total Kawasan']);
+
+  // Tambahkan hanya jika nilainya bukan '-' dan bukan null
+  if (kt && kt !== '-') util.push(['Kapasitas Terpasang', `${kt}${satuanKap ? ' ' + satuanKap : ''}`]);
+  if (kp && kp !== '-') util.push(['Kapasitas Terpakai', `${kp}${satuanKap ? ' ' + satuanKap : ''}`]);
+  if (idle && idle !== '-') util.push(['Idle Capacity', `${idle}${satuanKap ? ' ' + satuanKap : ''}`]);
+  if (luasPen && luasPen !== '-') util.push(['Luas Penanganan', `${luasPen}${satuanLuas ? ' ' + satuanLuas : ''}`]);
+  if (luasKaw && luasKaw !== '-') util.push(['Luas Kawasan', `${luasKaw}${satuanLuas ? ' ' + satuanLuas : ''}`]);
+
+  const berf = pick(i, ['Berfungsi','Berfungsi Unit','Jumlah Berfungsi']);
+  const tbf = pick(i, ['Tidak Berfungsi','Tidak Berfungsi Unit','Jumlah Tidak Berfungsi']);
+
+  const status = [
+    ['Berfungsi', berf ?? '-'],
+    ['Tidak Berfungsi', tbf ?? '-']
+  ];
+
+  return { prefix: 'Infrastruktur', name, jumlah, invest, util, status };
 }
 
 function renderRowsFlex(topId,bottomId,data){
