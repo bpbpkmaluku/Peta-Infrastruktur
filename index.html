@@ -6,202 +6,82 @@
 <title>MalukuInfraZone</title>
 <link rel="icon" href="images/logo-pu.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-
 <style>
-:root {
-  --dark-bg: #0b0f17;
-  --glass: rgba(17, 23, 35, 0.85);
-  --navy: #0f3556;
-  --accent: #f3b41f;
-  --accent-strong: #f1f5f9;
-  --muted: #9fb0c6;
-  --muted-strong: #d5dee9;
-  --font-sans: "Poppins", sans-serif;
+:root{
+  --bg:#0b0f17;
+  --glass:rgba(17,23,35,0.86);
+  --navy:#0f3556;
+  --accent:#f3b41f;
+  --text-strong:#f1f5f9;
+  --muted:#9fb0c6;
+  --card-w:250px;
+  --gap:16px;
+  font-family: "Poppins", system-ui, Arial, sans-serif;
 }
+html,body{height:100%;margin:0;background:var(--bg);color:#fff;padding-top:72px}
+a{color:inherit;text-decoration:none}
 
-/* ===== BASE ===== */
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: var(--font-sans);
-  background: var(--dark-bg);
-  color: #fff;
-  padding-top: 72px;
-}
+/* header */
+header{position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--glass);backdrop-filter:blur(6px);z-index:60}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{height:40px}
+.site-title{font-family:'Montserrat';font-weight:800;font-size:20px}
+nav{display:flex;align-items:center;gap:14px}
+.cta-btn{background:#2b9cff;color:#021129;padding:8px 14px;border-radius:8px;font-weight:700}
 
-/* ===== HEADER ===== */
-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 50;
-  background: rgba(11, 15, 23, 0.8);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px;
-}
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand img { height: 40px; }
-.site-title { font-family: 'Montserrat'; font-weight: 800; font-size: 20px; }
-nav a { margin-left: 20px; color: #fff; text-decoration: none; font-weight: 600; }
-nav a:hover { color: var(--accent); }
+/* hero */
+.hero{height:62vh;background:url('images/background-maluku.jpg') center/cover no-repeat;display:flex;align-items:center;justify-content:center;position:relative}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.52), rgba(0,0,0,0.72));}
+.hero-inner{position:relative;z-index:10;text-align:center;padding:20px;max-width:900px}
+.hero h1{font-family:'Montserrat';font-weight:900;font-size:40px;margin:0}
+.hero p{color:var(--muted);margin-top:8px}
+.hero .peta{display:inline-block;margin-top:18px;padding:12px 20px;border-radius:999px;background:var(--accent);color:#0b2135;font-weight:800}
 
-/* ===== HERO ===== */
-.hero {
-  height: 60vh;
-  background: url('images/background-maluku.jpg') center/cover no-repeat;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-}
-.hero::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.75));
-}
-.hero-inner {
-  position: relative; z-index: 10;
-  text-align: center; max-width: 820px; padding: 20px;
-}
-.hero h1 {
-  font-family: 'Montserrat'; font-weight: 900; font-size: 42px;
-  margin: 0; color: #fff;
-}
-.hero p { color: var(--muted); font-size: 16px; margin-top: 8px; }
-.cta {
-  display: inline-block; margin-top: 22px;
-  background: var(--accent);
-  color: #1a1f29; padding: 12px 26px;
-  border-radius: 999px; font-weight: 700;
-}
+/* sectors */
+.section{padding:56px 16px;max-width:1100px;margin:0 auto}
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.sector-card{background:#0f1720;padding:14px;border-radius:10px;text-align:center}
+.sector-card img{width:44px;height:44px}
+.sector-card h3{color:var(--accent);margin:8px 0 4px;font-size:15px}
+.sector-card p{color:var(--muted);font-size:13px;margin:0}
 
-/* ===== SECTORS ===== */
-.section { padding: 60px 20px; max-width: 1100px; margin: 0 auto; text-align: center; }
-.sector-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px;
-}
-.sector-card {
-  background: #141c26;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.5);
-}
-.sector-card img { width: 48px; height: 48px; object-fit: contain; }
-.sector-card h3 { color: var(--accent); margin: 8px 0 6px; font-size: 16px; }
-.sector-card p { color: var(--muted); font-size: 13px; margin: 0; }
+/* dashboard - dark translucent background */
+.dashboard{background:linear-gradient(180deg, rgba(5,7,12,0.6), rgba(5,7,12,0.45));padding:36px 16px;border-top:2px solid rgba(255,255,255,0.04)}
+.container{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
 
-/* ===== DASHBOARD ===== */
-.dashboard {
-  background: var(--glass);
-  color: #fff;
-  padding: 40px 20px;
-  border-top: 2px solid rgba(255,255,255,0.05);
-}
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex; flex-direction: column; align-items: center;
-  text-align: center;
-}
+/* section header divider */
+.recap-header{width:100%;max-width:1000px;background:rgba(255,255,255,0.03);border-left:4px solid var(--navy);padding:12px 16px;border-radius:8px;margin-bottom:12px}
+.recap-header h2{margin:0;font-family:'Montserrat';font-weight:800;color:var(--text-strong);font-size:16px}
+.recap-header p{margin:6px 0 0;color:var(--muted);font-size:13px}
 
-/* judul */
-.dashboard h2 {
-  font-family: 'Montserrat'; font-weight: 800;
-  color: var(--muted-strong);
-  font-size: 18px; margin-bottom: 10px;
-}
+/* card layout centered */
+.cards-grid, .cards-bottom { display:flex;flex-wrap:wrap;justify-content:center;gap:14px;width:100%; }
+.card { width:var(--card-w);background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid rgba(255,255,255,0.06);overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.4);backdrop-filter:blur(4px) }
 
-/* grid tengah */
-.cards-grid, .cards-bottom {
-  display: flex; flex-wrap: wrap;
-  justify-content: center;
-  gap: 18px;
-  text-align: center;
-  margin-top: 20px;
-}
+/* card head with two-line title */
+.card-head{background:linear-gradient(180deg,var(--navy),#0b3556aa);padding:12px 10px;text-align:center}
+.card-head h4{margin:0;font-family:'Montserrat';font-weight:800;font-size:14px;color:var(--accent)}
+.card-head .title-line{display:block;color:var(--text-strong);font-weight:700;margin-top:6px;font-size:13px}
+.card-head .label-small{display:block;margin-top:8px;font-size:12px;color:#d6e8fb;font-weight:600}
+.card-head .jumlah{display:block;margin-top:6px;font-size:18px;font-weight:900;color:var(--text-strong)}
+.card-head .invest-label{display:block;margin-top:8px;font-size:12px;color:#d6e8fb}
+.card-head .invest-value{display:block;margin-top:4px;font-weight:800;color:var(--accent)}
 
-/* ===== CARD ===== */
-.card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  width: 250px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-  backdrop-filter: blur(6px);
-}
-.card-head {
-  background: rgba(10,20,40,0.9);
-  padding: 14px 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.card-head h4 {
-  margin: 0;
-  font-family: 'Montserrat';
-  font-weight: 800;
-  font-size: 15px;
-  color: var(--accent);
-}
-.label-small {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 6px;
-  font-weight: 600;
-}
-.jumlah {
-  display: block;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--accent-strong);
-  margin-top: 4px;
-}
-.invest-label {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 8px;
-  font-weight: 600;
-}
-.invest-value {
-  display: block;
-  font-weight: 800;
-  font-size: 15px;
-  color: var(--accent);
-  margin-top: 2px;
-}
-.body {
-  background: rgba(255,255,255,0.06);
-  padding: 10px;
-}
-.section-title {
-  background: var(--navy);
-  color: #fff;
-  padding: 6px 10px;
-  font-weight: 700;
-  font-size: 12px;
-  border-radius: 4px;
-  margin-bottom: 6px;
-}
-.card table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  color: #e0e5eb;
-}
-.card td {
-  padding: 6px 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-.card .k { text-align: left; }
-.card .v { text-align: right; color: var(--muted-strong); }
+/* body */
+.body{padding:10px;background:rgba(255,255,255,0.03)}
+.section-title{background:var(--navy);color:#fff;padding:6px 8px;font-weight:700;border-radius:6px;margin-bottom:8px;font-size:12px}
+.card table{width:100%;border-collapse:collapse;color:var(--muted)}
+.card td{padding:6px 4px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.card .k{text-align:left}
+.card .v{text-align:right;color:var(--muted);}
 
 /* responsive */
-@media(max-width:900px){ .card{width:220px;} }
-@media(max-width:640px){ .card{width:100%;} }
+@media(max-width:900px){:root{--card-w:220px}}
+@media(max-width:640px){:root{--card-w:100%}; .card{width:100%}}
 </style>
 </head>
-
 <body>
+
 <header>
   <div class="brand">
     <img src="images/favicon.png" alt="logo">
@@ -209,86 +89,163 @@ nav a:hover { color: var(--accent); }
   </div>
   <nav>
     <a href="#hero">Beranda</a>
+    <a class="cta-btn" href="peta.html">Peta Infrastruktur</a>
     <a href="#dashboard" id="nav-dashboard">Dashboard</a>
-    <a href="peta.html">Peta Infrastruktur</a>
   </nav>
 </header>
 
 <section class="hero" id="hero">
   <div class="hero-inner">
     <h1>Platform Digital BPBPK Maluku</h1>
-    <p>Transparansi Data — Akses Informasi Infrastruktur Terbangun Balai Penataan Bangunan, Prasarana dan Kawasan Maluku</p>
-    <a href="#dashboard" class="cta">Lihat Dashboard</a>
+    <p>Transparansi Data — Akses Informasi Infrastruktur Terbangun BPBPK Maluku</p>
+    <a class="peta" href="peta.html">Lihat Peta Infrastruktur</a>
   </div>
 </section>
 
 <section class="section">
-  <h2>Sektor-Sektor di BPBPK Maluku</h2>
+  <h2 style="color:#fff;font-family:'Montserrat';font-weight:800;margin-bottom:12px">Sektor-Sektor di BPBPK Maluku</h2>
   <div class="sector-grid">
-    <div class="sector-card"><img src="images/icon-air.png" alt=""><h3>Air Minum</h3><p>Penyediaan infrastruktur air minum yang layak.</p></div>
-    <div class="sector-card"><img src="images/icon-sanitasi.png" alt=""><h3>Sanitasi</h3><p>Pengelolaan sanitasi untuk lingkungan sehat.</p></div>
-    <div class="sector-card"><img src="images/icon-bina.png" alt=""><h3>Penataan Bangunan</h3><p>Pengawasan dan penataan bangunan gedung.</p></div>
-    <div class="sector-card"><img src="images/icon-kawasan.png" alt=""><h3>Kawasan Strategis</h3><p>Pengembangan kawasan prioritas di Maluku.</p></div>
+    <div class="sector-card"><img src="images/icon-air.png" alt=""><h3>Air Minum</h3><p>Penyediaan infrastruktur air minum.</p></div>
+    <div class="sector-card"><img src="images/icon-sanitasi.png" alt=""><h3>Sanitasi</h3><p>Pembangunan dan pengelolaan sanitasi.</p></div>
+    <div class="sector-card"><img src="images/icon-bina.png" alt=""><h3>Penataan Bangunan</h3><p>Pengawasan dan tata bangunan.</p></div>
+    <div class="sector-card"><img src="images/icon-kawasan.png" alt=""><h3>Kawasan Strategis</h3><p>Pengembangan kawasan prioritas.</p></div>
   </div>
 </section>
 
 <section id="dashboard" class="dashboard">
   <div class="container">
-    <h2>Rekapitulasi Status Keberfungsian Infrastruktur Reguler Terbangun Tahun Anggaran 2020-2024</h2>
-    <div id="cards-reg" class="cards-grid"></div>
 
-    <h2>Rekapitulasi Status Keberfungsian Infrastruktur IBM Terbangun Tahun Anggaran 2020-2024</h2>
-    <div id="cards-ibm" class="cards-grid"></div>
+    <div class="recap-header" id="recap-reg-header">
+      <h2>Rekapitulasi Status Keberfungsian Infrastruktur Reguler Terbangun Tahun Anggaran 2020-2024</h2>
+      <p>Ringkasan per sektor. Tampilkan jumlah, investasi, utilisasi (dengan satuan), dan status keberfungsian.</p>
+    </div>
+
+    <div id="cards-reg" class="cards-grid" aria-live="polite"></div>
+
+    <div style="height:24px"></div>
+
+    <div class="recap-header" id="recap-ibm-header">
+      <h2>Rekapitulasi Status Keberfungsian Infrastruktur IBM Terbangun Tahun Anggaran 2020-2024</h2>
+      <p>Ringkasan program IBM. Tampilkan jumlah, investasi, utilisasi (dengan satuan), dan status keberfungsian.</p>
+    </div>
+
+    <div id="cards-ibm" class="cards-grid" aria-live="polite"></div>
+
+    <div style="height:12px"></div>
+    <div id="cards-ibm-bottom" class="cards-bottom" aria-live="polite"></div>
+
   </div>
 </section>
 
-<footer style="text-align:center;padding:28px;color:var(--muted);background:var(--dark-bg)">
+<footer style="text-align:center;padding:28px;color:var(--muted);background:var(--bg)">
   &copy; 2025 MalukuInfraZone - BPBPK Maluku
 </footer>
 
 <script>
+/* load */
 async function loadJSON(path){
-  try {
-    const r = await fetch(path,{cache:'no-store'});
-    if(!r.ok) return [];
-    return await r.json();
-  } catch(e){return [];}
+  try{ const r = await fetch(path,{cache:'no-store'}); if(!r.ok) return []; return await r.json(); }catch(e){return [];}
 }
-function pick(o,keys){for(const k of keys) if(o && (o[k]!==undefined && o[k]!==null && String(o[k]).trim()!=='')) return o[k]; return null;}
-function formatInvest(v){if(!v)return'Rp 0';const n=Number(String(v).replace(/[^0-9.-]+/g,''));if(!isNaN(n))return'Rp '+n.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' Miliar';return String(v);}
-function cardHTML(prefix,name,jumlah,invest,utilRows,statusRows){
-  const util = utilRows.length ? `<div class='body'><div class='section-title'>Utilisasi</div><table>${utilRows.map(r=>`<tr><td class='k'>${r[0]}</td><td class='v'>${r[1]}</td></tr>`).join('')}</table></div>`:'';
-  const status = `<div class='body'><div class='section-title'>Status Keberfungsian</div><table>${statusRows.map(r=>`<tr><td class='k'>${r[0]}</td><td class='v'>${r[1]}</td></tr>`).join('')}</table></div>`;
-  return `<div class='card'>
-    <div class='card-head'>
-      <h4>${prefix} ${name}</h4>
-      <span class='label-small'>JUMLAH</span>
-      <span class='jumlah'>${jumlah}</span>
-      <span class='invest-label'>NILAI INVESTASI</span>
-      <span class='invest-value'>${invest}</span>
-    </div>${util}${status}
-  </div>`;
+function pick(o,keys){ for(const k of keys) if(o && (o[k] !== undefined && o[k] !== null && String(o[k]).trim() !== '')) return o[k]; return null; }
+function formatInvest(v){ if(!v) return 'Rp 0'; const n = Number(String(v).replace(/[^0-9.-]+/g,'')); return !isNaN(n) ? 'Rp '+n.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' Miliar' : String(v); }
+
+/* build card: include units when available */
+function cardHTML(prefix, name, jumlah, investasi, utilRows, statusRows){
+  const utilHtml = utilRows && utilRows.length ? `<div class='body'><div class='section-title'>Utilisasi</div><table>${utilRows.map(r=>`<tr><td class='k'>${r[0]}</td><td class='v'>${r[1]}</td></tr>`).join('')}</table></div>` : '';
+  const statusHtml = `<div class='body'><div class='section-title'>Status Keberfungsian</div><table>${statusRows.map(r=>`<tr><td class='k'>${r[0]}</td><td class='v'>${r[1]}</td></tr>`).join('')}</table></div>`;
+  return `<div class='card'><div class='card-head'><h4>${prefix}</h4><span class='title-line'>${name}</span><span class='label-small'>JUMLAH</span><span class='jumlah'>${jumlah}</span><span class='invest-label'>NILAI INVESTASI</span><span class='invest-value'>${investasi}</span></div>${utilHtml}${statusHtml}</div>`;
 }
-function mapItem(it,type){
-  const name=pick(it,['Sektor','Program','Nama','Nama Program'])||'-';
-  const jumlah=String(pick(it,['Jumlah Unit','Jumlah','Unit'])||'-');
-  const invest=formatInvest(pick(it,['Nilai Investasi (Miliar)','Nilai Investasi','Investasi']));
-  const util=[];const kt=pick(it,['Kapasitas Terpasang']);const kp=pick(it,['Kapasitas Terpakai']);const idle=pick(it,['Idle Capacity']);
-  if(kt)util.push(['Kapasitas Terpasang',kt]);
-  if(kp)util.push(['Kapasitas Terpakai',kp]);
-  if(idle)util.push(['Idle Capacity',idle]);
-  const berf=pick(it,['Berfungsi']);const tbf=pick(it,['Tidak Berfungsi']);
-  const stat=[['Berfungsi',berf||'-'],['Tidak Berfungsi',tbf||'-']];
-  const prefix=type==='reg'?'Infrastruktur Sektor':'Infrastruktur IBM';
-  return cardHTML(prefix,name,jumlah,invest,util,stat);
+
+/* map item to fields, attach units */
+function mapFields(item, type){
+  const name = pick(item, ['Sektor','Program','Nama','Nama Program']) || '-';
+  const jumlah = String(pick(item, ['Jumlah Unit','Jumlah','Unit']) || '-');
+  const investasi = formatInvest(pick(item, ['Nilai Investasi (Miliar)','Nilai Investasi','Investasi']));
+
+  // units
+  const satuanK = pick(item, ['Satuan Kapasitas','Satuan']) || '';
+  const satuanL = pick(item, ['Satuan Luas']) || '';
+
+  const util = [];
+  const kt = pick(item, ['Kapasitas Terpasang','Kapasitas terpasang']);
+  const kp = pick(item, ['Kapasitas Terpakai','Kapasitas terpakai']);
+  const idle = pick(item, ['Idle Capacity','Idle']);
+  const luasPen = pick(item, ['Luas Penanganan']);
+  const luasKaw = pick(item, ['Luas Kawasan','Luas Total Kawasan']);
+
+  if(kt !== null) util.push(['Kapasitas Terpasang', String(kt) + (satuanK ? ' ' + satuanK : '')]);
+  if(kp !== null) util.push(['Kapasitas Terpakai', String(kp) + (satuanK ? ' ' + satuanK : '')]);
+  if(idle !== null) util.push(['Idle Capacity', String(idle) + (satuanK ? ' ' + satuanK : '')]);
+  if(luasPen !== null) util.push(['Luas Penanganan', String(luasPen) + (satuanL ? ' ' + satuanL : '')]);
+  if(luasKaw !== null) util.push(['Luas Total Kawasan', String(luasKaw) + (satuanL ? ' ' + satuanL : '')]);
+
+  const berf = pick(item, ['Berfungsi','Berfungsi Unit','Jumlah Berfungsi']);
+  const tbf = pick(item, ['Tidak Berfungsi','Tidak Berfungsi Unit','Jumlah Tidak Berfungsi']);
+  const status = [['Berfungsi', berf !== null ? String(berf) : '-'], ['Tidak Berfungsi', tbf !== null ? String(tbf) : '-']];
+
+  const prefix = (type === 'reg') ? 'Infrastruktur Sektor' : 'Infrastruktur IBM';
+  return { prefix, name, jumlah, investasi, util, status };
 }
-async function render(){
-  const reg=await loadJSON('data/rekap_reguler.json');
-  const ibm=await loadJSON('data/rekap_ibm.json');
-  document.getElementById('cards-reg').innerHTML=reg.map(i=>mapItem(i,'reg')).join('');
-  document.getElementById('cards-ibm').innerHTML=ibm.map(i=>mapItem(i,'ibm')).join('');
+
+/* render lists centered. render only available items. */
+function renderList(containerId, dataArray, type, limit=5){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const list = Array.isArray(dataArray) ? dataArray.slice(0, limit) : [];
+  if(list.length === 0){
+    container.innerHTML = `<div style="padding:18px;color:var(--muted)">Tidak ada data.</div>`;
+    return;
+  }
+  list.forEach(it=>{
+    const f = mapFields(it, type);
+    container.insertAdjacentHTML('beforeend', cardHTML(f.prefix, f.name, f.jumlah, f.investment || f.investment, f.util, f.status) || cardHTML(f.prefix, f.name, f.jumlah, f.investment || f.investment, f.util, f.status));
+    // The above fallback ensures rendering even if keys vary
+  });
 }
-window.addEventListener('load',render);
+
+/* safe render using correct variables */
+function renderSafe(containerId, dataArray, type, limit=5){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const list = Array.isArray(dataArray) ? dataArray.slice(0, limit) : [];
+  if(list.length === 0){ container.innerHTML = `<div style="padding:18px;color:var(--muted)">Tidak ada data.</div>`; return; }
+  list.forEach(it=>{
+    const f = mapFields(it, type);
+    container.insertAdjacentHTML('beforeend', cardHTML(f.prefix, f.name, f.jumlah, f.investment || f.investment || f.invest, f.util, f.status));
+  });
+}
+
+/* main loader */
+async function loadAndRender(){
+  const reg = await loadJSON('data/rekap_reguler.json');
+  const ibm = await loadJSON('data/rekap_ibm.json');
+
+  // render first up to 5 items only if present
+  const regList = Array.isArray(reg) ? reg : [];
+  const ibmList = Array.isArray(ibm) ? ibm : [];
+
+  // render with proper functions
+  if(regList.length) renderList('cards-reg', regList, 'reg', 5); else document.getElementById('cards-reg').innerHTML = '<div style="padding:18px;color:var(--muted)">Tidak ada data.</div>';
+  if(ibmList.length) renderList('cards-ibm', ibmList, 'ibm', 5); else document.getElementById('cards-ibm').innerHTML = '<div style="padding:18px;color:var(--muted)">Tidak ada data.</div>';
+
+  // bottom two IBM (if present beyond first 5)
+  const extra = ibmList.length > 5 ? ibmList.slice(5,7) : [];
+  const bottom = document.getElementById('cards-ibm-bottom');
+  bottom.innerHTML = '';
+  extra.forEach(it=>{
+    const f = mapFields(it, 'ibm');
+    bottom.insertAdjacentHTML('beforeend', cardHTML(f.prefix, f.name, f.jumlah, f.invest, f.util, f.status));
+  });
+}
+
+/* nav banner show */
+document.getElementById('nav-dashboard').addEventListener('click', function(){
+  const b = document.getElementById('recap-reg-header');
+  b.scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+/* init */
+window.addEventListener('load', function(){ loadAndRender(); if(!location.hash) window.scrollTo(0,0); });
 </script>
 </body>
 </html>
