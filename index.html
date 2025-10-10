@@ -69,8 +69,23 @@ nav{display:flex;align-items:center;gap:12px}
 .card:hover{transform:translateY(-4px)}
 .card-head{text-align:center;background:linear-gradient(180deg,rgba(12,39,62,0.98),rgba(9,31,50,0.92));padding:14px 10px;}
 .card-head h4{font-size:13px;margin:0;color:var(--accent);font-weight:800;}
-.card-head .title-line{font-size:15px;margin-top:8px;font-weight:800;color:var(--text-light);display:block;}
-.card-head .label-small,.card-head .invest-label{margin-top:10px;font-size:11px;color:#d6e8fb;font-weight:700;display:block;}
+/* replace old sizes with these */
+.card-head h4{
+  font-size:12px;   /* header atas kecil */
+  margin:0;
+  color:var(--accent);
+  font-weight:800;
+  text-transform:none;
+  letter-spacing:0.02em;
+}
+.card-head .title-line{
+  font-size:20px;   /* nama sektor/program lebih besar */
+  margin-top:6px;
+  font-weight:900;
+  color:var(--text-light);
+  display:block;
+  line-height:1.05;
+}
 .card-head .jumlah{font-size:20px;margin-top:6px;font-weight:900;color:var(--text-light);display:block;}
 .card-head .invest-value{font-size:14px;margin-top:6px;color:var(--accent);font-weight:800;display:block;}
 .body{padding:12px;background:rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px;min-height:220px;justify-content:flex-start;}
@@ -232,21 +247,46 @@ function mapItem(i){
 }
 
 /* render helpers */
-function renderRowsFlex(topId, bottomId, data){
+/* renderRowsFlex sekarang menerima parameter 'type' = 'reguler' | 'ibm' */
+function renderRowsFlex(topId, bottomId, data, type){
   const t = document.getElementById(topId), b = document.getElementById(bottomId);
   if(!t || !b) return;
   t.innerHTML = ''; b.innerHTML = '';
   const list = Array.isArray(data) ? data : [];
-  list.slice(0,3).forEach(it=>{ const f = mapItem(it); t.insertAdjacentHTML('beforeend', buildCardFlex(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
-  list.slice(3,5).forEach(it=>{ const f = mapItem(it); b.insertAdjacentHTML('beforeend', buildCardFlex(f.prefix,f.name,f.jumlah,f.invest,f.util,f.status)); });
+
+  // helper buat prefix berdasarkan tipe dan nama
+  function prefixFor(name){
+    // normalisasi kecil/besar
+    const nm = String(name || '').trim();
+    if(type === 'ibm') return 'Infrastruktur IBM';
+    // reguler: jika PKS atau BPB tetap "Infrastruktur"
+    if(type === 'reguler' && (nm.toUpperCase() === 'PKS' || nm.toUpperCase() === 'BPB')) return 'Infrastruktur';
+    // default reguler: "Infrastruktur Sektor"
+    return 'Infrastruktur Sektor';
+  }
+
+  // render top 3
+  list.slice(0,3).forEach(it=>{
+    const f = mapItem(it);
+    const pref = prefixFor(f.name);
+    t.insertAdjacentHTML('beforeend', buildCardFlex(pref, f.name, f.jumlah, f.invest, f.util, f.status));
+  });
+
+  // render bottom 2
+  list.slice(3,5).forEach(it=>{
+    const f = mapItem(it);
+    const pref = prefixFor(f.name);
+    b.insertAdjacentHTML('beforeend', buildCardFlex(pref, f.name, f.jumlah, f.invest, f.util, f.status));
+  });
 }
+
 
 /* load & init */
 async function loadAndRender(){
   const reg = await loadJSON('data/rekap_reguler.json');
   const ibm = await loadJSON('data/rekap_ibm.json');
-  renderRowsFlex('cards-reg-top','cards-reg-bottom', Array.isArray(reg)?reg:[]);
-  renderRowsFlex('cards-ibm-top','cards-ibm-bottom', Array.isArray(ibm)?ibm:[]);
+renderRowsFlex('cards-reg-top','cards-reg-bottom', Array.isArray(reg)?reg:[], 'reguler');
+renderRowsFlex('cards-ibm-top','cards-ibm-bottom', Array.isArray(ibm)?ibm:[], 'ibm');
 }
 
 /* nav active (handles peta.html) */
