@@ -1,0 +1,67 @@
+[
+  {
+    "Sektor":"Air Minum",
+    "Jumlah Unit":17,
+    "Nilai Investasi (Miliar)":135.71,
+    "Kapasitas Terpasang":"234.5",
+    "Kapasitas Terpakai":"112.81",
+    "Idle Capacity":"54.71",
+    "Luas Penanganan":"-",
+    "Luas Kawasan":"-",
+    "Berfungsi":14,
+    "Tidak Berfungsi":3,
+    "Satuan Kapasitas":"l\/detik"
+  },
+  {
+    "Sektor":"Air Limbah",
+    "Jumlah Unit":0,
+    "Nilai Investasi (Miliar)":0.0,
+    "Kapasitas Terpasang":"-",
+    "Kapasitas Terpakai":"-",
+    "Idle Capacity":"-",
+    "Luas Penanganan":"-",
+    "Luas Kawasan":"-",
+    "Berfungsi":0,
+    "Tidak Berfungsi":0,
+    "Satuan Kapasitas":"m3\/hari"
+  },
+  {
+    "Sektor":"Persampahan",
+    "Jumlah Unit":1,
+    "Nilai Investasi (Miliar)":13.2,
+    "Kapasitas Terpasang":"21.91",
+    "Kapasitas Terpakai":"-",
+    "Idle Capacity":"-",
+    "Luas Penanganan":"-",
+    "Luas Kawasan":"-",
+    "Berfungsi":0,
+    "Tidak Berfungsi":1,
+    "Satuan Kapasitas":"ton\/hari"
+  },
+  {
+    "Sektor":"PKS",
+    "Jumlah Unit":6,
+    "Nilai Investasi (Miliar)":47.79,
+    "Kapasitas Terpasang":"-",
+    "Kapasitas Terpakai":"-",
+    "Idle Capacity":"-",
+    "Luas Penanganan":"53.98",
+    "Luas Kawasan":"128.45",
+    "Berfungsi":6,
+    "Tidak Berfungsi":0,
+    "Satuan Kapasitas":"ha"
+  },
+  {
+    "Sektor":"BPB",
+    "Jumlah Unit":2,
+    "Nilai Investasi (Miliar)":23.85,
+    "Kapasitas Terpasang":"-",
+    "Kapasitas Terpakai":"-",
+    "Idle Capacity":"-",
+    "Luas Penanganan":"4776.75",
+    "Luas Kawasan":"-",
+    "Berfungsi":2,
+    "Tidak Berfungsi":0,
+    "Satuan Kapasitas":"m2"
+  }
+]

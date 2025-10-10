@@ -1,0 +1,57 @@
+[
+  {
+    "Program":"PAMSIMAS",
+    "Jumlah Unit":265,
+    "Nilai Investasi (Miliar)":68.17,
+    "Kapasitas Terpasang":"388.70",
+    "Kapasitas Terpakai":"296.46",
+    "Idle Capacity":"92.24",
+    "Berfungsi":206,
+    "Tidak Berfungsi":59,
+    "Satuan Kapasitas":"l\/detik"
+  },
+  {
+    "Program":"SANIMAS",
+    "Jumlah Unit":46,
+    "Nilai Investasi (Miliar)":25.134,
+    "Kapasitas Terpasang":"2259",
+    "Kapasitas Terpakai":"1541",
+    "Idle Capacity":"718",
+    "Berfungsi":45,
+    "Tidak Berfungsi":1,
+    "Satuan Kapasitas":"KK"
+  },
+  {
+    "Program":"TPS3R",
+    "Jumlah Unit":8,
+    "Nilai Investasi (Miliar)":4.3,
+    "Kapasitas Terpasang":"5.6",
+    "Kapasitas Terpakai":"2.1",
+    "Idle Capacity":"3.5",
+    "Berfungsi":3,
+    "Tidak Berfungsi":5,
+    "Satuan Kapasitas":"ton\/hari"
+  },
+  {
+    "Program":"SANITASI LPK",
+    "Jumlah Unit":25,
+    "Nilai Investasi (Miliar)":5.0,
+    "Kapasitas Terpasang":"-",
+    "Kapasitas Terpakai":"-",
+    "Idle Capacity":"-",
+    "Berfungsi":23,
+    "Tidak Berfungsi":2,
+    "Satuan Kapasitas":"-"
+  },
+  {
+    "Program":"PISEW",
+    "Jumlah Unit":22,
+    "Nilai Investasi (Miliar)":13.2,
+    "Kapasitas Terpasang":"-",
+    "Kapasitas Terpakai":"-",
+    "Idle Capacity":"-",
+    "Berfungsi":22,
+    "Tidak Berfungsi":0,
+    "Satuan Kapasitas":"-"
+  }
+]
