@@ -6,49 +6,6 @@
 <title>MalukuInfraZone</title>
 <link rel="icon" href="images/logo-pu.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-  /* --- Tombol dan Nav: shape seragam + nav aktif biru/text kuning --- */
-.btn, #top-nav a.nav-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-weight: 800;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-  box-shadow: 0 8px 20px rgba(2,6,23,0.45);
-}
-
-/* default look for nav links (non-active) */
-#top-nav a.nav-link {
-  background: transparent;
-  color: var(--text-light);
-  border: 1px solid rgba(255,255,255,0.03);
-}
-
-/* hero buttons use same shape */
-.hero .btn { background: var(--accent); color: #071016; border: none; }
-
-/* special outline variant if needed */
-.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.08); color: var(--text-light); }
-
-/* NAV ACTIVE: solid navy background, yellow text (elegant) */
-#top-nav a.nav-link.active {
-  background: var(--navy);
-  color: var(--accent);
-  border: none;
-  box-shadow: 0 10px 30px rgba(4,26,54,0.55);
-  transform: translateY(-2px);
-}
-
-/* hover micro interaction */
-#top-nav a.nav-link:hover,
-.btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(2,6,23,0.55);
-}
 
 <style>
 :root{
@@ -58,84 +15,48 @@
   --accent:#f3b41f;
   --muted:#9fb0c6;
   --text-light:#f1f5f9;
-  --card-w:260px;
-  --gap:16px;
-  --radius:10px;
-  --ff-sans:"Poppins",system-ui,Arial;
 }
 
-/* base */
-html,body{height:100%;margin:0;font-family:var(--ff-sans);background:var(--bg);color:var(--text-light);padding-top:72px}
-a{color:inherit;text-decoration:none}
+/* unified button + nav shape */
+.btn, #top-nav a.nav-link {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 16px;
+  border-radius:12px;
+  font-weight:800;
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  box-shadow:0 8px 20px rgba(2,6,23,0.45);
+}
 
-/* header */
-header{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--glass);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03)}
-.brand{display:flex;align-items:center;gap:12px}
-.brand img{height:40px}
-.site-title{font-family:'Montserrat';font-weight:800;font-size:20px}
-nav{display:flex;align-items:center;gap:12px}
-nav a{padding:8px 12px;border-radius:8px;color:var(--text-light);font-weight:600}
-nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,0.45)}
+/* default nav (not active) */
+#top-nav a.nav-link {
+  background:transparent;
+  color:var(--text-light);
+  border:1px solid rgba(255,255,255,0.03);
+}
 
-/* solid CTA Peta */
-.btn-secondary, nav a.btn-secondary { background: var(--accent); color:#071016 !important; padding:10px 14px; border-radius:8px; font-weight:700; }
+/* active nav: navy bg, yellow text */
+#top-nav a.nav-link.active {
+  background:var(--navy);
+  color:var(--accent);
+  border:none;
+  box-shadow:0 10px 30px rgba(4,26,54,0.55);
+  transform:translateY(-2px);
+}
 
-/* hero */
-.hero{height:62vh;background-image:url('images/background-maluku.jpg');background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;position:relative}
-.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.52),rgba(0,0,0,0.78));}
-.hero-inner{position:relative;z-index:10;text-align:center;padding:20px;max-width:960px}
-.hero h1{font-family:'Montserrat';font-weight:900;font-size:44px;margin:0;text-align:center}
-.hero p{color:var(--muted);margin-top:10px;font-size:16px;text-align:center}
-.hero .cta-row{margin-top:18px;display:flex;gap:12px;justify-content:center}
-.btn-primary{background:var(--accent);color:#071016;padding:12px 18px;border-radius:999px;font-weight:800}
-.btn-secondary{background:var(--accent);color:#071016;padding:10px 14px;border-radius:8px;font-weight:700}
+/* hero buttons same shape */
+.hero .btn { background:var(--accent); color:#071016; border:none; }
 
-/* sectors */
-.section{padding:54px 18px;max-width:1200px;margin:0 auto}
-.sector-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
-.sector-card{background:rgba(255,255,255,0.02);padding:16px;border-radius:10px;text-align:center}
-.sector-card img{width:48px;height:48px;object-fit:contain}
-.sector-card h3{color:var(--accent);margin:8px 0 4px;font-size:15px;font-weight:700;text-align:center}
-.sector-card p{color:var(--muted);font-size:13px;margin:0;text-align:center}
-
-/* dashboard */
-.dashboard{background:linear-gradient(180deg,rgba(6,10,14,0.65),rgba(6,10,14,0.45));padding:36px 18px;border-top:2px solid rgba(255,255,255,0.03)}
-.container{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
-
-/* recap header */
-.recap-header{width:100%;max-width:1120px;background:rgba(255,255,255,0.02);padding:12px 14px;border-radius:8px;border-left:4px solid rgba(255,255,255,0.03);margin-bottom:12px;text-align:center}
-.recap-header h2{margin:0;font-family:'Montserrat';font-weight:900;font-size:20px;color:var(--text-light);text-align:center}
-.recap-header p{margin:6px 0 0;color:var(--muted);font-size:13px;text-align:center}
-
-/* rows: top 3, bottom 2 */
-.cards-row { display:flex; justify-content:center; gap:14px; width:100%; flex-wrap:wrap; margin-bottom:12px; }
-.card { width: var(--card-w); background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid rgba(255,255,255,0.05); overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
-
-/* card head */
-.card-head{background:linear-gradient(180deg,var(--navy),#0b3556aa);padding:12px;text-align:center}
-.card-head h4{margin:0;font-family:'Montserrat';font-weight:900;font-size:13px;color:var(--accent);text-align:center}
-.card-head .title-line{display:block;margin-top:8px;font-weight:700;font-size:15px;color:var(--text-light);text-align:center}
-.card-head .label-small{display:block;margin-top:10px;font-size:11px;color:#d6e8fb;font-weight:700;text-align:center}
-.card-head .jumlah{display:block;margin-top:6px;font-size:20px;font-weight:900;color:var(--text-light);text-align:center}
-.card-head .invest-label{display:block;margin-top:8px;font-size:11px;color:#d6e8fb;font-weight:700;text-align:center}
-.card-head .invest-value{display:block;margin-top:4px;font-weight:800;color:var(--accent);font-size:14px;text-align:center}
-
-/* body and table: smaller font for neatness; center section titles */
-.body{padding:10px;background:rgba(255,255,255,0.01)}
-.section-title{display:block;background:var(--navy);color:#fff;padding:6px 10px;border-radius:6px;font-weight:700;margin-bottom:8px;font-size:12px;text-align:center}
-.card table{width:100%;border-collapse:collapse;font-size:13px;color:var(--muted)}
-.card td{padding:6px 6px;border-bottom:1px solid rgba(255,255,255,0.03)}
-.card .k{text-align:left}
-.card .v{text-align:right;color:var(--muted)}
-
-/* smaller table font for neatness */
-.card table { font-size:13px; }
-.card td { font-size:13px; }
-
-/* responsive */
-@media(max-width:980px){:root{--card-w:220px}}
-@media(max-width:640px){:root{--card-w:100%}}
+/* hover micro interaction */
+#top-nav a.nav-link:hover, .btn:hover {
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(2,6,23,0.55);
+}
 </style>
+
 </head>
 <body>
 
@@ -145,11 +66,11 @@ nav a.active{background:var(--accent);color:#071016;font-weight:800;box-shadow:0
     <div class="site-title">MalukuInfraZone</div>
   </div>
 
-<nav id="top-nav">
-  <a href="#hero" class="nav-link" id="nav-home">Beranda</a>
-  <a href="peta.html" class="nav-link" id="nav-peta">Peta Infrastruktur</a>
-  <a href="#dashboard" class="nav-link" id="nav-dashboard">Dashboard</a>
-</nav>
+  <nav id="top-nav">
+    <a href="#hero" class="nav-link" id="nav-home">Beranda</a>
+    <a href="peta.html" class="nav-link" id="nav-peta">Peta Infrastruktur</a>
+    <a href="#dashboard" class="nav-link" id="nav-dashboard">Dashboard</a>
+  </nav>
 </header>
 
 <section class="hero" id="hero" aria-label="Hero">
