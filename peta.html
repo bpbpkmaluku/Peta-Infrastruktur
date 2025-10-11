@@ -63,66 +63,53 @@
     }
     
 /* ===== Popup Styling Final ===== */
-.gm-style .gm-style-iw {
-  overflow: visible !important;
+/* ===== Popup tampil normal, putih polos ===== */
+
+/* Reset semua styling tambahan agar kembali ke tampilan standar */
+.gm-style .gm-style-iw,
+.gm-style .gm-style-iw-c,
+.gm-style .gm-style-iw-d,
+.gm-style .gm-style-iw-t {
+  all: unset !important;
 }
 
-.gm-style .gm-style-iw > div {
-  background: transparent !important;
-  padding: 0 !important;
-  overflow: visible !important;
-}
-
-/* Kotak popup bersih tanpa border frame */
+/* Pastikan kotak popup putih polos */
 .custom-iw {
+  background: #ffffff !important;
+  color: #202124 !important;
   font-size: 13px;
-  color: #021129;
-  background: #ffffff;
-  padding: 12px 46px 12px 14px;
-  border-radius: 10px;
-  max-width: 320px;
-  text-align: left;
   line-height: 1.5;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-  position: relative;
-  overflow: visible;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  max-width: 320px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   word-break: break-word;
-  border: none; /* hilangkan frame tipis */
 }
 
-/* Tombol close: warna kontras, tetap di dalam popup */
-.gm-style .gm-style-iw .gm-ui-hover-effect {
+/* Gunakan tombol close default dari Google Maps */
+.gm-style .gm-ui-hover-effect {
+  all: unset !important;
   position: absolute !important;
-  top: 8px !important;
-  right: 8px !important;
-  width: 24px !important;
-  height: 24px !important;
-  border-radius: 6px !important;
-  background: #e5f0ff !important; /* biru muda biar beda dari latar */
-  border: 1px solid #3b82f6 !important; /* outline biru */
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25) !important;
-  z-index: 99999 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: all 0.2s ease-in-out;
+  top: 6px !important;
+  right: 6px !important;
+  display: block !important;
+  width: 28px !important;
+  height: 28px !important;
+  cursor: pointer;
 }
 
-.gm-style .gm-style-iw .gm-ui-hover-effect:hover {
-  background: #3b82f6 !important;
+.gm-style .gm-ui-hover-effect img,
+.gm-style .gm-ui-hover-effect svg {
+  width: 14px !important;
+  height: 14px !important;
+  filter: none !important;
+  opacity: 0.8 !important;
 }
 
-.gm-style .gm-style-iw .gm-ui-hover-effect img,
-.gm-style .gm-style-iw .gm-ui-hover-effect svg {
-  width: 12px !important;
-  height: 12px !important;
-  margin: 0 !important;
-  filter: invert(0) !important;
-}
-
-.gm-style .gm-style-iw .gm-ui-hover-effect:hover img,
-.gm-style .gm-style-iw .gm-ui-hover-effect:hover svg {
-  filter: invert(1) !important; /* warna ikon jadi putih saat hover */
+.gm-style .gm-ui-hover-effect:hover img,
+.gm-style .gm-ui-hover-effect:hover svg {
+  opacity: 1 !important;
 }
 
     /* Footer */
