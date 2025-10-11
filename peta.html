@@ -142,15 +142,95 @@
   color: #000;
 }
 
+/* Footer */
+.site-footer {
+  background: #050505;
+  color: #d1d5db;
+  padding: 40px 20px;
+  margin-top: 40px;
+  border-radius: 8px;
+  text-align: center; /* semua isi tengah */
+}
 
-    /* Footer */
-    .site-footer{background:#050505;color:#d1d5db;padding:24px 20px;margin-top:20px;border-radius:8px;text-align:left}
-    .footer-inner{max-width:1200px;margin:0 auto;display:flex;gap:40px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
-    .footer-col h4{margin:0 0 8px 0;color:#fff}
-    .footer-note{margin-top:8px;color:#9ca3af;font-size:13px}
-    .footer-bottom{margin-top:16px;border-top:1px solid rgba(255,255,255,0.03);padding-top:12px;text-align:center;color:#9ca3af;font-size:13px}
-    .goto-top{position:fixed;right:20px;bottom:28px;width:44px;height:44px;border-radius:22px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
-    .goto-top span{font-size:18px}
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column; /* jadi vertikal */
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.footer-brand .logo {
+  font-weight: 800; /* bold */
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.footer-brand .tag {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.footer-note {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.footer-col h4 {
+  margin: 0 0 4px 0;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.footer-col div {
+  color: #d1d5db;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-bottom {
+  margin-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 12px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* Instagram link tengah dan sejajar */
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+}
+
+.footer-links img {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
   </style>
 </head>
 <body>
