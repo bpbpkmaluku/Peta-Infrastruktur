@@ -77,18 +77,25 @@
   overflow: visible !important;
 }
 
-/* Konten popup */
-.custom-iw {
-  font-size: 13px;
-  color: #202124;
-  line-height: 1.5;
-  text-align: left;
-  padding: 12px 16px;
-  background: #ffffff;
-  border-radius: 8px;
-  max-width: 320px;
-  word-break: break-word;
+/* Tambahan styling untuk label dan nilai */
+.custom-iw .iw-label {
+  font-weight: 500;
+  color: #4b5563;
 }
+
+.custom-iw .iw-value {
+  font-weight: 700;
+  color: #021129;
+}
+
+.custom-iw .iw-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #021129;
+  margin-bottom: 6px;
+  display: block;
+}
+
 
 /* ganti ikon bawaan dengan X */
 .gm-style .gm-ui-hover-effect img,
@@ -301,47 +308,53 @@
       return out;
     }
 
-    function buildInfoHtml(p){
-      function find(names){
-        for(const n of names){
-          if(p[n] !== undefined && p[n] !== null && String(p[n]).trim() !== '') return p[n];
-        }
-        for(const key in p){
-          const lk = key.toLowerCase().replace(/\s+/g,'_');
-          for(const n of names){
-            if(lk === n.toLowerCase().replace(/\s+/g,'_') && p[key] !== undefined && String(p[key]).trim() !== '') return p[key];
-          }
-        }
-        return '';
-      }
-
-      const nama = String(find(['Nama_Infrastruktur','Nama Infrastruktur','nama','name']) || '').trim();
-      const sektor = String(find(['Sektor','sektor','sector']) || '').trim();
-      const jenis = String(find(['Jenis_Kegiatan','Jenis Kegiatan','jenis','sub_kelas','subkelas']) || '').trim();
-      const lokasi = String(find(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']) || '').trim();
-      const wilayah = String(find(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']) || '').trim();
-      const tahun = String(find(['Tahun_Pembangunan','Tahun Bangun','tahun_bangun','tahun']) || '').trim();
-      const status = String(find(['Status_Keberfungsian','Status Keberfungsian','status','kondisi']) || '').trim();
-
-      const realAngRaw = String(find(['Realisasi_Anggaran','Realisasi Anggaran','realisasi_anggaran','anggaran','realisasi']) || '').trim();
-      const thOptimalRaw = String(find(['Tahun_Optimalisasi','Tahun Optimalisasi','tahun_optimalisasi','tahun_opt']) || '').trim();
-
-      const realAng = realAngRaw ? formatCurrency(realAngRaw) : '';
-      const thOptimal = (thOptimalRaw && thOptimalRaw !== '-') ? thOptimalRaw : '';
-
-      let html = '<div class="custom-iw">';
-      if(nama) html += '<div><strong>'+escapeHtml(nama)+'</strong></div>';
-      if(sektor) html += '<div>Sektor: '+escapeHtml(sektor)+'</div>';
-      if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(jenis)+'</div>';
-      if(lokasi) html += '<div>Lokasi: '+escapeHtml(lokasi)+'</div>';
-      if(wilayah) html += '<div>Wilayah: '+escapeHtml(wilayah)+'</div>';
-      if(tahun) html += '<div>Tahun Bangun: '+escapeHtml(tahun)+'</div>';
-      if(status) html += '<div>Status: '+escapeHtml(status)+'</div>';
-      if(realAng) html += '<div>Realisasi Anggaran: '+escapeHtml(realAng)+'</div>';
-      if(thOptimal) html += '<div>Tahun Optimalisasi: '+escapeHtml(thOptimal)+'</div>';
-      html += '</div>';
-      return html;
+function buildInfoHtml(p){
+  function find(names){
+    for(const n of names){
+      if(p[n] !== undefined && p[n] !== null && String(p[n]).trim() !== '') return p[n];
     }
+    for(const key in p){
+      const lk = key.toLowerCase().replace(/\s+/g,'_');
+      for(const n of names){
+        if(lk === n.toLowerCase().replace(/\s+/g,'_') && p[key] !== undefined && String(p[key]).trim() !== '') return p[key];
+      }
+    }
+    return '';
+  }
+
+  const nama = String(find(['Nama_Infrastruktur','Nama Infrastruktur','nama','name']) || '').trim();
+  const sektor = String(find(['Sektor','sektor','sector']) || '').trim();
+  const jenis = String(find(['Jenis_Kegiatan','Jenis Kegiatan','jenis','sub_kelas','subkelas']) || '').trim();
+  const lokasi = String(find(['Lokasi','lokasi','location','alamat','address','alamat_lengkap']) || '').trim();
+  const wilayah = String(find(['Wilayah','wilayah','WADMKK','NAMOBJ','kabupaten','kota','kec']) || '').trim();
+  const tahun = String(find(['Tahun_Pembangunan','Tahun Bangun','tahun_bangun','tahun']) || '').trim();
+  const status = String(find(['Status_Keberfungsian','Status Keberfungsian','status','kondisi']) || '').trim();
+
+  const realAngRaw = String(find(['Realisasi_Anggaran','Realisasi Anggaran','realisasi_anggaran','anggaran','realisasi']) || '').trim();
+  const thOptimalRaw = String(find(['Tahun_Optimalisasi','Tahun Optimalisasi','tahun_optimalisasi','tahun_opt']) || '').trim();
+
+  const realAng = realAngRaw ? formatCurrency(realAngRaw) : '';
+  const thOptimal = (thOptimalRaw && thOptimalRaw !== '-') ? thOptimalRaw : '';
+
+  // helper untuk baris label: nilai (nilai dibuat bold)
+  function row(label, value){
+    if(!value) return '';
+    return '<div><span class="iw-label">' + escapeHtml(label) + ':</span> <strong class="iw-value">' + escapeHtml(value) + '</strong></div>';
+  }
+
+  let html = '<div class="custom-iw">';
+  if(nama) html += '<div><strong class="iw-title">'+escapeHtml(nama)+'</strong></div>';
+  html += row('Sektor', sektor);
+  html += row('Jenis Kegiatan', jenis);
+  html += row('Lokasi', lokasi);
+  html += row('Wilayah', wilayah);
+  html += row('Tahun Bangun', tahun);
+  html += row('Status', status);
+  if(realAng) html += row('Realisasi Anggaran', realAng);
+  if(thOptimal) html += row('Tahun Optimalisasi', thOptimal);
+  html += '</div>';
+  return html;
+}
 
     function clearMarkers(){ allMarkers.forEach(x=>x.marker.setMap(null)); allMarkers = []; }
 
