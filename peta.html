@@ -25,7 +25,7 @@
     #map{width:100%;height:85vh;border-radius:12px;background:#0b1220;box-shadow:0 10px 30px rgba(0,0,0,0.6);margin-top:14px;display:block}
     .status{margin-top:8px;color:var(--muted);font-size:13px}
 
-    /* Legend grid */
+    /* Legend grid and items */
     .legend{
       display:grid;
       grid-template-columns: repeat(4, minmax(0,1fr));
@@ -65,12 +65,44 @@
       .footer-inner{gap:20px;justify-content:center}
     }
 
-    .custom-iw{font-size:13px;color:#021129;background:#fff;padding:14px;border-radius:8px;max-width:320px;text-align:left;line-height:1.4;box-shadow:0 8px 24px rgba(2,6,23,0.35);position:relative}
-    .custom-iw>div{margin:0;padding:0}
-    .custom-iw .iw-close{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:6px;border:none;background:#fff;box-shadow:0 6px 14px rgba(2,6,23,0.35);cursor:pointer;font-size:14px;line-height:1;color:#333}
-
-    /* hide Google Maps default close controls */
+    /* Clean popup styling. Hide Google's chrome and show single custom box */
+    .gm-style .gm-style-iw { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+    .gm-style .gm-style-iw > div { background: transparent !important; padding: 0 !important; }
+    .gm-style .gm-style-iw::after, .gm-style .gm-style-iw > div::after { display: none !important; }
     .gm-style .gm-ui-hover-effect { display:none !important; }
+
+    .custom-iw{
+      font-size:13px;
+      color:#021129;
+      background:#fff;
+      padding:12px 14px;
+      border-radius:8px;
+      max-width:320px;
+      text-align:left;
+      line-height:1.4;
+      box-shadow:0 8px 20px rgba(2,6,23,0.12);
+      border:1px solid rgba(0,0,0,0.06);
+      position:relative;
+    }
+    .custom-iw>div{margin:0;padding:0}
+    .custom-iw .iw-close{
+      position:absolute;
+      top:8px;
+      right:8px;
+      width:28px;
+      height:28px;
+      border-radius:6px;
+      border:none;
+      background:#fff;
+      box-shadow:0 6px 12px rgba(2,6,23,0.08);
+      cursor:pointer;
+      font-size:14px;
+      color:#333;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+    }
 
     /* Footer */
     .site-footer{background:#050505;color:#d1d5db;padding:24px 20px;margin-top:20px;border-radius:8px;text-align:left}
@@ -183,6 +215,7 @@
     let map, infoWindow, allMarkers = [], geoData = null;
     const uniqueSectors = new Set(), uniqueYears = new Set(), uniqueRegions = new Set();
 
+    // Utilities
     function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
     function setStatus(t){ document.getElementById('status').textContent = t || ''; }
 
@@ -252,6 +285,7 @@
     }
 
     function buildInfoHtml(p){
+      // p expected to be normalized properties object or raw; find supports various keys
       function find(names){
         for(const n of names){
           if(p[n] !== undefined && p[n] !== null && String(p[n]).trim() !== '') return p[n];
@@ -293,16 +327,6 @@
       return html;
     }
 
-    function attachIWClose(){
-      setTimeout(()=>{
-        const btn = document.querySelector('.gm-style .custom-iw .iw-close');
-        if(!btn) return;
-        const nb = btn.cloneNode(true);
-        btn.parentNode.replaceChild(nb, btn);
-        nb.addEventListener('click', ()=>{ if(window.infoWindow) window.infoWindow.close(); });
-      }, 80);
-    }
-
     function clearMarkers(){ allMarkers.forEach(x=>x.marker.setMap(null)); allMarkers = []; }
 
     function createMarkersFromGeo(geo){
@@ -342,11 +366,10 @@
           const currentZoom = map.getZoom();
           if(currentZoom < targetZoom){
             setTimeout(()=> map.setZoom(targetZoom), 250);
-            setTimeout(()=> { infoWindow.setContent(buildInfoHtml(props)); infoWindow.open(map, marker); attachIWClose(); }, 500);
+            setTimeout(()=> { infoWindow.setContent(buildInfoHtml(props)); infoWindow.open(map, marker); }, 500);
           } else {
             infoWindow.setContent(buildInfoHtml(props));
             infoWindow.open(map, marker);
-            attachIWClose();
           }
         });
 
@@ -484,13 +507,12 @@
       map.data.addListener('mouseover', e => { map.data.revertStyle(); map.data.overrideStyle(e.feature, { strokeWeight:3.6, strokeOpacity:1, fillOpacity:.04 }); });
       map.data.addListener('mouseout', ()=> map.data.revertStyle());
       map.data.addListener('click', e => {
-        const props = e.feature.getProperties();
+        const props = e.feature.getProperties() || {};
         const name = props.NAMOBJ || props.WADMKK || props.NAME || props.NAMA || 'Wilayah';
         const content = '<div class="custom-iw"><button class="iw-close" aria-label="Tutup">✕</button><div><strong>' + escapeHtml(name) + '</strong></div></div>';
         infoWindow.setContent(content);
         infoWindow.setPosition(e.latLng);
         infoWindow.open(map);
-        attachIWClose();
       });
     }
 
@@ -519,11 +541,22 @@
       attachAdminInteractions();
     }
 
+    // Global UI helpers
     const goto = document.getElementById('gotoTop');
     goto.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
     window.addEventListener('scroll', ()=>{ goto.style.display = window.scrollY>200 ? 'flex' : 'none'; });
     goto.style.display = 'none';
 
+    // Global delegation: close popup when internal button clicked
+    document.addEventListener('click', function(e){
+      const t = e.target;
+      if(!t) return;
+      if(t.classList && t.classList.contains('iw-close')){
+        if(typeof infoWindow !== 'undefined' && infoWindow) infoWindow.close();
+      }
+    });
+
+    // Load Google Maps then init
     function loadGoogleMapsThenInit(apiKey){
       if(window.google && google.maps && typeof initMap === 'function'){ try{ initMap(); }catch(e){ console.error(e); } return; }
       const s = document.createElement('script');
