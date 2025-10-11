@@ -65,51 +65,53 @@
       .footer-inner{gap:20px;justify-content:center}
     }
 
-    /* Clean popup styling. Hide Google's chrome and show single custom box */
-    .gm-style .gm-style-iw { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
-    .gm-style .gm-style-iw > div { background: transparent !important; padding: 0 !important; }
-    .gm-style .gm-style-iw::after, .gm-style .gm-style-iw > div::after { display: none !important; }
-    .gm-style .gm-ui-hover-effect { display:none !important; }
+    /* InfoWindow: keep single clean box. Use default Google close control but small and neat. */
+    .gm-style .gm-style-iw { background: transparent !important; box-shadow: none !important; padding: 0 !important; overflow: visible !important; }
+    .gm-style .gm-style-iw > div { background: transparent !important; padding: 0 !important; overflow: visible !important; }
 
-   /* Popup: beri ruang untuk tombol, pastikan tombol tidak menutup teks */
-.custom-iw{
-  font-size:13px;
-  color:#021129;
-  background:#fff;
-  padding:18px 16px 12px 16px;    /* tambahkan top padding */
-  border-radius:8px;
-  max-width:320px;
-  text-align:left;
-  line-height:1.4;
-  box-shadow:0 8px 20px rgba(2,6,23,0.12);
-  border:1px solid rgba(0,0,0,0.06);
-  position:relative;
-  overflow:visible;               /* biarkan tombol keluar */
-  word-break:break-word;
-}
+    /* style Google Maps close control to be small, white, and non-intrusive */
+    .gm-ui-hover-effect {
+      display:flex !important;
+      width:26px !important;
+      height:26px !important;
+      top:8px !important;
+      right:8px !important;
+      border-radius:6px !important;
+      background:#fff !important;
+      border:1px solid rgba(0,0,0,0.08) !important;
+      box-shadow:0 4px 10px rgba(2,6,23,0.08) !important;
+      align-items:center !important;
+      justify-content:center !important;
+      z-index:9999 !important;
+    }
+    .gm-ui-hover-effect img, .gm-ui-hover-effect svg, .gm-ui-hover-effect span {
+      width:12px !important;
+      height:12px !important;
+      display:block !important;
+      margin:0 !important;
+      transform:none !important;
+    }
 
-/* Close button: taruh sedikit di luar sudut kanan atas */
-.custom-iw .iw-close{
-  position:absolute;
-  top: -10px;                     /* geser ke luar atas */
-  right: -10px;                   /* geser ke luar kanan */
-  width:30px;
-  height:30px;
-  border-radius:8px;
-  border:1px solid rgba(0,0,0,0.06);
-  background:#fff;
-  box-shadow:0 8px 18px rgba(2,6,23,0.12);
-  cursor:pointer;
-  font-size:14px;
-  color:#333;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  z-index:9999;
-}
+    /* popup content box */
+    .custom-iw{
+      font-size:13px;
+      color:#021129;
+      background:#fff;
+      padding:12px 14px;
+      border-radius:8px;
+      max-width:320px;
+      text-align:left;
+      line-height:1.4;
+      box-shadow:0 8px 20px rgba(2,6,23,0.08);
+      border:1px solid rgba(0,0,0,0.06);
+      position:relative;
+      overflow:visible;
+      word-break:break-word;
+    }
+    .custom-iw>div{margin:0;padding:0}
 
-/* Jika ingin tombol lebih kecil, ubah width/height/font-size ke 26/26/12 */
+    /* ensure Google wrapper doesn't force scroll */
+    .gm-style-iw-d, .gm-style-iw-c, .gm-style-iw-t { max-height:none !important; overflow:visible !important; }
 
     /* Footer */
     .site-footer{background:#050505;color:#d1d5db;padding:24px 20px;margin-top:20px;border-radius:8px;text-align:left}
@@ -292,7 +294,6 @@
     }
 
     function buildInfoHtml(p){
-      // p expected to be normalized properties object or raw; find supports various keys
       function find(names){
         for(const n of names){
           if(p[n] !== undefined && p[n] !== null && String(p[n]).trim() !== '') return p[n];
@@ -320,7 +321,7 @@
       const realAng = realAngRaw ? formatCurrency(realAngRaw) : '';
       const thOptimal = (thOptimalRaw && thOptimalRaw !== '-') ? thOptimalRaw : '';
 
-      let html = '<div class="custom-iw"><button class="iw-close" aria-label="Tutup">✕</button>';
+      let html = '<div class="custom-iw">';
       if(nama) html += '<div><strong>'+escapeHtml(nama)+'</strong></div>';
       if(sektor) html += '<div>Sektor: '+escapeHtml(sektor)+'</div>';
       if(jenis) html += '<div>Jenis Kegiatan: '+escapeHtml(jenis)+'</div>';
@@ -516,7 +517,7 @@
       map.data.addListener('click', e => {
         const props = e.feature.getProperties() || {};
         const name = props.NAMOBJ || props.WADMKK || props.NAME || props.NAMA || 'Wilayah';
-        const content = '<div class="custom-iw"><button class="iw-close" aria-label="Tutup">✕</button><div><strong>' + escapeHtml(name) + '</strong></div></div>';
+        const content = '<div class="custom-iw"><div><strong>' + escapeHtml(name) + '</strong></div></div>';
         infoWindow.setContent(content);
         infoWindow.setPosition(e.latLng);
         infoWindow.open(map);
@@ -548,20 +549,11 @@
       attachAdminInteractions();
     }
 
-    // Global UI helpers
+    // UI helpers
     const goto = document.getElementById('gotoTop');
     goto.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
     window.addEventListener('scroll', ()=>{ goto.style.display = window.scrollY>200 ? 'flex' : 'none'; });
     goto.style.display = 'none';
-
-    // Global delegation: close popup when internal button clicked
-    document.addEventListener('click', function(e){
-      const t = e.target;
-      if(!t) return;
-      if(t.classList && t.classList.contains('iw-close')){
-        if(typeof infoWindow !== 'undefined' && infoWindow) infoWindow.close();
-      }
-    });
 
     // Load Google Maps then init
     function loadGoogleMapsThenInit(apiKey){
