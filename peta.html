@@ -65,73 +65,76 @@
       .footer-inner{gap:20px;justify-content:center}
     }
 
-.gm-style .gm-style-iw,
-.gm-style .gm-style-iw > div,
-.gm-style .gm-style-iw-d,
-.gm-style .gm-style-iw-c,
-.gm-style .gm-style-iw-t {
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: visible !important;
-  width: auto !important;
-  max-width: none !important;
-  display: inline-block !important;
-}
+    /* Final InfoWindow styling: white clean box using Google wrapper */
+    .gm-style .gm-style-iw {
+      max-width: 360px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 28px rgba(2,6,23,0.16) !important;
+      background: transparent !important;
+    }
 
-/* pastikan container google tidak menambah latar putih atau lebar */
-.gm-style .gm-style-iw::after,
-.gm-style .gm-style-iw > div::after,
-.gm-style .gm-style-iw-d::after,
-.gm-style .gm-style-iw-c::after,
-.gm-style .gm-style-iw-t::after { display: none !important; }
+    /* inner Google wrapper made transparent; we show our .custom-iw as the visible box */
+    .gm-style .gm-style-iw > div,
+    .gm-style .gm-style-iw-d,
+    .gm-style .gm-style-iw-c,
+    .gm-style .gm-style-iw-t {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+      overflow: visible !important;
+      width: auto !important;
+      max-width: none !important;
+      display: block !important;
+    }
 
-/* kecilkan & posisikan kontrol close default */
-.gm-ui-hover-effect{
-  display:flex !important;
-  width:26px !important;
-  height:26px !important;
-  top:8px !important;
-  right:8px !important;
-  border-radius:6px !important;
-  background:#fff !important;
-  border:1px solid rgba(0,0,0,0.08) !important;
-  box-shadow:0 4px 10px rgba(2,6,23,0.08) !important;
-  align-items:center !important;
-  justify-content:center !important;
-  z-index:9999 !important;
-}
+    /* control close: small, white, non-intrusive */
+    .gm-ui-hover-effect {
+      width: 26px !important;
+      height: 26px !important;
+      top: 8px !important;
+      right: 8px !important;
+      border-radius: 6px !important;
+      background: #fff !important;
+      border: 1px solid rgba(0,0,0,0.08) !important;
+      box-shadow: 0 4px 10px rgba(2,6,23,0.09) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 9999 !important;
+    }
+    .gm-ui-hover-effect img, .gm-ui-hover-effect svg, .gm-ui-hover-effect span {
+      width: 12px !important;
+      height: 12px !important;
+      display: block !important;
+      margin: 0 !important;
+      transform: none !important;
+    }
 
-/* ikon tombol close kecil */
-.gm-ui-hover-effect img, .gm-ui-hover-effect svg, .gm-ui-hover-effect span {
-  width:12px !important;
-  height:12px !important;
-  display:block !important;
-  margin:0 !important;
-  transform:none !important;
-}
+    /* actual content box inside InfoWindow */
+    .custom-iw {
+      font-size: 13px;
+      color: #021129;
+      background: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      max-width: 320px;
+      text-align: left;
+      line-height: 1.45;
+      box-shadow: none;
+      border: none;
+      word-break: break-word;
+    }
+    .custom-iw strong { display:block; margin-bottom:6px; font-size:15px; color:#0b2440; }
 
-/* konten actual: satu kotak bersih */
-.custom-iw{
-  font-size:13px;
-  color:#021129;
-  background:#fff;
-  padding:12px 14px;
-  border-radius:8px;
-  max-width:320px;
-  text-align:left;
-  line-height:1.4;
-  box-shadow:0 8px 20px rgba(2,6,23,0.08);
-  border:1px solid rgba(0,0,0,0.06);
-  position:relative;
-  overflow:visible;
-  word-break:break-word;
-}
-    .custom-iw>div{margin:0;padding:0}
-
-    /* ensure Google wrapper doesn't force scroll */
-    .gm-style-iw-d, .gm-style-iw-c, .gm-style-iw-t { max-height:none !important; overflow:visible !important; }
+    /* ensure Google wrappers don't force extra white column */
+    .gm-style .gm-style-iw::after,
+    .gm-style .gm-style-iw > div::after,
+    .gm-style .gm-style-iw-d::after,
+    .gm-style .gm-style-iw-c::after,
+    .gm-style .gm-style-iw-t::after { display:none !important; }
 
     /* Footer */
     .site-footer{background:#050505;color:#d1d5db;padding:24px 20px;margin-top:20px;border-radius:8px;text-align:left}
