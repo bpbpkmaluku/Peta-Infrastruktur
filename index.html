@@ -359,26 +359,46 @@ function mapItem(i){
 
   return { prefix: 'Infrastruktur', name, jumlah, invest, util, status };
 }
-
-/* render helpers */
-/* renderRowsFlex sekarang menerima parameter 'type' = 'reguler' | 'ibm' */
+  
+/* renderRowsFlex: buat displayName berdasarkan tipe, lalu render */
 function renderRowsFlex(topId, bottomId, data, type){
   const t = document.getElementById(topId), b = document.getElementById(bottomId);
   if(!t || !b) return;
   t.innerHTML = ''; b.innerHTML = '';
   const list = Array.isArray(data) ? data : [];
 
-  // helper buat prefix berdasarkan tipe dan nama
-  function prefixFor(name){
-    // normalisasi kecil/besar
-    const nm = String(name || '').trim();
-    if(type === 'ibm') return 'Infrastruktur IBM';
-    // reguler: jika PKS atau BPB tetap "Infrastruktur"
-    if(type === 'reguler' && (nm.toUpperCase() === 'PKS' || nm.toUpperCase() === 'BPB')) return 'Infrastruktur';
-    // default reguler: "Infrastruktur Sektor"
-    return 'Infrastruktur Sektor';
+  // helper: normalisasi nama display
+  function makeDisplayName(rawName, type){
+    const name = String(rawName || '').trim();
+    if(type === 'ibm'){
+      // IBM: tampilkan nama program apa adanya
+      return name || '-';
+    }
+    // reguler
+    const up = name.toUpperCase();
+    if(up === 'PKS' || up === 'BPB'){
+      return 'Sektor ' + name;
+    }
+    // default reguler: Bidang <Nama>
+    return 'Bidang ' + name;
   }
 
+  // render top 3
+  list.slice(0,3).forEach(it=>{
+    const f = mapItem(it);
+    const displayName = makeDisplayName(f.name, type);
+    const pref = (type === 'ibm') ? 'Infrastruktur IBM' : ( (f.name.toUpperCase()==='PKS' || f.name.toUpperCase()==='BPB') ? 'Infrastruktur' : 'Infrastruktur Sektor' );
+    t.insertAdjacentHTML('beforeend', buildCardFlex(pref, displayName, f.jumlah, f.invest, f.util, f.status));
+  });
+
+  // render bottom 2
+  list.slice(3,5).forEach(it=>{
+    const f = mapItem(it);
+    const displayName = makeDisplayName(f.name, type);
+    const pref = (type === 'ibm') ? 'Infrastruktur IBM' : ( (f.name.toUpperCase()==='PKS' || f.name.toUpperCase()==='BPB') ? 'Infrastruktur' : 'Infrastruktur Sektor' );
+    b.insertAdjacentHTML('beforeend', buildCardFlex(pref, displayName, f.jumlah, f.invest, f.util, f.status));
+  });
+}
   // render top 3
   list.slice(0,3).forEach(it=>{
     const f = mapItem(it);
