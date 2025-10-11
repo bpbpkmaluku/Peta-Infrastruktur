@@ -90,37 +90,39 @@
   word-break: break-word;
 }
 
-/* Tombol close Google Maps, tetap tampil */
-.gm-ui-hover-effect {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 26px !important;
-  height: 26px !important;
+/* ganti ikon bawaan dengan X */
+.gm-style .gm-ui-hover-effect img,
+.gm-style .gm-ui-hover-effect svg {
+  display: none !important;
+}
+
+.gm-style .gm-ui-hover-effect {
   position: absolute !important;
   top: 6px !important;
   right: 6px !important;
-  border-radius: 50% !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
   background: #f2f2f2 !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12) !important;
   cursor: pointer !important;
-  opacity: 0.95 !important;
-  transition: all 0.15s ease-in-out !important;
-  z-index: 9999 !important;
+  z-index: 99999 !important;
 }
 
-.gm-ui-hover-effect:hover {
-  background: #e0e0e0 !important;
-  opacity: 1 !important;
+/* tampilkan tanda X */
+.gm-style .gm-ui-hover-effect::before {
+  content: "✕";
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+  line-height: 1;
+  display: block;
 }
-
-/* Ikon close (X) */
-.gm-ui-hover-effect img,
-.gm-ui-hover-effect svg {
-  width: 12px !important;
-  height: 12px !important;
-  filter: none !important;
-  opacity: 0.9 !important;
+.gm-style .gm-ui-hover-effect:hover::before {
+  color: #000;
 }
 
     /* Footer */
@@ -554,6 +556,27 @@
       refreshAdminStyle();
       attachAdminInteractions();
     }
+
+    // pastikan infoWindow sudah dideklarasi sebelumnya
+google.maps.event.addListener(infoWindow, 'domready', function() {
+  const btn = document.querySelector('.gm-ui-hover-effect');
+  if (!btn) return;
+
+  // hapus isi lama dan set atribut aksesibilitas
+  btn.innerHTML = '';
+  btn.setAttribute('aria-label', 'Tutup');
+  btn.setAttribute('role', 'button');
+
+  // tambahkan span X jika pseudo-element tidak bekerja pada beberapa browser
+  if (!window.getComputedStyle(btn, '::before')) {
+    const s = document.createElement('span');
+    s.textContent = '✕';
+    s.style.fontSize = '14px';
+    s.style.color = '#333';
+    s.style.fontWeight = '600';
+    btn.appendChild(s);
+  }
+});
 
     // UI helpers
     const goto = document.getElementById('gotoTop');
