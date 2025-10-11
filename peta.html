@@ -532,53 +532,60 @@
       });
     }
 
-    async function initMap(){
-      map = new google.maps.Map(document.getElementById('map'), { center:{lat:-3.3,lng:129.1}, zoom:7, mapTypeControl:false, streetViewControl:false });
-      infoWindow = new google.maps.InfoWindow({ maxWidth:320, pixelOffset: new google.maps.Size(0, -25) });
+async function initMap(){
+  map = new google.maps.Map(document.getElementById('map'), { center:{lat:-3.3,lng:129.1}, zoom:7, mapTypeControl:false, streetViewControl:false });
+  infoWindow = new google.maps.InfoWindow({ maxWidth:320, pixelOffset: new google.maps.Size(0, -25) });
 
-      document.getElementById('applyBtn').addEventListener('click', applyFilter);
-      document.getElementById('resetBtn').addEventListener('click', resetFilter);
+  // ===== pindahkan domready listener ke sini =====
+  google.maps.event.addListener(infoWindow, 'domready', function() {
+    const btn = document.querySelector('.gm-ui-hover-effect');
+    if (!btn) return;
+    btn.innerHTML = '';
+    btn.setAttribute('aria-label', 'Tutup');
+    btn.setAttribute('role', 'button');
 
-      try {
-        const geoMarkers = await loadSpatialData(RAW_GEOJSON);
-        geoData = geoMarkers;
-        createMarkersFromGeo(geoMarkers);
-        populateFilters(geoMarkers);
-        resetFilter();
-      } catch(e){
-        console.error(e);
-        setStatus('Gagal muat DATA_SPASIAL. Cek URL atau format file.');
+    // fallback untuk browser yang tidak mendukung computedStyle pseudo
+    try {
+      const cs = window.getComputedStyle(btn, '::before');
+      if (!cs || cs.content === undefined) {
+        const s = document.createElement('span');
+        s.textContent = '✕';
+        s.style.fontSize = '14px';
+        s.style.color = '#333';
+        s.style.fontWeight = '600';
+        btn.appendChild(s);
       }
-
-      try{ map.data.addGeoJson(await loadGeoJSON(ADMIN_KAB_URL)); } catch(e){ /* ignore */ }
-      try{ map.data.addGeoJson(await loadGeoJSON(ADMIN_PROV_URL)); } catch(e){ /* ignore */ }
-
-      refreshAdminStyle();
-      attachAdminInteractions();
+    } catch(e) {
+      const s = document.createElement('span');
+      s.textContent = '✕';
+      s.style.fontSize = '14px';
+      s.style.color = '#333';
+      s.style.fontWeight = '600';
+      btn.appendChild(s);
     }
+  });
 
-    // pastikan infoWindow sudah dideklarasi sebelumnya
-google.maps.event.addListener(infoWindow, 'domready', function() {
-  const btn = document.querySelector('.gm-ui-hover-effect');
-  if (!btn) return;
+  document.getElementById('applyBtn').addEventListener('click', applyFilter);
+  document.getElementById('resetBtn').addEventListener('click', resetFilter);
 
-  // hapus isi lama dan set atribut aksesibilitas
-  btn.innerHTML = '';
-  btn.setAttribute('aria-label', 'Tutup');
-  btn.setAttribute('role', 'button');
-
-  // tambahkan span X jika pseudo-element tidak bekerja pada beberapa browser
-  if (!window.getComputedStyle(btn, '::before')) {
-    const s = document.createElement('span');
-    s.textContent = '✕';
-    s.style.fontSize = '14px';
-    s.style.color = '#333';
-    s.style.fontWeight = '600';
-    btn.appendChild(s);
+  try {
+    const geoMarkers = await loadSpatialData(RAW_GEOJSON);
+    geoData = geoMarkers;
+    createMarkersFromGeo(geoMarkers);
+    populateFilters(geoMarkers);
+    resetFilter();
+  } catch(e){
+    console.error(e);
+    setStatus('Gagal muat DATA_SPASIAL. Cek URL atau format file.');
   }
-});
 
-    // UI helpers
+  try{ map.data.addGeoJson(await loadGeoJSON(ADMIN_KAB_URL)); } catch(e){ /* ignore */ }
+  try{ map.data.addGeoJson(await loadGeoJSON(ADMIN_PROV_URL)); } catch(e){ /* ignore */ }
+
+  refreshAdminStyle();
+  attachAdminInteractions();
+}
+   // UI helpers
     const goto = document.getElementById('gotoTop');
     goto.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
     window.addEventListener('scroll', ()=>{ goto.style.display = window.scrollY>200 ? 'flex' : 'none'; });
