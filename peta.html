@@ -386,6 +386,7 @@ const statusOptions = Array.from(statusSet).sort((a,b)=>{
 });
 
 document.getElementById('statusFilter').innerHTML = '<option value="">Semua</option>' + statusOptions.map(s=>'<option>'+escapeHtml(s)+'</option>').join('');
+    }
 
     function applyFilter(){ /* tetap sama seperti sebelumnya */ 
       const sector = document.getElementById('sectorFilter').value.trim();
