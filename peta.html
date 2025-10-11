@@ -62,54 +62,65 @@
       .controls{flex-direction:column;align-items:flex-start}
     }
     
-/* ===== Popup Styling Final ===== */
-/* ===== Popup tampil normal, putih polos ===== */
+/* ===== Popup Normal Google Style ===== */
 
-/* Reset semua styling tambahan agar kembali ke tampilan standar */
-.gm-style .gm-style-iw,
-.gm-style .gm-style-iw-c,
-.gm-style .gm-style-iw-d,
-.gm-style .gm-style-iw-t {
-  all: unset !important;
+/* Hapus styling berlebihan tapi tetap perbaiki posisi tombol X */
+.gm-style .gm-style-iw-c {
+  background: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+  padding: 0 !important;
+  overflow: visible !important;
 }
 
-/* Pastikan kotak popup putih polos */
+.gm-style .gm-style-iw-d {
+  overflow: visible !important;
+}
+
+/* Konten popup */
 .custom-iw {
-  background: #ffffff !important;
-  color: #202124 !important;
   font-size: 13px;
+  color: #202124;
   line-height: 1.5;
   text-align: left;
-  padding: 10px 12px;
+  padding: 12px 16px;
+  background: #ffffff;
   border-radius: 8px;
   max-width: 320px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   word-break: break-word;
 }
 
-/* Gunakan tombol close default dari Google Maps */
-.gm-style .gm-ui-hover-effect {
-  all: unset !important;
+/* Tombol close Google Maps, tetap tampil */
+.gm-ui-hover-effect {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
   position: absolute !important;
   top: 6px !important;
   right: 6px !important;
-  display: block !important;
-  width: 28px !important;
-  height: 28px !important;
-  cursor: pointer;
+  border-radius: 50% !important;
+  background: #f2f2f2 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
+  cursor: pointer !important;
+  opacity: 0.95 !important;
+  transition: all 0.15s ease-in-out !important;
+  z-index: 9999 !important;
 }
 
-.gm-style .gm-ui-hover-effect img,
-.gm-style .gm-ui-hover-effect svg {
-  width: 14px !important;
-  height: 14px !important;
-  filter: none !important;
-  opacity: 0.8 !important;
-}
-
-.gm-style .gm-ui-hover-effect:hover img,
-.gm-style .gm-ui-hover-effect:hover svg {
+.gm-ui-hover-effect:hover {
+  background: #e0e0e0 !important;
   opacity: 1 !important;
+}
+
+/* Ikon close (X) */
+.gm-ui-hover-effect img,
+.gm-ui-hover-effect svg {
+  width: 12px !important;
+  height: 12px !important;
+  filter: none !important;
+  opacity: 0.9 !important;
 }
 
     /* Footer */
